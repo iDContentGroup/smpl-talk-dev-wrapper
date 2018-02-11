@@ -53,7 +53,7 @@ export class HomePage {
 
       this.browser.on("loadstop").subscribe(event => {
         // console.log(event);
-        // this.loadstopEvents.push(event);
+        this.loadstopEvents.push(event);
         this.browser.show();
 
         this.browser.executeScript({
