@@ -1,0 +1,8 @@
+{
+  "name": "smpl-talk-dev",
+  "app_id": "580e25c4",
+  "type": "ionic-angular",
+  "integrations": {
+    "cordova": {}
+  }
+}
