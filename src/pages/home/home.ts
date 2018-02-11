@@ -10,6 +10,10 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
 export class HomePage {
 
   	constructor(public navCtrl: NavController, private iab: InAppBrowser) {
+  		
+  	}
+
+  	moo() {
   		const url = 'https://smpl-talk-develop.firebaseapp.com';
   		const target = '_blank';
   		let options = 'location=yes,toolbar=yes';
@@ -20,5 +24,4 @@ export class HomePage {
 		// browser.close();
 		// browser.show();
   	}
-
 }
