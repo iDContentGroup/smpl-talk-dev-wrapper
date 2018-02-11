@@ -14,9 +14,28 @@ export class HomePage {
   	}
 
   	moo() {
-  		const url = 'https://smpl-talk-develop.firebaseapp.com';
-  		const target = '_blank';
-  		let options = 'location=yes,toolbar=yes';
+  		const url = 'https://smpl-talk-develop.firebaseapp.com/#/';
+  		const target = '_self';
+  		var options = '';
+
+      var optionAry = [];
+
+      optionAry.push('disallowoverscroll=yes');//(iOS) Turns on/off the UIWebViewBounce property.
+      optionAry.push('keyboardDisplayRequiresUserAction=no');// (iOS) Should take care of ios not allowing focus on inputs
+
+      optionAry.push('toolbar=yes');// (iOS) Should be testing only
+      optionAry.push('location=yes'); // Should be testing only
+      optionAry.push('clearcache=yes');// Should be testing only
+      optionAry.push('clearsessioncache=yes');// Should be testing only
+
+      for (var i = 0; i < optionAry.length; i++) {
+        options += optionAry[i];
+        if (i !== optionAry.length - 1) {
+          options += ",";
+        }
+      }
+
+
 		const browser = this.iab.create(url, target, options);
 
 		// browser.executeScript(...);
