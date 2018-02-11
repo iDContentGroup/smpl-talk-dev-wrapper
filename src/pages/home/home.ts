@@ -52,8 +52,8 @@ export class HomePage {
   		this.browser = this.iab.create(url, target, this.options);
 
       this.browser.on("loadstop").subscribe(event => {
-        console.log(event);
-        this.loadstopEvents.push(event);
+        // console.log(event);
+        // this.loadstopEvents.push(event);
         this.browser.show();
 
         this.browser.executeScript({
