@@ -85,4 +85,5 @@
     <plugin name="com.synconset.imagepicker" spec="~2.1.8">
         <variable name="PHOTO_LIBRARY_USAGE_DESCRIPTION" value="Upload images to Smpl Talk" />
     </plugin>
+    <plugin name="cordova-plugin-camera" spec="^4.0.2" />
 </widget>
