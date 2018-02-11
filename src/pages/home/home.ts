@@ -9,7 +9,8 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
 })
 export class HomePage {
     options: string;
-  	moo: string;
+  	cow: string;
+
     constructor(public navCtrl: NavController, private iab: InAppBrowser) {
   		this.options = '';
 
@@ -30,18 +31,18 @@ export class HomePage {
         }
       }
 
-      this.moo = 'cow';
+      this.cow = 'cow';
   	}
 
   	moo() {
   		const url = 'https://smpl-talk-develop.firebaseapp.com/#/';
   		const target = '_self';
 
-		const browser = this.iab.create(url, target, this.options);
+  		const browser = this.iab.create(url, target, this.options);
 
-		// browser.executeScript(...);
-		// browser.insertCSS(...);
-		// browser.close();
-		// browser.show();
+  		// browser.executeScript(...);
+  		// browser.insertCSS(...);
+  		// browser.close();
+  		// browser.show();
   	}
 }
