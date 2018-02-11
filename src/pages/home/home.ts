@@ -12,13 +12,20 @@ export class HomePage {
     options: string;
   	cow: string;
 
+    loadstopEvents: any;
+
+    JSON: any;
+
     constructor(public navCtrl: NavController, private iab: InAppBrowser) {
+      this.JSON = JSON;
+
   		this.options = '';
 
       var optionAry = [];
 
       optionAry.push("disallowoverscroll=yes");//(iOS) Turns on/off the UIWebViewBounce property.
       optionAry.push("keyboardDisplayRequiresUserAction=no");// (iOS) Should take care of ios not allowing focus on inputs
+      optionAry.push("hidden=yes");
 
       optionAry.push("toolbar=yes");// (iOS) Should be testing only
       optionAry.push("location=yes"); // Should be testing only
@@ -33,6 +40,8 @@ export class HomePage {
       }
 
       this.cow = 'cow';
+
+
   	}
 
   	moo() {
@@ -43,10 +52,12 @@ export class HomePage {
 
       browser.on("loadstop").subscribe(event => {
         console.log(event);
-        
-        browser.executeScript({
-          code: "alert('loadstop')"
-        });
+        this.loadstopEvents.push(event);
+        browser.show();
+
+        // browser.executeScript({
+        //   code: "alert('loadstop')"
+        // });
       });
 
   		// browser.executeScript(...);
