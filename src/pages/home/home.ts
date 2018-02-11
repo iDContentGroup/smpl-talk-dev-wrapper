@@ -42,7 +42,7 @@ export class HomePage {
 
       this.cow = 'cow';
 
-
+      this.loadstopEvents = [];
   	}
 
   	moo() {
