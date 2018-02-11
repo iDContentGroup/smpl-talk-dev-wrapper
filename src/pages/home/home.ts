@@ -56,9 +56,9 @@ export class HomePage {
         this.loadstopEvents.push(event);
         this.browser.show();
 
-        // this.browser.executeScript({
-        //   code: "alert('loadstop')"
-        // });
+        this.browser.executeScript({
+          code: "alert('loadstop')"
+        });
       });
 
   		// browser.executeScript(...);
