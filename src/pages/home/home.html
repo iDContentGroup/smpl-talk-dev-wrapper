@@ -15,11 +15,18 @@
   </p>
 
   <button ion-button secondary menuToggle>Toggle Menu</button> -->
-  <p>test: 15</p>
+  <p>test: 16</p>
   <p>{{ options }}</p>
   <p> {{ cow }}</p>
-  <button ion-button secondary (click)="moo()">open smpl talk</button>
-  <button ion-button secondary (click)="browser.show()">show browser</button>
+  <button ion-button secondary (click)="moo()">open smpl talk using inAppBrowser</button>
+  <button ion-button secondary (click)="iframeTest()">toggle smpl talk using iframe</button>
+  <!-- <button ion-button secondary (click)="browser.show()">show browser</button> -->
+
+  <div *ngIf="showIFrame" style="width: 100%; height: 100%">
+    <iframe style="width: 100%; height: 100%" src="https://smpltalk.com/#/">
+    </iframe>
+  </div>
+
 
   <div *ngFor="let event of loadstopEvents">
     <p>{{ JSON.stringify(event) }}</p>

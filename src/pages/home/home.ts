@@ -17,6 +17,8 @@ export class HomePage {
     JSON: any;
     browser: any;
 
+    showIFrame: boolean;
+
     constructor(public navCtrl: NavController, private iab: InAppBrowser) {
       this.JSON = JSON;
 
@@ -66,4 +68,8 @@ export class HomePage {
   		// browser.close();
   		// browser.show();
   	}
+
+    iframeTest() {
+      this.showIFrame = !this.showIFrame;
+    }
 }
