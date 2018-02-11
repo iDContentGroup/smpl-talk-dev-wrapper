@@ -15,13 +15,16 @@
   </p>
 
   <button ion-button secondary menuToggle>Toggle Menu</button> -->
-  <p>test: 7</p>
+  <p>test: 8</p>
   <p>{{ options }}</p>
   <p> {{ cow }}</p>
   <button ion-button secondary (click)="moo()">open smpl talk</button>
+  <button ion-button secondary (click)="browser.show()">show browser</button>
 
   <div *ngFor="let event of loadstopEvents">
     <pre>{{ JSON.stringify(error) }}</pre>
   </div>
+
+  <pre *ngIf="browser">{{ JSON.stringify(browser) }}</pre>
 
 </ion-content>

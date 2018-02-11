@@ -15,6 +15,7 @@ export class HomePage {
     loadstopEvents: any;
 
     JSON: any;
+    browser: any;
 
     constructor(public navCtrl: NavController, private iab: InAppBrowser) {
       this.JSON = JSON;
@@ -48,14 +49,14 @@ export class HomePage {
   		const url = 'https://smpl-talk-develop.firebaseapp.com/#/';
   		const target = '_blank';
 
-  		const browser = this.iab.create(url, target, this.options);
+  		this.browser = this.iab.create(url, target, this.options);
 
-      browser.on("loadstop").subscribe(event => {
+      this.browser.on("loadstop").subscribe(event => {
         console.log(event);
         this.loadstopEvents.push(event);
-        browser.show();
+        this.browser.show();
 
-        // browser.executeScript({
+        // this.browser.executeScript({
         //   code: "alert('loadstop')"
         // });
       });
