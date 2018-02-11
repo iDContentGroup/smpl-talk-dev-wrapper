@@ -30,7 +30,7 @@ export class HomePage {
         }
       }
 
-      moo = 'cow';
+      this.moo = 'cow';
   	}
 
   	moo() {
