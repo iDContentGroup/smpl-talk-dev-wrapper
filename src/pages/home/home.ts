@@ -8,15 +8,10 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
   templateUrl: 'home.html'
 })
 export class HomePage {
-
-  	constructor(public navCtrl: NavController, private iab: InAppBrowser) {
-  		
-  	}
-
-  	moo() {
-  		const url = 'https://smpl-talk-develop.firebaseapp.com/#/';
-  		const target = '_self';
-  		var options = '';
+    options: string;
+  	moo: string;
+    constructor(public navCtrl: NavController, private iab: InAppBrowser) {
+  		this.options = '';
 
       var optionAry = [];
 
@@ -29,14 +24,20 @@ export class HomePage {
       optionAry.push('clearsessioncache=yes');// Should be testing only
 
       for (var i = 0; i < optionAry.length; i++) {
-        options += optionAry[i];
+        this.options += optionAry[i];
         if (i !== optionAry.length - 1) {
-          options += ",";
+         this.options += ",";
         }
       }
 
+      moo = 'cow';
+  	}
 
-		const browser = this.iab.create(url, target, options);
+  	moo() {
+  		const url = 'https://smpl-talk-develop.firebaseapp.com/#/';
+  		const target = '_self';
+
+		const browser = this.iab.create(url, target, this.options);
 
 		// browser.executeScript(...);
 		// browser.insertCSS(...);
