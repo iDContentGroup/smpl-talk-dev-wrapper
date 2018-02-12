@@ -48,6 +48,9 @@ export class HomePage {
         optionAry.push("location=yes"); // Should be testing only
         optionAry.push("clearcache=yes");// Should be testing only
         optionAry.push("clearsessioncache=yes");// Should be testing only
+      } else {
+        optionAry.push("toolbar=no");// (iOS) Should be testing only
+        optionAry.push("location=no"); // Should be testing only
       }
       
 
@@ -76,24 +79,20 @@ export class HomePage {
 
         // Start an interval
         var loop = setInterval(function() {
+          // Execute JavaScript to check for the existence of a showCamera in the
+          // child browser's localStorage.
+          this.browser.executeScript({
+            code: "localStorage.getItem( 'showCamera' )"
+          }, values => {
+            var showCamera = values[ 0 ];
 
-            // Execute JavaScript to check for the existence of a showCamera in the
-            // child browser's localStorage.
-            this.browser.executeScript(
-                {
-                    code: "localStorage.getItem( 'showCamera' )"
-                },
-                function( values ) {
-                    var showCamera = values[ 0 ];
-
-                    // If a showCamera was set, clear the interval and close the InAppBrowser.
-                    if ( showCamera ) {
-                        clearInterval( loop );
-                        this.browser.hide();
-                        this.showCamera = true;
-                    }
-                }
-            );
+            // If a showCamera was set, clear the interval and close the InAppBrowser.
+            if ( showCamera ) {
+                clearInterval( loop );
+                this.browser.hide();
+                this.showCamera = true;
+            }
+          });
         });
       });
 
