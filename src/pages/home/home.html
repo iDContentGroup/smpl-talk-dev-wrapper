@@ -15,7 +15,7 @@
   </p>
 
   <button ion-button secondary menuToggle>Toggle Menu</button> -->
-  <p>test: 18</p>
+  <p>test: 19</p>
   <p>{{ options }}</p>
   <p> {{ cow }}</p>
   <button ion-button secondary (click)="moo()">open smpl talk using inAppBrowser</button>
@@ -30,6 +30,8 @@
 
   <div *ngFor="let event of loadstopEvents">
     <p>{{ JSON.stringify(event) }}</p>
+    <br>
+    <p> {{ event }}</p>
   </div>
 
   <p *ngIf="browser" [style.background]="'grey'">{{ JSON.stringify(browser) }}</p>

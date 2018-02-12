@@ -59,7 +59,7 @@ export class HomePage {
         this.browser.show();
 
         this.browser.executeScript({
-          code: "alert('loadstop')"
+          code: "alert('loadstop'); alert(" + event + ")"
         });
       });
 
