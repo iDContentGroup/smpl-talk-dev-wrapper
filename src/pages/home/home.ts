@@ -139,7 +139,7 @@ export class HomePage {
         // Gettin base64
         // source: https://forum.ionicframework.com/t/image-picker-give-base64-of-image-or-not/93571/8
         // this.img = 'data:image/jpeg;base64,' + file_uris[0];
-        this.img = file_uris[0] || file_uris;
+        this.img = file_uris[0].replace('file://', '');// || file_uris;
 
         // for (var i = 0; i < file_uris.length; i++) {
         //     // console.log('Image URI: ' + file_uris[i]);
