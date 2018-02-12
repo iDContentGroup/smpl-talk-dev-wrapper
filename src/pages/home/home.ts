@@ -58,8 +58,35 @@ export class HomePage {
         this.loadstopEvents.push(event);
         this.browser.show();
 
-        this.browser.executeScript({
-          code: "alert('loadstop'); alert(" + event + ")"
+        // this.browser.executeScript({
+        //   code: "alert('loadstop'); alert(" + event + ")"
+        // });
+
+        // Clear out the name in localStorage for subsequent opens.
+        this.browser.executeScript({ code: "localStorage.setItem( 'showCamera', '' );" });
+        
+        this.showCamera = false;
+
+        // Start an interval
+        var loop = setInterval(function() {
+
+            // Execute JavaScript to check for the existence of a showCamera in the
+            // child browser's localStorage.
+            this.browser.executeScript(
+                {
+                    code: "localStorage.getItem( 'showCamera' )"
+                },
+                function( values ) {
+                    var showCamera = values[ 0 ];
+
+                    // If a showCamera was set, clear the interval and close the InAppBrowser.
+                    if ( showCamera ) {
+                        clearInterval( loop );
+                        this.browser.hide();
+                        this.showCamera = true;
+                    }
+                }
+            );
         });
       });
 
