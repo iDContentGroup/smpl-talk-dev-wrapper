@@ -15,7 +15,7 @@
   </p>
 
   <button ion-button secondary menuToggle>Toggle Menu</button> -->
-  <p>test: 22</p>
+  <p>test: 23</p>
   <p>{{ options }}</p>
   <p> {{ cow }}</p>
   <button ion-button secondary (click)="moo()">open smpl talk using inAppBrowser</button>
@@ -24,6 +24,19 @@
   <button ion-button secondary (click)="toggleDebug()">toggleDebug status: {{!doDebug ? 'nope' : 'yup'}}</button>
 
   <p>Show camera: {{ showCamera ? 'yup' : 'nope' }}</p>
+
+  <div>
+    <p>Image</p>
+    <p *ngIf="!img">(none)</p>
+    <img *ngIf="img" [src]="img" />
+    <ng-container *ngIf="imgError">
+      <p>{{ JSON.stringify(imgError) }}</p>
+      <br>
+      <p> {{ imgError }}</p>
+    </ng-container>
+  </div> 
+  <button ion-button secondary (click)="getImageFromCamera()">Camera time!</button>
+
 
   <div *ngIf="showIFrame" style="width: 100%; height: 100%">
     <iframe style="width: 100%; height: 100%; border: 0 !important" src="https://smpltalk.com/#/">

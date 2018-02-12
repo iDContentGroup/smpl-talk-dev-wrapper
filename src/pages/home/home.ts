@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
+// import { Component, Input, Output, EventEmitter, ElementRef, ViewChild,  } from '@angular/core';
+
 import { NavController } from 'ionic-angular';
 
 import { InAppBrowser } from '@ionic-native/in-app-browser';
@@ -23,7 +25,10 @@ export class HomePage {
 
     showCamera: boolean;
 
-    constructor(public navCtrl: NavController, private iab: InAppBrowser) {
+    img: any;
+    imgError: any;
+
+    constructor(public navCtrl: NavController, private iab: InAppBrowser, private camera: Camera, private ref: ChangeDetectorRef) {
       this.JSON = JSON;
       this.loadstopEvents = [];
   	}
@@ -91,6 +96,7 @@ export class HomePage {
                 clearInterval( loop );
                 this.browser.hide();
                 this.showCamera = true;
+                this.ref.detectChanges();
             }
           });
         });
@@ -101,6 +107,25 @@ export class HomePage {
   		// browser.close();
   		// browser.show();
   	}
+
+    getImageFromCamera() {
+      const options: CameraOptions = {
+        quality: 100,
+        destinationType: this.camera.DestinationType.DATA_URL,
+        encodingType: this.camera.EncodingType.JPEG,
+        mediaType: this.camera.MediaType.PICTURE
+      }
+
+      this.camera.getPicture(options).then((imageData) => {
+       // imageData is either a base64 encoded string or a file URI
+       // If it's base64:
+       let base64Image = 'data:image/jpeg;base64,' + imageData;
+       this.img = base64Image;
+      }, (err) => {
+       // Handle error
+       this.imgError = err;
+      });
+    }
 
     iframeTest() {
       this.showIFrame = !this.showIFrame;
