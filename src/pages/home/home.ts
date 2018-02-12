@@ -131,16 +131,15 @@ export class HomePage {
      getImageFromGallery(): void {
       let options = {
         maximumImagesCount: 1,
-        quality: 100,
-        outputType: 1
+        quality: 100
+        // outputType: 1
       }
 
       this.imagePicker.getPictures(options).then(file_uris => {
         // Gettin base64
         // source: https://forum.ionicframework.com/t/image-picker-give-base64-of-image-or-not/93571/8
-        this.img = 'data:image/jpeg;base64,' + file_uris[0];
-
-
+        // this.img = 'data:image/jpeg;base64,' + file_uris[0];
+        this.img = file_uris[0] || file_uris;
 
         // for (var i = 0; i < file_uris.length; i++) {
         //     // console.log('Image URI: ' + file_uris[i]);
