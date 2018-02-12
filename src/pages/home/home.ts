@@ -21,6 +21,8 @@ export class HomePage {
 
     doDebug: boolean;
 
+    showCamera: boolean;
+
     constructor(public navCtrl: NavController, private iab: InAppBrowser) {
       this.JSON = JSON;
       this.loadstopEvents = [];
