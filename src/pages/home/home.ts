@@ -78,7 +78,7 @@ export class HomePage {
         this.showCamera = false;
 
         // Start an interval
-        var loop = setInterval(function() {
+        var loop = setInterval(() => {
           // Execute JavaScript to check for the existence of a showCamera in the
           // child browser's localStorage.
           this.browser.executeScript({
