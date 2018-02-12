@@ -5,6 +5,7 @@ import { NavController } from 'ionic-angular';
 
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { Camera, CameraOptions } from '@ionic-native/camera';
+import { ImagePicker } from '@ionic-native/image-picker';
 
 @Component({
   selector: 'page-home',
@@ -28,7 +29,7 @@ export class HomePage {
     img: any;
     imgError: any;
 
-    constructor(public navCtrl: NavController, private iab: InAppBrowser, private camera: Camera, private ref: ChangeDetectorRef) {
+    constructor(public navCtrl: NavController, private iab: InAppBrowser, private camera: Camera, private imagePicker: ImagePicker, private ref: ChangeDetectorRef) {
       this.JSON = JSON;
       this.loadstopEvents = [];
   	}
@@ -124,6 +125,23 @@ export class HomePage {
       }, (err) => {
        // Handle error
        this.imgError = err;
+      });
+    }
+
+     getImageFromGallery(): void {
+      let options = {
+        maximumImagesCount: 1,
+        quality: 100
+      }
+
+      this.imagePicker.getPictures(options).then(file_uris => {
+        this.img = file_uris[0];
+
+        // for (var i = 0; i < file_uris.length; i++) {
+        //     // console.log('Image URI: ' + file_uris[i]);
+        // }
+      }, err => {
+        this.imgError = err;
       });
     }
 

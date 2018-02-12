@@ -11,6 +11,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { Camera, CameraOptions } from '@ionic-native/camera';
+import { ImagePicker } from '@ionic-native/image-picker';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { Camera, CameraOptions } from '@ionic-native/camera';
     SplashScreen,
     InAppBrowser,
     Camera,
+    ImagePicker,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
