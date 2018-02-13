@@ -125,7 +125,7 @@ export class HomePage {
        this.img = base64Image;
        if (this.browser) {
          this.browser.show();
-         this.browser.executeScript({code: 'window.my.namespace.publicFunc(' + this.img + ');'});
+         this.browser.executeScript({code: 'window.my.namespace.publicFunc("' + this.img + '");'});
        }
       }, (err) => {
        // Handle error
