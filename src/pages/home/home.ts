@@ -94,7 +94,9 @@ export class HomePage {
 
             // If a showCamera was set, clear the interval and close the InAppBrowser.
             if ( showCamera ) {
-                clearInterval( loop );
+                // clearInterval( loop );
+                this.browser.executeScript({ code: "localStorage.setItem( 'showCamera', '' );" });
+
                 this.browser.hide();
                 this.showCamera = true;
                 this.ref.detectChanges();
@@ -111,8 +113,8 @@ export class HomePage {
 
     getImageFromCamera() {
       const options: CameraOptions = {
-        quality: 100,
-        destinationType: this.camera.DestinationType.DATA_URL,
+        quality: 90,
+        // destinationType: this.camera.DestinationType.DATA_URL,
         encodingType: this.camera.EncodingType.JPEG,
         sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
         allowEdit: true
@@ -121,7 +123,8 @@ export class HomePage {
       this.camera.getPicture(options).then((imageData) => {
        // imageData is either a base64 encoded string or a file URI
        // If it's base64:
-       let base64Image = 'data:image/jpeg;base64,' + imageData;
+       // let base64Image = 'data:image/jpeg;base64,' + imageData;
+       let base64Image = imageData;
        this.img = base64Image;
        if (this.browser) {
          this.browser.show();
