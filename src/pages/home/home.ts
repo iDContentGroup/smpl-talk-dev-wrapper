@@ -123,8 +123,10 @@ export class HomePage {
        // If it's base64:
        let base64Image = 'data:image/jpeg;base64,' + imageData;
        this.img = base64Image;
-       this.browser.show();
-       this.browser.executeScript({code: '.my.namespace.publicFunc(' + this.img + ')'});
+       if (this.browser) {
+         this.browser.show();
+         this.browser.executeScript({code: 'window.my.namespace.publicFunc(' + this.img + ');'});
+       }
       }, (err) => {
        // Handle error
        this.imgError = err;
