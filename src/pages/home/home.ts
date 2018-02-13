@@ -132,6 +132,8 @@ export class HomePage {
       let options = {
         maximumImagesCount: 1,
         quality: 100,
+        width: 500,
+        height: 500,
         outputType: 1
       }
 
