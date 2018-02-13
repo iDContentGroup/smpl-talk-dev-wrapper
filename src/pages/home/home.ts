@@ -118,18 +118,18 @@ export class HomePage {
     getImageFromCamera() {
       const options: CameraOptions = {
         quality: 90,
-        // destinationType: this.camera.DestinationType.DATA_URL,
-        destinationType: this.camera.DestinationType.FILE_URI,
+        destinationType: this.camera.DestinationType.DATA_URL,
+        // destinationType: this.camera.DestinationType.FILE_URI,
         encodingType: this.camera.EncodingType.JPEG,
         sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
         allowEdit: true
       }
 
-      this.camera.getPicture(options).then((imageData) => {
+      this.camera.getPicture(options).then(imageData => {
        // imageData is either a base64 encoded string or a file URI
        // If it's base64:
-       // let base64Image = 'data:image/jpeg;base64,' + imageData;
-       let base64Image = imageData;
+       let base64Image = 'data:image/jpeg;base64,' + imageData;
+       // let base64Image = imageData;
        this.img = base64Image;
        if (this.browser) {
          this.browser.show();
