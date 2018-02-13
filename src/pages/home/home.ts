@@ -76,7 +76,7 @@ export class HomePage {
         this.loadstopEvents.push(event);
         this.browser.show();
 
-
+        this.browser.executeScript({code: 'window.my.activateAppMode.publicFunc();'});
 
         // this.browser.executeScript({
         //   code: "alert('loadstop'); alert(" + event + ")"
@@ -119,6 +119,7 @@ export class HomePage {
       const options: CameraOptions = {
         quality: 90,
         // destinationType: this.camera.DestinationType.DATA_URL,
+        destinationType: this.camera.DestinationType.FILE_URI,
         encodingType: this.camera.EncodingType.JPEG,
         sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
         allowEdit: true
