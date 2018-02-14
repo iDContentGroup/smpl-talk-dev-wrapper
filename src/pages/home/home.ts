@@ -39,80 +39,81 @@ export class HomePage {
     }
 
   	moo() {
-  		const url = 'https://smpl-talk-develop.firebaseapp.com/#/';
-  		const target = '_blank';
+      if (!this.browser) {
+        const url = 'https://smpl-talk-develop.firebaseapp.com/#/';
+        const target = '_blank';
 
-      this.options = '';
+        this.options = '';
 
-      var optionAry = [];
+        var optionAry = [];
 
-      optionAry.push("disallowoverscroll=yes");//(iOS) Turns on/off the UIWebViewBounce property.
-      optionAry.push("keyboardDisplayRequiresUserAction=no");// (iOS) Should take care of ios not allowing focus on inputs
-      // optionAry.push("hidden=yes");
-      if (this.doDebug) {
-        optionAry.push("toolbar=yes");// (iOS) Should be testing only
-        optionAry.push("location=yes"); // Should be testing only
-        optionAry.push("clearcache=yes");// Should be testing only
-        optionAry.push("clearsessioncache=yes");// Should be testing only
-      } else {
-        optionAry.push("toolbar=no");// (iOS) Should be testing only
-        optionAry.push("location=no"); // Should be testing only
-      }
-      
-
-      for (var i = 0; i < optionAry.length; i++) {
-        this.options += optionAry[i];
-        if (i !== optionAry.length - 1) {
-         this.options += ",";
+        optionAry.push("disallowoverscroll=yes");//(iOS) Turns on/off the UIWebViewBounce property.
+        optionAry.push("keyboardDisplayRequiresUserAction=no");// (iOS) Should take care of ios not allowing focus on inputs
+        // optionAry.push("hidden=yes");
+        if (this.doDebug) {
+          optionAry.push("toolbar=yes");// (iOS) Should be testing only
+          optionAry.push("location=yes"); // Should be testing only
+          optionAry.push("clearcache=yes");// Should be testing only
+          optionAry.push("clearsessioncache=yes");// Should be testing only
+        } else {
+          optionAry.push("toolbar=no");// (iOS) Should be testing only
+          optionAry.push("location=no"); // Should be testing only
         }
-      }
+        
 
-  		this.browser = this.iab.create(url, target, this.options);
+        for (var i = 0; i < optionAry.length; i++) {
+          this.options += optionAry[i];
+          if (i !== optionAry.length - 1) {
+           this.options += ",";
+          }
+        }
 
-      this.browser.executeScript({code: 'window.my.activateAppMode.publicFunc();'});
-
-      this.browser.on("loadstop").subscribe(event => {
-        // console.log(event);
-        this.loadstopEvents.push(event);
-        this.browser.show();
+        this.browser = this.iab.create(url, target, this.options);
 
         this.browser.executeScript({code: 'window.my.activateAppMode.publicFunc();'});
 
-        // this.browser.executeScript({
-        //   code: "alert('loadstop'); alert(" + event + ")"
-        // });
+        this.browser.on("loadstop").subscribe(event => {
+          // console.log(event);
+          this.loadstopEvents.push(event);
+          this.browser.show();
 
-        // Clear out the name in localStorage for subsequent opens.
-        this.browser.executeScript({ code: "localStorage.setItem( 'showCamera', '' );" });
-        
-        this.showCamera = false;
+          this.browser.executeScript({code: 'window.my.activateAppMode.publicFunc();'});
 
-        // Start an interval
-        var loop = setInterval(() => {
-          // Execute JavaScript to check for the existence of a showCamera in the
-          // child browser's localStorage.
-          this.browser.executeScript({
-            code: "localStorage.getItem( 'showCamera' )"
-          }, values => {
-            var showCamera = values[ 0 ];
+          // this.browser.executeScript({
+          //   code: "alert('loadstop'); alert(" + event + ")"
+          // });
 
-            // If a showCamera was set, clear the interval and close the InAppBrowser.
-            if ( showCamera ) {
-                // clearInterval( loop );
-                this.browser.executeScript({ code: "localStorage.setItem( 'showCamera', '' );" });
+          // Clear out the name in localStorage for subsequent opens.
+          this.browser.executeScript({ code: "localStorage.setItem( 'showCamera', '' );" });
+          
+          this.showCamera = false;
 
-                this.browser.hide();
-                this.showCamera = true;
-                this.ref.detectChanges();
-            }
+          // Start an interval
+          var loop = setInterval(() => {
+            // Execute JavaScript to check for the existence of a showCamera in the
+            // child browser's localStorage.
+            this.browser.executeScript({
+              code: "localStorage.getItem( 'showCamera' )"
+            }, values => {
+              var showCamera = values[ 0 ];
+
+              // If a showCamera was set, clear the interval and close the InAppBrowser.
+              if ( showCamera ) {
+                  // clearInterval( loop );
+                  // TODO: i can't edit the image because onClick expects another upload :3
+                  // oops
+                  this.browser.executeScript({ code: "localStorage.setItem( 'showCamera', '' );" });
+
+                  this.browser.hide();
+                  this.showCamera = true;
+                  this.ref.detectChanges();
+              }
+            });
           });
         });
-      });
-
-  		// browser.executeScript(...);
-  		// browser.insertCSS(...);
-  		// browser.close();
-  		// browser.show();
+      } else {
+        this.browser && this.browser.show && this.browser.show();
+      }
   	}
 
     getImageFromCamera() {
