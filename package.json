@@ -31,6 +31,7 @@
     "cordova-plugin-camera": "^4.0.2",
     "cordova-plugin-inappbrowser": "git+https://github.com/jverlee/cordova-plugin-inappbrowser-camera.git",
     "cordova-plugin-telerik-imagepicker": "^2.1.8",
+    "firebase": "^4.9.1",
     "ionic-angular": "3.9.2",
     "ionicons": "3.0.0",
     "rxjs": "5.5.2",
