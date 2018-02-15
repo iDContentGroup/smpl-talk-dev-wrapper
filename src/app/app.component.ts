@@ -43,7 +43,7 @@ export class MyApp {
 
   setupPush() {
     // source: https://www.youtube.com/watch?v=sUjQ3G17T80
-    
+
     // to check if we have permission
       this.push.hasPermission().then((res: any) => {
         if (res.isEnabled) {
@@ -57,6 +57,15 @@ export class MyApp {
       // const options: PushOptions = {
       const options: any = {
          android: {
+           //senderID: XXXX
+           //icon: ?
+           //iconColor: ?
+           //vibrate: 'true',
+           //clearBadge: 'true',
+           //clearNotifications: 'true',
+           //forceShow: 'true',
+           //messageKey: '',
+           //titleKey: '',
            alert: 'true',
            badge: true,
            sound: 'true'
@@ -65,6 +74,7 @@ export class MyApp {
              alert: 'true',
              badge: true,
              sound: 'true'
+             //clearBadge: 'true'
          },
          windows: {},
          browser: {
@@ -76,6 +86,18 @@ export class MyApp {
 
       pushObject.on('notification').subscribe((notification: any) => {
         alert('Received a notification' + JSON.stringify(notification));
+        // foreground
+
+        if (notification.additionalData.foreground) {
+
+        } else {
+
+        }
+
+        //collapse_key  string  (optional)
+        //coldstart  boolean  (optional)
+        //from  string  (optional)
+        //notId
       });
 
       pushObject.on('registration').subscribe((registration: any) => {
