@@ -82,7 +82,7 @@
     <plugin name="cordova-plugin-ionic-webview" spec="^1.1.16" />
     <plugin name="cordova-plugin-ionic-keyboard" spec="^2.0.5" />
     <plugin name="cordova-plugin-camera" spec="^4.0.2" />
-    <plugin name="cordova-plugin-inappbrowser-camera" spec="https://github.com/jverlee/cordova-plugin-inappbrowser-camera.git" />
+    <plugin name="cordova-plugin-inappbrowser" spec="^2.0.2" />
     <plugin name="com.synconset.imagepicker" spec="~2.1.8">
         <variable name="PHOTO_LIBRARY_USAGE_DESCRIPTION" value="Upload images to Smpl Talk" />
     </plugin>
