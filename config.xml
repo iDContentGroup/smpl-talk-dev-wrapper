@@ -89,4 +89,5 @@
         <variable name="SENDER_ID" value="599715636396" />
     </plugin>
     <plugin name="cordova-plugin-inappbrowser" spec="^2.0.2" />
+    <engine name="android" spec="~6.4.0" />
 </widget>
