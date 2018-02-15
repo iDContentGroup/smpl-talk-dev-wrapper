@@ -7,6 +7,8 @@ import { HomePage } from '../pages/home/home';
 import { ListPage } from '../pages/list/list';
 import { FirebaseTestPage } from '../pages/firebaseTest/firebaseTest';
 
+import { Push, PushObject, PushOptions } from '@ionic-native/push';
+
 @Component({
   templateUrl: 'app.html'
 })
@@ -17,8 +19,10 @@ export class MyApp {
 
   pages: Array<{title: string, component: any}>;
 
-  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen) {
+  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, private push: Push) {
     this.initializeApp();
+
+    this.setupPush();
 
     // used for an example of ngFor and navigation
     this.pages = [
@@ -35,6 +39,50 @@ export class MyApp {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
     });
+  }
+
+  setupPush() {
+    // to check if we have permission
+      this.push.hasPermission().then((res: any) => {
+        if (res.isEnabled) {
+          alert('We have permission to send push notifications');
+        } else {
+          alert('We do not have permission to send push notifications');
+        }
+      });
+
+      // to initialize push notifications
+      // const options: PushOptions = {
+      const options: any = {
+         android: {
+           alert: 'true',
+           badge: true,
+           sound: 'true'
+         },
+         ios: {
+             alert: 'true',
+             badge: true,
+             sound: 'true'
+         },
+         windows: {},
+         browser: {
+             pushServiceURL: 'http://push.api.phonegap.com/v1/push'
+         }
+      };
+
+      const pushObject: PushObject = this.push.init(options);
+
+      pushObject.on('notification').subscribe((notification: any) => {
+        alert('Received a notification' + JSON.stringify(notification));
+      });
+
+      pushObject.on('registration').subscribe((registration: any) => {
+        alert('Device registered' + JSON.stringify(registration));
+      });
+
+      pushObject.on('error').subscribe(error => {
+        alert('Error with Push plugin' + JSON.stringify(error));
+      });
   }
 
   openPage(page) {
