@@ -42,6 +42,8 @@ export class MyApp {
   }
 
   setupPush() {
+    // source: https://www.youtube.com/watch?v=sUjQ3G17T80
+    
     // to check if we have permission
       this.push.hasPermission().then((res: any) => {
         if (res.isEnabled) {
