@@ -52,7 +52,6 @@ export class MyApp {
           alert('We do not have permission to send push notifications');
         }
       });
-      var moo = 'cow';
 
       // to initialize push notifications
       // const options: PushOptions = {
