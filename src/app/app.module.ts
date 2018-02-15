@@ -14,6 +14,8 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import { ImagePicker } from '@ionic-native/image-picker';
 
+import { Push, PushObject, PushOptions } from '@ionic-native/push';
+
 import firebase from 'firebase';
 
 // Initialize Firebase Server
@@ -54,6 +56,7 @@ firebase.initializeApp(firebaseConfig);
     InAppBrowser,
     Camera,
     ImagePicker,
+    Push,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

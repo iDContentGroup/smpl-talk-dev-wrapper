@@ -4,8 +4,8 @@ import { Component, ChangeDetectorRef } from '@angular/core';
 import { NavController } from 'ionic-angular';
 
 import { InAppBrowser } from '@ionic-native/in-app-browser';
-// import { Camera, CameraOptions } from '@ionic-native/camera';
-// import { ImagePicker } from '@ionic-native/image-picker';
+
+import { Push, PushObject, PushOptions } from '@ionic-native/push';
 
 import firebase from 'firebase';
 
@@ -26,13 +26,52 @@ export class FirebaseTestPage {
     unsubscribeOnAuthStateChanged: any;
     user: any;
 
-    constructor(public navCtrl: NavController, private iab: InAppBrowser, private ref: ChangeDetectorRef) {
+    messageLogs: string[];
+
+    constructor(public navCtrl: NavController, private iab: InAppBrowser, private ref: ChangeDetectorRef, private push: Push) {
       this.JSON = JSON;
       this.loadstopEvents = [];
   	}
 
     ngOnInit() {
-      console.log("moo on init");
+      console.log("firebaseTest on init");
+
+      // to check if we have permission
+      this.push.hasPermission().then((res: any) => {
+        if (res.isEnabled) {
+          alert('We have permission to send push notifications');
+        } else {
+          alert('We do not have permission to send push notifications');
+        }
+      });
+
+      // to initialize push notifications
+      // const options: PushOptions = {
+      const options: any = {
+         android: {
+           alert: 'true',
+           badge: true,
+           sound: 'true'
+         },
+         ios: {
+             alert: 'true',
+             badge: true,
+             sound: 'true'
+         },
+         windows: {},
+         browser: {
+             pushServiceURL: 'http://push.api.phonegap.com/v1/push'
+         }
+      };
+
+      const pushObject: PushObject = this.push.init(options);
+
+
+      pushObject.on('notification').subscribe((notification: any) => alert('Received a notification' + notification));
+
+      pushObject.on('registration').subscribe((registration: any) => alert('Device registered' + registration));
+
+      pushObject.on('error').subscribe(error => console.error('Error with Push plugin', error));
 
       this.unsubscribeOnAuthStateChanged = firebase.auth().onAuthStateChanged(user => {
         if (user) {

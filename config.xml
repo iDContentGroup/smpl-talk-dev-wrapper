@@ -86,4 +86,7 @@
     <plugin name="com.synconset.imagepicker" spec="~2.1.8">
         <variable name="PHOTO_LIBRARY_USAGE_DESCRIPTION" value="Upload images to Smpl Talk" />
     </plugin>
+    <plugin name="phonegap-plugin-push" spec="^2.1.3">
+        <variable name="SENDER_ID" value="599715636396" />
+    </plugin>
 </widget>

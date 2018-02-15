@@ -118,7 +118,7 @@ export class HomePage {
 
     getImageFromCamera() {
       const options: CameraOptions = {
-        quality: 90,
+        quality: 50,//50 is default
         destinationType: this.camera.DestinationType.DATA_URL,
         // destinationType: this.camera.DestinationType.FILE_URI,
         encodingType: this.camera.EncodingType.JPEG,
