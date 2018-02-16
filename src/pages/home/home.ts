@@ -99,6 +99,7 @@ export class HomePage {
           // Clear out the name in localStorage for subsequent opens.
           this.browser.executeScript({ code: "localStorage.setItem('showCamera', '');" });
           this.browser.executeScript({ code: "localStorage.setItem('closeNativeApp', '');" });
+          this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
           
           this.showCamera = false;
 
