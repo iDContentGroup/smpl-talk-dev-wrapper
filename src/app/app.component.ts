@@ -81,7 +81,7 @@ export class MyApp {
              pushServiceURL: 'http://push.api.phonegap.com/v1/push'
          }
       };
-
+      
       const pushObject: PushObject = this.push.init(options);
 
       pushObject.on('notification').subscribe((notification: any) => {
@@ -89,9 +89,9 @@ export class MyApp {
         // foreground
 
         if (notification.additionalData.foreground) {
-
+          
         } else {
-
+          
         }
 
         //collapse_key  string  (optional)
@@ -102,10 +102,12 @@ export class MyApp {
 
       pushObject.on('registration').subscribe((registration: any) => {
         alert('Device registered' + JSON.stringify(registration));
+        // TODO: Save deviceID to user's account
       });
 
       pushObject.on('error').subscribe(error => {
         alert('Error with Push plugin' + JSON.stringify(error));
+        // TODO: log error
       });
   }
 

@@ -42,6 +42,7 @@
         <splash density="port-xxxhdpi" src="resources/android/splash/drawable-port-xxxhdpi-screen.png" />
     </platform>
     <platform name="ios">
+        <resource-file src="GoogleService-Info.plist" target="GoogleService-Info.plist" />
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
         <icon height="57" src="resources/ios/icon/icon.png" width="57" />
@@ -91,5 +92,5 @@
     </plugin>
     <plugin name="cordova-plugin-inappbrowser" spec="^2.0.2" />
     <engine name="android" spec="~6.4.0" />
+    <engine name="ios" spec="~4.5.4" />
 </widget>
-

@@ -72,6 +72,18 @@ export class HomePage {
 
         this.browser.executeScript({code: 'window.my.activateAppMode.publicFunc();'});
 
+        this.browser.on("loadstart").subscribe(event => {
+          this.browser.executeScript({
+            code: "localStorage.getItem( 'hideApp' )"
+          }, values => {
+            var hideWebWrapper = values[0];
+
+            if (hideWebWrapper) {
+              this.browser.hide();
+            }
+          });
+        });
+
         this.browser.on("loadstop").subscribe(event => {
           // console.log(event);
           this.loadstopEvents.push(event);
@@ -89,27 +101,41 @@ export class HomePage {
           this.showCamera = false;
 
           // Start an interval
-          // var loop = setInterval(() => {
-          //   // Execute JavaScript to check for the existence of a showCamera in the
-          //   // child browser's localStorage.
-          //   this.browser.executeScript({
-          //     code: "localStorage.getItem( 'showCamera' )"
-          //   }, values => {
-          //     var showCamera = values[ 0 ];
+          var loop = setInterval(() => {
+            this.browser.executeScript({
+              code: "localStorage.getItem( 'hideApp' )"
+            }, values => {
+              var hideWebWrapper = values[0];
 
-          //     // If a showCamera was set, clear the interval and close the InAppBrowser.
-          //     if ( showCamera ) {
-          //         // clearInterval( loop );
-          //         // TODO: i can't edit the image because onClick expects another upload :3
-          //         // oops
-          //         this.browser.executeScript({ code: "localStorage.setItem( 'showCamera', '' );" });
+              if (hideWebWrapper) {
+                this.browser.executeScript({ code: "localStorage.setItem( 'hideApp', '' );" });
 
-          //         this.browser.hide();
-          //         this.showCamera = true;
-          //         this.ref.detectChanges();
-          //     }
-          //   });
-          // });
+                this.browser.hide();
+
+                this.ref.detectChanges();
+              }
+            });
+
+            // Execute JavaScript to check for the existence of a showCamera in the
+            // child browser's localStorage.
+            this.browser.executeScript({
+              code: "localStorage.getItem( 'showCamera' )"
+            }, values => {
+              var showCamera = values[ 0 ];
+
+              // If a showCamera was set, clear the interval and close the InAppBrowser.
+              if ( showCamera ) {
+                  // clearInterval( loop );
+                  // TODO: i can't edit the image because onClick expects another upload :3
+                  // oops
+                  this.browser.executeScript({ code: "localStorage.setItem( 'showCamera', '' );" });
+
+                  this.browser.hide();
+                  this.showCamera = true;
+                  this.ref.detectChanges();
+              }
+            });
+          });
         });
       } else {
         this.browser && this.browser.show && this.browser.show();
