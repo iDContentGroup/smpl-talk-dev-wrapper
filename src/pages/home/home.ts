@@ -71,6 +71,7 @@ export class HomePage {
         this.browser = this.iab.create(url, target, this.options);
 
         this.browser.executeScript({code: 'window.my.activateAppMode.publicFunc();'});
+        this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
 
         this.browser.on("loadstart").subscribe(event => {
           this.browser.executeScript({
@@ -96,19 +97,20 @@ export class HomePage {
           // });
 
           // Clear out the name in localStorage for subsequent opens.
-          this.browser.executeScript({ code: "localStorage.setItem( 'showCamera', '' );" });
+          this.browser.executeScript({ code: "localStorage.setItem('showCamera', '');" });
+          this.browser.executeScript({ code: "localStorage.setItem('closeNativeApp', '');" });
           
           this.showCamera = false;
 
           // Start an interval
           var loop = setInterval(() => {
             this.browser.executeScript({
-              code: "localStorage.getItem( 'hideApp' )"
+              code: "localStorage.getItem('closeNativeApp')"
             }, values => {
               var hideWebWrapper = values[0];
 
               if (hideWebWrapper) {
-                this.browser.executeScript({ code: "localStorage.setItem( 'hideApp', '' );" });
+                this.browser.executeScript({ code: "localStorage.setItem( 'closeNativeApp', '' );" });
 
                 this.browser.hide();
 
@@ -116,25 +118,25 @@ export class HomePage {
               }
             });
 
-            // Execute JavaScript to check for the existence of a showCamera in the
-            // child browser's localStorage.
-            this.browser.executeScript({
-              code: "localStorage.getItem( 'showCamera' )"
-            }, values => {
-              var showCamera = values[ 0 ];
+            // // Execute JavaScript to check for the existence of a showCamera in the
+            // // child browser's localStorage.
+            // this.browser.executeScript({
+            //   code: "localStorage.getItem( 'showCamera' )"
+            // }, values => {
+            //   var showCamera = values[ 0 ];
 
-              // If a showCamera was set, clear the interval and close the InAppBrowser.
-              if ( showCamera ) {
-                  // clearInterval( loop );
-                  // TODO: i can't edit the image because onClick expects another upload :3
-                  // oops
-                  this.browser.executeScript({ code: "localStorage.setItem( 'showCamera', '' );" });
+            //   // If a showCamera was set, clear the interval and close the InAppBrowser.
+            //   if ( showCamera ) {
+            //       // clearInterval( loop );
+            //       // TODO: i can't edit the image because onClick expects another upload :3
+            //       // oops
+            //       this.browser.executeScript({ code: "localStorage.setItem( 'showCamera', '' );" });
 
-                  this.browser.hide();
-                  this.showCamera = true;
-                  this.ref.detectChanges();
-              }
-            });
+            //       this.browser.hide();
+            //       this.showCamera = true;
+            //       this.ref.detectChanges();
+            //   }
+            // });
           });
         });
       } else {
