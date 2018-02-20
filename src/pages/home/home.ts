@@ -73,24 +73,26 @@ export class HomePage {
         this.browser = this.iab.create(url, target, this.options);
 
         this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
-        this.browser.executeScript({code: 'window.my.activateAppMode.publicFunc();'});
-
-        this.browserLoopFunction(100);
+        // this.browser.executeScript({code: 'window.my.activateAppMode.publicFunc();'});
 
         this.browser.on && this.browser.on.subscribe && this.browser.on("loadstart").subscribe(event => {
+          clearTimeout(this.browserLoopSetTimeout);
         });
 
-        // this.browser.on("loadstop").subscribe(event => {
-        //   this.loadstopEvents.push(event);
-        //   this.browser.show();
+        this.browser.on("loadstop").subscribe(event => {
+          this.loadstopEvents.push(event);
+          // this.browser.show();
+          clearTimeout(this.browserLoopSetTimeout);
+          this.browserLoopSetTimeout = this.browserLoopFunction(100);
 
-        //   this.browser.executeScript({code: 'window.my.activateAppMode.publicFunc();'});
+          // this.browser.executeScript({code: 'window.my.activateAppMode.publicFunc();'});
 
-        //   // Clear out the name in localStorage for subsequent opens.
-        //   // this.browser.executeScript({ code: "localStorage.setItem('showCamera', '');" });
-        //   this.browser.executeScript({ code: "localStorage.setItem('closeNativeApp', '');" });
-        //   this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
-        // });
+          // Clear out the name in localStorage for subsequent opens.
+          // this.browser.executeScript({ code: "localStorage.setItem('showCamera', '');" });
+          // this.browser.executeScript({ code: "localStorage.setItem('closeNativeApp', '');" });
+          // this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
+
+        });
       } else {
         this.browser && this.browser.show && this.browser.show();
       }
