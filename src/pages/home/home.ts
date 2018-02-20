@@ -88,16 +88,19 @@ export class HomePage {
             this.browser.executeScript({ code: 'window.my.activateAppMode.publicFunc();'});
 
             this.browser.executeScript({
-          code: "localStorage.setItem('nativeAppTime', '" + 202 + "'');"
-        }, values => {
-          var hideWebWrapper = values[0];
+              code: "localStorage.setItem('nativeAppTime', '" + 101 + "'');"
+            });
+            this.browser.executeScript({
+              code: "localStorage.setItem('nativeAppTime', '" + 202 + "'');"
+            }, values => {
+              var hideWebWrapper = values[0];
 
-          if (hideWebWrapper) {
-            this.browser.executeScript({ code: "localStorage.setItem('hideWebApp', '');" });
-            this.browser.hide();
-            this.ref.detectChanges();
-          }
-        });
+              if (hideWebWrapper) {
+                this.browser.executeScript({ code: "localStorage.setItem('hideWebApp', '');" });
+                this.browser.hide();
+                this.ref.detectChanges();
+              }
+            });
 
             this.loadstopEvents.push(event);
             // this.browser.show();
