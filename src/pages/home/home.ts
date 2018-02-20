@@ -77,7 +77,7 @@ export class HomePage {
 
         this.browserLoopFunction(100);
 
-        this.browser.on("loadstart").subscribe(event => {
+        this.browser.on && this.browser.on.subscribe && this.browser.on("loadstart").subscribe(event => {
         });
 
         // this.browser.on("loadstop").subscribe(event => {

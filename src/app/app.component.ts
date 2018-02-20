@@ -21,8 +21,11 @@ export class MyApp {
 
   constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, private push: Push) {
     this.initializeApp();
-
-    this.setupPush();
+    if (this.platform.is('cordova')) {
+      this.setupPush();
+    } else {
+      
+    }
 
     // used for an example of ngFor and navigation
     this.pages = [
