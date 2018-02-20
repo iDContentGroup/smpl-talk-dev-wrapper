@@ -9,6 +9,9 @@ import { FirebaseTestPage } from '../pages/firebaseTest/firebaseTest';
 
 import { Push, PushObject, PushOptions } from '@ionic-native/push';
 
+
+import firebase from 'firebase';
+
 @Component({
   templateUrl: 'app.html'
 })
@@ -21,6 +24,7 @@ export class MyApp {
 
 
   unsubscribeOnAuthStateChanged: any;
+  user: any;
 
   constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, private push: Push) {
     this.initializeApp();
