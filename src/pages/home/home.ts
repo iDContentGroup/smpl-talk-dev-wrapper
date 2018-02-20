@@ -120,6 +120,7 @@ export class HomePage {
             // this.browser.hide();
             // this.ref.detectChanges();
             alert(firebase_id_token);
+            // please update..
           }
         });
       }
