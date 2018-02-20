@@ -19,6 +19,9 @@ export class MyApp {
 
   pages: Array<{title: string, component: any}>;
 
+
+  unsubscribeOnAuthStateChanged: any;
+
   constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, private push: Push) {
     this.initializeApp();
     if (this.platform.is('cordova')) {

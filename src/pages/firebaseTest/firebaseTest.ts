@@ -21,7 +21,6 @@ export class FirebaseTestPage {
 
     doDebug: boolean;
 
-    unsubscribeOnAuthStateChanged: any;
     user: any;
 
     messageLogs: string[];
