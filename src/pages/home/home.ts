@@ -75,26 +75,33 @@ export class HomePage {
         // this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
         // this.browser.executeScript({code: 'window.my.activateAppMode.publicFunc();'});
 
-        this.browser.on && this.browser.on.subscribe && this.browser.on("loadstart").subscribe(event => {
-          clearTimeout(this.browserLoopSetTimeout);
-        });
+        if (this.browser.on && this.browser.on.subscribe) {
+          this.browser.on("loadstart").subscribe(event => {
+            this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
+            this.browser.executeScript({code: 'window.my.activateAppMode.publicFunc();'});
 
-        this.browser.on("loadstop").subscribe(event => {
-          this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
+            clearTimeout(this.browserLoopSetTimeout);
+          });
 
-          this.loadstopEvents.push(event);
-          // this.browser.show();
-          clearTimeout(this.browserLoopSetTimeout);
-          this.browserLoopSetTimeout = this.browserLoopFunction(100);
+          this.browser.on("loadstop").subscribe(event => {
+            this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
+            this.browser.executeScript({code: 'window.my.activateAppMode.publicFunc();'});
+            
+            this.loadstopEvents.push(event);
+            // this.browser.show();
+            clearTimeout(this.browserLoopSetTimeout);
+            this.browserLoopSetTimeout = this.browserLoopFunction(100);
 
-          // this.browser.executeScript({code: 'window.my.activateAppMode.publicFunc();'});
+            // this.browser.executeScript({code: 'window.my.activateAppMode.publicFunc();'});
 
-          // Clear out the name in localStorage for subsequent opens.
-          // this.browser.executeScript({ code: "localStorage.setItem('showCamera', '');" });
-          // this.browser.executeScript({ code: "localStorage.setItem('closeNativeApp', '');" });
-          // this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
+            // Clear out the name in localStorage for subsequent opens.
+            // this.browser.executeScript({ code: "localStorage.setItem('showCamera', '');" });
+            // this.browser.executeScript({ code: "localStorage.setItem('closeNativeApp', '');" });
+            // this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
 
-        });
+          });
+        }
+        
       } else {
         this.browser && this.browser.show && this.browser.show();
       }
