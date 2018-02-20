@@ -24,7 +24,7 @@ export class MyApp {
     if (this.platform.is('cordova')) {
       this.setupPush();
     } else {
-      
+
     }
 
     // used for an example of ngFor and navigation
@@ -33,6 +33,16 @@ export class MyApp {
       { title: 'List', component: ListPage },
       { title: 'Firebase Test', component: FirebaseTestPage }
     ];
+  }
+
+  ngOnInit() {
+    this.unsubscribeOnAuthStateChanged = firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+          this.user = user;
+        } else {
+          this.user = null;
+        }
+      });
   }
 
   initializeApp() {

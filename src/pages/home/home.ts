@@ -72,7 +72,7 @@ export class HomePage {
 
         this.browser = this.iab.create(url, target, this.options);
 
-        this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
+        // this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
         // this.browser.executeScript({code: 'window.my.activateAppMode.publicFunc();'});
 
         this.browser.on && this.browser.on.subscribe && this.browser.on("loadstart").subscribe(event => {
@@ -80,6 +80,8 @@ export class HomePage {
         });
 
         this.browser.on("loadstop").subscribe(event => {
+          this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
+
           this.loadstopEvents.push(event);
           // this.browser.show();
           clearTimeout(this.browserLoopSetTimeout);

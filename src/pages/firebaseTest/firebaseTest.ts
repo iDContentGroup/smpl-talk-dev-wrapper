@@ -35,14 +35,6 @@ export class FirebaseTestPage {
 
     ngOnInit() {
       console.log("firebaseTest on init");
-
-      this.unsubscribeOnAuthStateChanged = firebase.auth().onAuthStateChanged(user => {
-        if (user) {
-          this.user = user;
-        } else {
-          this.user = null;
-        }
-      });
     }
 
     firebaseSignInEmailAndPassword() {
