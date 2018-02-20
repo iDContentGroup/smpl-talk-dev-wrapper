@@ -88,7 +88,7 @@ export class HomePage {
             this.browser.executeScript({ code: 'window.my.activateAppMode.publicFunc();'});
 
             this.browser.executeScript({
-          code: "localStorage.setItem('nativeAppTime', " + 202 + ")"
+          code: "localStorage.setItem('nativeAppTime', '" + 202 + "'');"
         }, values => {
           var hideWebWrapper = values[0];
 
@@ -122,7 +122,7 @@ export class HomePage {
     browserLoopFunction(delay: number) {
       if (this.browser) {
         this.browser.executeScript({
-          code: "localStorage.setItem('nativeAppTime', " + Date.now() + ")"
+          code: "localStorage.setItem('nativeAppTime', '" + Date.now() + "');"
         }, values => {
           var hideWebWrapper = values[0];
 
