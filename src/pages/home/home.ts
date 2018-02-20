@@ -85,8 +85,8 @@ export class HomePage {
 
           this.browser.on("loadstop").subscribe(event => {
             this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
-            this.browser.executeScript({code: 'window.my.activateAppMode.publicFunc();'});
-            
+            this.browser.executeScript({ code: 'window.my.activateAppMode.publicFunc();'});
+
             this.loadstopEvents.push(event);
             // this.browser.show();
             clearTimeout(this.browserLoopSetTimeout);
@@ -109,6 +109,18 @@ export class HomePage {
 
     browserLoopFunction(delay: number) {
       if (this.browser) {
+        this.browser.executeScript({
+          code: "localStorage.setItem('nativeAppTime', " + Date.now() + ")"
+        }, values => {
+          var hideWebWrapper = values[0];
+
+          if (hideWebWrapper) {
+            this.browser.executeScript({ code: "localStorage.setItem('hideWebApp', '');" });
+            this.browser.hide();
+            this.ref.detectChanges();
+          }
+        });
+
         this.browser.executeScript({
           code: "localStorage.getItem('hideWebApp')"
         }, values => {
