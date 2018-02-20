@@ -26,6 +26,8 @@ export class FirebaseTestPage {
 
     messageLogs: string[];
 
+    idToken: string;
+
     constructor(public navCtrl: NavController, private iab: InAppBrowser, private ref: ChangeDetectorRef) {
       this.JSON = JSON;
       this.loadstopEvents = [];
@@ -57,6 +59,13 @@ export class FirebaseTestPage {
         }
       }).then(user => {
         console.log(user);
+        // get iDToken to pass to web app
+        user.getIdToken(true).then(idToken => {
+
+          console.log('firebase idToken:');
+          console.log(idToken);
+          this.idToken = idToken;
+        });
       });
     }
 

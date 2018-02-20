@@ -29,6 +29,8 @@ export class HomePage {
     img: any;
     imgError: any;
 
+    browserLoopSetTimeout: any;
+
     constructor(public navCtrl: NavController, private iab: InAppBrowser, private camera: Camera, private imagePicker: ImagePicker, private ref: ChangeDetectorRef) {
       this.JSON = JSON;
       this.loadstopEvents = [];
@@ -38,7 +40,7 @@ export class HomePage {
       this.doDebug = !this.doDebug;
     }
 
-  	moo() {
+  	startBrowser() {
       if (!this.browser) {
         const url = 'https://smpl-talk-develop.firebaseapp.com/#/';
         const target = '_blank';
@@ -70,80 +72,87 @@ export class HomePage {
 
         this.browser = this.iab.create(url, target, this.options);
 
-        this.browser.executeScript({code: 'window.my.activateAppMode.publicFunc();'});
         this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
+        this.browser.executeScript({code: 'window.my.activateAppMode.publicFunc();'});
+
+        this.browserLoopFunction(100);
 
         this.browser.on("loadstart").subscribe(event => {
-          this.browser.executeScript({
-            code: "localStorage.getItem( 'hideApp' )"
-          }, values => {
-            var hideWebWrapper = values[0];
-
-            if (hideWebWrapper) {
-              this.browser.hide();
-            }
-          });
         });
 
-        this.browser.on("loadstop").subscribe(event => {
-          // console.log(event);
-          this.loadstopEvents.push(event);
-          this.browser.show();
+        // this.browser.on("loadstop").subscribe(event => {
+        //   this.loadstopEvents.push(event);
+        //   this.browser.show();
 
-          this.browser.executeScript({code: 'window.my.activateAppMode.publicFunc();'});
+        //   this.browser.executeScript({code: 'window.my.activateAppMode.publicFunc();'});
 
-          // this.browser.executeScript({
-          //   code: "alert('loadstop'); alert(" + event + ")"
-          // });
-
-          // Clear out the name in localStorage for subsequent opens.
-          this.browser.executeScript({ code: "localStorage.setItem('showCamera', '');" });
-          this.browser.executeScript({ code: "localStorage.setItem('closeNativeApp', '');" });
-          this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
-          
-          this.showCamera = false;
-
-          // Start an interval
-          var loop = setInterval(() => {
-            this.browser.executeScript({
-              code: "localStorage.getItem('closeNativeApp')"
-            }, values => {
-              var hideWebWrapper = values[0];
-
-              if (hideWebWrapper) {
-                this.browser.executeScript({ code: "localStorage.setItem( 'closeNativeApp', '' );" });
-
-                this.browser.hide();
-
-                this.ref.detectChanges();
-              }
-            });
-
-            // // Execute JavaScript to check for the existence of a showCamera in the
-            // // child browser's localStorage.
-            // this.browser.executeScript({
-            //   code: "localStorage.getItem( 'showCamera' )"
-            // }, values => {
-            //   var showCamera = values[ 0 ];
-
-            //   // If a showCamera was set, clear the interval and close the InAppBrowser.
-            //   if ( showCamera ) {
-            //       // clearInterval( loop );
-            //       // TODO: i can't edit the image because onClick expects another upload :3
-            //       // oops
-            //       this.browser.executeScript({ code: "localStorage.setItem( 'showCamera', '' );" });
-
-            //       this.browser.hide();
-            //       this.showCamera = true;
-            //       this.ref.detectChanges();
-            //   }
-            // });
-          });
-        });
+        //   // Clear out the name in localStorage for subsequent opens.
+        //   // this.browser.executeScript({ code: "localStorage.setItem('showCamera', '');" });
+        //   this.browser.executeScript({ code: "localStorage.setItem('closeNativeApp', '');" });
+        //   this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
+        // });
       } else {
         this.browser && this.browser.show && this.browser.show();
       }
   	}
+
+    browserLoopFunction(delay: number) {
+      if (this.browser) {
+        this.browser.executeScript({
+          code: "localStorage.getItem('hideWebApp')"
+        }, values => {
+          var hideWebWrapper = values[0];
+
+          if (hideWebWrapper) {
+            this.browser.executeScript({ code: "localStorage.setItem('hideWebApp', '');" });
+            this.browser.hide();
+            this.ref.detectChanges();
+          }
+        });
+
+        this.browser.executeScript({
+          code: "localStorage.getItem('firebase_id_token_output')"
+        }, values => {
+          var firebase_id_token = values[0];
+
+          if (firebase_id_token) {
+            this.browser.executeScript({ code: "localStorage.setItem('firebase_id_token_output', '');" });
+            // this.browser.hide();
+            // this.ref.detectChanges();
+            alert(firebase_id_token);
+          }
+        });
+      }
+
+      this.browserLoopSetTimeout = setTimeout(this.browserLoopFunction, delay);
+    }
+
+
+
+
+
+
+    // this.showCamera = false;
+
+    // // Execute JavaScript to check for the existence of a showCamera in the
+    // // child browser's localStorage.
+    // this.browser.executeScript({
+    //   code: "localStorage.getItem( 'showCamera' )"
+    // }, values => {
+    //   var showCamera = values[ 0 ];
+
+    //   // If a showCamera was set, clear the interval and close the InAppBrowser.
+    //   if ( showCamera ) {
+    //       // clearInterval( loop );
+    //       // TODO: i can't edit the image because onClick expects another upload :3
+    //       // oops
+    //       this.browser.executeScript({ code: "localStorage.setItem( 'showCamera', '' );" });
+
+    //       this.browser.hide();
+    //       this.showCamera = true;
+    //       this.ref.detectChanges();
+    //   }
+    // });
 
     getImageFromCamera() {
       const options: CameraOptions = {
@@ -171,7 +180,7 @@ export class HomePage {
       });
     }
 
-     getImageFromGallery(): void {
+    getImageFromGallery(): void {
       let options = {
         maximumImagesCount: 1,
         quality: 100,

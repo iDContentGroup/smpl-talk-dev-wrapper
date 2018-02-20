@@ -8,47 +8,13 @@
 </ion-header>
 
 <ion-content padding>
-  <!-- <h3>Ionic Menu Starter</h3>
 
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will show you the way.
-  </p>
-
-  <button ion-button secondary menuToggle>Toggle Menu</button> -->
-  <p>test: 36 push</p>
+  <p>test: 37 push</p>
   <p>{{ options }}</p>
-  <p> {{ cow }}</p>
-  <button ion-button secondary (click)="moo()">open smpl talk using inAppBrowser</button>
-  <button ion-button secondary (click)="iframeTest()">toggle smpl talk using iframe</button>
+  <button ion-button secondary (click)="startBrowser()">open smpl talk using inAppBrowser</button>
+
   <button ion-button secondary (click)="browser.show()">show browser</button>
   <button ion-button secondary (click)="toggleDebug()">toggleDebug status: {{!doDebug ? 'nope' : 'yup'}}</button>
-
-  <p>Show camera: {{ showCamera ? 'yup' : 'nope' }}</p>
-
-  <div>
-    <p>Image</p>
-    <p *ngIf="!img">(none)</p>
-    <img *ngIf="img" [src]="img" />
-    <p>Path: {{ img }}</p>
-    <ng-container *ngIf="imgError">
-      <p>{{ JSON.stringify(imgError) }}</p>
-      <br>
-      <p> {{ imgError }}</p>
-    </ng-container>
-  </div> 
-  <button ion-button secondary (click)="getImageFromCamera()">Camera time!</button>
-  <!-- <button ion-button secondary (click)="getImageFromGallery()">Gallery time!</button> -->
-
-  <div *ngIf="showIFrame" style="width: 100%; height: 100%">
-    <iframe style="width: 100%; height: 100%; border: 0 !important" src="https://smpltalk.com/#/">
-    </iframe>
-  </div>
-
-  <div *ngFor="let event of loadstopEvents">
-    <p>{{ JSON.stringify(event) }}</p>
-    <br>
-    <p> {{ event }}</p>
-  </div>
 
   <p *ngIf="browser" [style.background]="'grey'">{{ JSON.stringify(browser) }}</p>
 
