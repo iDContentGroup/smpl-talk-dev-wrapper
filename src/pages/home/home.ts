@@ -422,51 +422,51 @@ export class HomePage {
     //   }
     // });
 
-    getImageFromCamera() {
-      const options: CameraOptions = {
-        quality: 50,//50 is default
-        destinationType: this.camera.DestinationType.DATA_URL,
-        // destinationType: this.camera.DestinationType.FILE_URI,
-        encodingType: this.camera.EncodingType.JPEG,
-        sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
-        allowEdit: true
-      }
+    // getImageFromCamera() {
+    //   const options: CameraOptions = {
+    //     quality: 50,//50 is default
+    //     destinationType: this.camera.DestinationType.DATA_URL,
+    //     // destinationType: this.camera.DestinationType.FILE_URI,
+    //     encodingType: this.camera.EncodingType.JPEG,
+    //     sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
+    //     allowEdit: true
+    //   }
 
-      this.camera.getPicture(options).then(imageData => {
-       // imageData is either a base64 encoded string or a file URI
-       // If it's base64:
-       let base64Image = 'data:image/jpeg;base64,' + imageData;
-       // let base64Image = imageData;
-       this.img = base64Image;
-       if (this.browser) {
-         this.browser.show();
-         this.browser.executeScript({code: 'window.my.namespace.publicFunc("' + this.img + '");'});
-       }
-      }, (err) => {
-       // Handle error
-       this.imgError = err;
-      });
-    }
+    //   this.camera.getPicture(options).then(imageData => {
+    //    // imageData is either a base64 encoded string or a file URI
+    //    // If it's base64:
+    //    let base64Image = 'data:image/jpeg;base64,' + imageData;
+    //    // let base64Image = imageData;
+    //    this.img = base64Image;
+    //    if (this.browser) {
+    //      this.browser.show();
+    //      this.browser.executeScript({code: 'window.my.namespace.publicFunc("' + this.img + '");'});
+    //    }
+    //   }, (err) => {
+    //    // Handle error
+    //    this.imgError = err;
+    //   });
+    // }
 
-    getImageFromGallery(): void {
-      let options = {
-        maximumImagesCount: 1,
-        quality: 100,
-        width: 500,
-        height: 500,
-        outputType: 1
-      }
+    // getImageFromGallery(): void {
+    //   let options = {
+    //     maximumImagesCount: 1,
+    //     quality: 100,
+    //     width: 500,
+    //     height: 500,
+    //     outputType: 1
+    //   }
 
-      this.imagePicker.getPictures(options).then(file_uris => {
-        // Gettin base64
-        // source: https://forum.ionicframework.com/t/image-picker-give-base64-of-image-or-not/93571/8
-        this.img = 'data:image/jpeg;base64,' + file_uris[0];
+    //   this.imagePicker.getPictures(options).then(file_uris => {
+    //     // Gettin base64
+    //     // source: https://forum.ionicframework.com/t/image-picker-give-base64-of-image-or-not/93571/8
+    //     this.img = 'data:image/jpeg;base64,' + file_uris[0];
 
-        // for (var i = 0; i < file_uris.length; i++) {
-        //     // console.log('Image URI: ' + file_uris[i]);
-        // }
-      }, err => {
-        this.imgError = err;
-      });
-    }
+    //     // for (var i = 0; i < file_uris.length; i++) {
+    //     //     // console.log('Image URI: ' + file_uris[i]);
+    //     // }
+    //   }, err => {
+    //     this.imgError = err;
+    //   });
+    // }
 }
