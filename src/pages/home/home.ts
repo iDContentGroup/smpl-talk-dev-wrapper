@@ -1,7 +1,7 @@
 import { Component, ChangeDetectorRef } from '@angular/core';
 // import { Component, Input, Output, EventEmitter, ElementRef, ViewChild,  } from '@angular/core';
 
-import { NavController } from 'ionic-angular';
+import { NavController, Platform } from 'ionic-angular';
 
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { Camera, CameraOptions } from '@ionic-native/camera';
@@ -31,7 +31,7 @@ export class HomePage {
 
     browserLoopSetTimeout: any;
 
-    constructor(public navCtrl: NavController, private iab: InAppBrowser, private camera: Camera, private imagePicker: ImagePicker, private ref: ChangeDetectorRef) {
+    constructor(public platform: Platform, public navCtrl: NavController, private iab: InAppBrowser, private camera: Camera, private imagePicker: ImagePicker, private ref: ChangeDetectorRef) {
       this.JSON = JSON;
       this.loadstopEvents = [];
   	}
@@ -69,13 +69,9 @@ export class HomePage {
            this.options += ",";
           }
         }
-
-        this.browser = this.iab.create(url, target, this.options);
-
-        // this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
-        // this.browser.executeScript({code: 'window.my.activateAppMode.publicFunc();'});
-
-        if (this.browser.on && this.browser.on.subscribe) {
+        if (this.platform.is('cordova')) {
+          this.browser = this.iab.create(url, target, this.options);
+          
           this.browser.on("loadstart").subscribe(event => {
             this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
             this.browser.executeScript({code: 'window.my.activateAppMode.publicFunc();'});
