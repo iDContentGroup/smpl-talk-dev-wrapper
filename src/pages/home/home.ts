@@ -469,8 +469,4 @@ export class HomePage {
         this.imgError = err;
       });
     }
-
-    iframeTest() {
-      this.showIFrame = !this.showIFrame;
-    }
 }
