@@ -1,11 +1,16 @@
 import { Component, ChangeDetectorRef } from '@angular/core';
 // import { Component, Input, Output, EventEmitter, ElementRef, ViewChild,  } from '@angular/core';
+import { Http, Response, Headers, RequestOptions } from '@angular/http';
+
+import { Observable } from 'rxjs/Observable';
 
 import { NavController, Platform } from 'ionic-angular';
 
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import { ImagePicker } from '@ionic-native/image-picker';
+
+import firebase from 'firebase';
 
 @Component({
   selector: 'page-home',
@@ -31,10 +36,30 @@ export class HomePage {
 
     browserLoopSetTimeout: any;
 
-    constructor(public platform: Platform, public navCtrl: NavController, private iab: InAppBrowser, private camera: Camera, private imagePicker: ImagePicker, private ref: ChangeDetectorRef) {
+    loggingIn: boolean;
+    unsubscribeOnAuthStateChanged: any;
+    user: any;
+
+    constructor(public platform: Platform, public navCtrl: NavController, private iab: InAppBrowser, 
+      private camera: Camera, private imagePicker: ImagePicker, private ref: ChangeDetectorRef, 
+      private http: Http) {
       this.JSON = JSON;
+      this.http = http;
+
       this.loadstopEvents = [];
   	}
+
+    ngOnInit() {
+      this.unsubscribeOnAuthStateChanged = firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+          this.user = user;
+          alert(this.user.uid);
+        } else {
+          alert("logged out");
+          this.user = null;
+        }
+      });
+    }
 
     toggleDebug() {
       this.doDebug = !this.doDebug;
@@ -74,23 +99,20 @@ export class HomePage {
           
           this.browser.on("loadstart").subscribe(event => {
             this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
-            this.browser.executeScript({code: 'window.my.activateAppMode.publicFunc();'});
+            this.browser.executeScript({code: 'window.my.activateAppMode.publicActivateAppModeFunc();'});
 
             clearTimeout(this.browserLoopSetTimeout);
           });
 
           this.browser.on("loadstop").subscribe(event => {
             // this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
-            // this.browser.executeScript({ code: 'window.my.activateAppMode.publicFunc();'});
-            alert("laodstop");
+            // this.browser.executeScript({ code: 'window.my.activateAppMode.publicActivateAppModeFunc();'});
+
             this.browser.executeScript({
               code: "localStorage.setItem('nativeAppTime', 'moo');"
             });
             this.browser.executeScript({
-              code: "localStorage.setItem('nativeAppTime', '" + 101 + "');"
-            });
-            this.browser.executeScript({
-              code: "localStorage.setItem('nativeAppTime', '" + 202 + "');"
+              code: "localStorage.setItem('nativeAppTime', '" + Date.now() + "');"
             }, values => {
               var hideWebWrapper = values[0];
 
@@ -123,18 +145,6 @@ export class HomePage {
 
     browserLoopFunction(delay: number) {
       if (this.browser) {
-        // this.browser.executeScript({
-        //   code: "localStorage.setItem('nativeAppTime', '" + Date.now() + "');"
-        // }, values => {
-        //   var hideWebWrapper = values[0];
-
-        //   if (hideWebWrapper) {
-        //     this.browser.executeScript({ code: "localStorage.setItem('hideWebApp', '');" });
-        //     this.browser.hide();
-        //     this.ref.detectChanges();
-        //   }
-        // });
-
         this.browser.executeScript({
           code: "localStorage.getItem('hideWebApp')"
         }, values => {
@@ -153,10 +163,46 @@ export class HomePage {
           var firebase_id_token = values[0];
 
           if (firebase_id_token) {
-            this.browser.executeScript({ code: "localStorage.setItem('firebase_id_token_output', '');" });
+            if (this.loggingIn) {
+              this.logUserOutOfBrowser();
+            } else {
+              this.loggingIn = true;
+
+              this.browser.executeScript({ code: "localStorage.setItem('firebase_id_token_output', '');" });
+              
+              alert(firebase_id_token);
+              
+              var exchangeIDTokenForCustTokenSubscription = this.exchangeIDTokenForCustToken(firebase_id_token).subscribe(data => {
+                this.signInWithCustomToken(data);
+                // localStorage.setItem("firebase_id_token", "");
+              }, error => {
+                alert("Error occurred when attempting to exchange firebase ID token for custom auth token.");
+                exchangeIDTokenForCustTokenSubscription.unsubscribe();
+                // localStorage.setItem("firebase_id_token", "");
+                this.loggingIn = false;
+              }, () => {
+                // console.log("Token exchange completed.");
+                exchangeIDTokenForCustTokenSubscription.unsubscribe();
+                // localStorage.setItem("firebase_id_token", "");
+              });
+
+              this.ref.detectChanges();
+            }
+            
+            // please update..
+          }
+        });
+
+        this.browser.executeScript({
+          code: "localStorage.getItem('logoutOfNativeApp')"
+        }, values => {
+          var shouldLogout = values[0];
+
+          if (shouldLogout) {
+            this.browser.executeScript({ code: "localStorage.setItem('logoutOfNativeApp', '');" });
             // this.browser.hide();
             // this.ref.detectChanges();
-            alert(firebase_id_token);
+            alert(shouldLogout);
             // please update..
           }
         });
@@ -165,10 +211,55 @@ export class HomePage {
       this.browserLoopSetTimeout = setTimeout(this.browserLoopFunction, delay);
     }
 
+    logUserOutOfBrowser() {
+      if (this.browser) {
+        this.browser.executeScript({ code: "localStorage.setItem('shouldLogout', 'moo');" });
+        this.browser.executeScript({ code: 'window.my.activateAppMode.publicShouldLogoutFunc();'});
+      }
+    }
 
+    exchangeIDTokenForCustToken(iDToken: any) {
+      var url = "https://us-central1-ourg-2c585.cloudfunctions.net/g41-app/exchangeIDTokenForCustToken";
+      let headers = new Headers();
 
+      headers.append('Authorization', 'Bearer ' + iDToken);
 
+      return this.http.get(url, {headers: headers}).map((res: Response) => res.text());
+    }
 
+    signInWithCustomToken(token: any) {
+      return firebase.auth().signInWithCustomToken(token).then(user => {
+        // console.log("User with user id: " + user.uid + " created/logged in.");
+        this.loggingIn = false;
+      }).catch(error => {
+        // Handle Errors here.
+        var errorMessage: string;
+
+        if (error.code) {
+          if (error.code === 'auth/custom-token-mismatch') {
+            errorMessage = "Token is for a different App";
+          } else if (error.code === 'auth/invalid-custom-token') {
+            errorMessage = "Token format is incorrect";
+          }
+        }
+
+        errorMessage = errorMessage || error.message || error;
+
+        // console.log(errorMessage);
+        this.loggingIn = false;
+        this.logUserOutOfBrowser();
+
+        alert(errorMessage);
+      });
+    }
+
+    firebaseSignOut() {
+      firebase.auth().signOut().then(() => {
+        // this.user = null;
+      }, error => {
+        console.log(error);
+      });
+    }
 
     // this.showCamera = false;
 

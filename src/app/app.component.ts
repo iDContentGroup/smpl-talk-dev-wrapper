@@ -44,12 +44,12 @@ export class MyApp {
 
   ngOnInit() {
     this.unsubscribeOnAuthStateChanged = firebase.auth().onAuthStateChanged(user => {
-        if (user) {
-          this.user = user;
-        } else {
-          this.user = null;
-        }
-      });
+      if (user) {
+        this.user = user;
+      } else {
+        this.user = null;
+      }
+    });
   }
 
   initializeApp() {
