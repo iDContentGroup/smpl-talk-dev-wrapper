@@ -19,6 +19,6 @@
   <p *ngIf="browser" [style.background]="'grey'">{{ JSON.stringify(browser) }}</p>
   <p>browserLoopActive: {{ browserLoopIsActive ? 'yup' : 'nope' }} | {{ browserLoopTimestamp }}</p>
   <p>{{ loggingIn ? 'logging in..' : 'not logging in'}}</p>
-  <p>{{user ? JSON.stringify(user) : 'no user found' }}</p>
+  <p>{{user ? (user.email + ' | ' + user.uid) : 'no user found' }}</p>
 
 </ion-content>

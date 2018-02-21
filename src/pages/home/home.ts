@@ -133,7 +133,9 @@ export class HomePage {
             // this.loadstopEvents.push(event);
             if (!this.browserLoopIsActive) {
               this.browserLoopIsActive = true;
-              this.browserLoopSetTimeout = this.browserLoopFunction(6000);  
+              this.browserLoopSetTimeout = setTimeout(() => {
+                this.browserLoopFunction(100);
+              }, 100); 
             }
             
           });
@@ -146,6 +148,7 @@ export class HomePage {
     browserLoopFunction(delay: number) {
       if (this.browser) {
         this.browserLoopTimestamp = Date.now();
+
         this.browser.executeScript({
           code: "localStorage.getItem('hideWebApp')"
         }, values => {
@@ -155,7 +158,7 @@ export class HomePage {
             if (hideWebWrapper) {
               this.browser.executeScript({ code: "localStorage.setItem('hideWebApp', '');" });
               this.browser.hide();
-              this.ref.detectChanges();
+              // this.ref.detectChanges();
             }
           });
         });
@@ -221,7 +224,9 @@ export class HomePage {
         });
       }
 
-      this.browserLoopSetTimeout = setTimeout(this.browserLoopFunction, delay);
+      this.browserLoopSetTimeout = setTimeout(() => {
+        this.browserLoopFunction(delay);
+      }, delay);
     }
 
     clearBrowserLoop() {
