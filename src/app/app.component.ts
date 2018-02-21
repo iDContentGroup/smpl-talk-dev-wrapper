@@ -7,9 +7,6 @@ import { HomePage } from '../pages/home/home';
 import { ListPage } from '../pages/list/list';
 import { FirebaseTestPage } from '../pages/firebaseTest/firebaseTest';
 
-import { Push, PushObject, PushOptions } from '@ionic-native/push';
-
-
 import firebase from 'firebase';
 
 @Component({
@@ -26,13 +23,8 @@ export class MyApp {
   unsubscribeOnAuthStateChanged: any;
   user: any;
 
-  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, private push: Push) {
+  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen) {
     this.initializeApp();
-    if (this.platform.is('cordova')) {
-      this.setupPush();
-    } else {
-
-    }
 
     // used for an example of ngFor and navigation
     this.pages = [
@@ -43,13 +35,6 @@ export class MyApp {
   }
 
   ngOnInit() {
-    this.unsubscribeOnAuthStateChanged = firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        this.user = user;
-      } else {
-        this.user = null;
-      }
-    });
   }
 
   initializeApp() {
@@ -59,76 +44,6 @@ export class MyApp {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
     });
-  }
-
-  setupPush() {
-    // source: https://www.youtube.com/watch?v=sUjQ3G17T80
-
-    // to check if we have permission
-      this.push.hasPermission().then((res: any) => {
-        if (res.isEnabled) {
-          alert('We have permission to send push notifications');
-        } else {
-          alert('We do not have permission to send push notifications');
-        }
-      });
-
-      // to initialize push notifications
-      // const options: PushOptions = {
-      const options: any = {
-         android: {
-           //senderID: XXXX
-           //icon: ?
-           //iconColor: ?
-           //vibrate: 'true',
-           //clearBadge: 'true',
-           //clearNotifications: 'true',
-           //forceShow: 'true',
-           //messageKey: '',
-           //titleKey: '',
-           alert: 'true',
-           badge: true,
-           sound: 'true'
-         },
-         ios: {
-             alert: 'true',
-             badge: true,
-             sound: 'true'
-             //clearBadge: 'true'
-         },
-         windows: {},
-         browser: {
-             pushServiceURL: 'http://push.api.phonegap.com/v1/push'
-         }
-      };
-      
-      const pushObject: PushObject = this.push.init(options);
-
-      pushObject.on('notification').subscribe((notification: any) => {
-        alert('Received a notification' + JSON.stringify(notification));
-        // foreground
-
-        if (notification.additionalData.foreground) {
-          
-        } else {
-          
-        }
-
-        //collapse_key  string  (optional)
-        //coldstart  boolean  (optional)
-        //from  string  (optional)
-        //notId
-      });
-
-      pushObject.on('registration').subscribe((registration: any) => {
-        alert('Device registered' + JSON.stringify(registration));
-        // TODO: Save deviceID to user's account
-      });
-
-      pushObject.on('error').subscribe(error => {
-        alert('Error with Push plugin' + JSON.stringify(error));
-        // TODO: log error
-      });
   }
 
   openPage(page) {

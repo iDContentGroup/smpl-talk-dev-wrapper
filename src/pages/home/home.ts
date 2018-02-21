@@ -11,6 +11,9 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import { ImagePicker } from '@ionic-native/image-picker';
 
+import { Push, PushObject, PushOptions } from '@ionic-native/push';
+
+
 import firebase from 'firebase';
 
 @Component({
@@ -19,21 +22,13 @@ import firebase from 'firebase';
 })
 export class HomePage {
     options: string;
-  	cow: string;
 
     loadstopEvents: any;
 
     JSON: any;
     browser: any;
 
-    showIFrame: boolean;
-
     doDebug: boolean;
-
-    showCamera: boolean;
-
-    img: any;
-    imgError: any;
 
     browserLoopSetTimeout: any;
     browserLoopIsActive: boolean;
@@ -43,9 +38,11 @@ export class HomePage {
     unsubscribeOnAuthStateChanged: any;
     user: any;
 
+    device: any;
+
     constructor(public platform: Platform, public navCtrl: NavController, private iab: InAppBrowser, 
       private camera: Camera, private imagePicker: ImagePicker, private ref: ChangeDetectorRef, 
-      private http: Http, private ngZone: NgZone) {
+      private http: Http, private ngZone: NgZone, private push: Push) {
       this.JSON = JSON;
       this.http = http;
 
@@ -53,16 +50,32 @@ export class HomePage {
   	}
 
     ngOnInit() {
+      if (this.platform.is('cordova')) {
+        this.setupPush();
+
+        this.platform.resume.subscribe(event => {
+          alert("resumed: " + Date.now());
+        });
+
+        this.platform.pause.subscribe(event => {
+          alert("paused:" + Date.now());
+        });
+      }
       
       this.unsubscribeOnAuthStateChanged = firebase.auth().onAuthStateChanged(user => {
         this.ngZone.run(() => {
           if (user) {
             this.user = user;
             alert('native logged in: ' + this.user.uid + " | " + this.user.email);
+
             // TODO: do some stuff with push notifications
           } else {
             alert("native logged out");
             this.user = null;
+          }
+
+          if (this.device) {
+            this.setDeviceUserPairing();
           }
           
           this.startBrowser();
@@ -297,6 +310,94 @@ export class HomePage {
         // console.log(error);
         alert(error);
       });
+    }
+
+    setupPush() {
+      // source: https://www.youtube.com/watch?v=sUjQ3G17T80
+
+      // to check if we have permission
+      this.push.hasPermission().then((res: any) => {
+        if (res.isEnabled) {
+          alert('We have permission to send push notifications');
+        } else {
+          alert('We do not have permission to send push notifications');
+        }
+      });
+
+      // to initialize push notifications
+      // const options: PushOptions = {
+      const options: any = {
+         android: {
+           //senderID: XXXX
+           //icon: ?
+           //iconColor: ?
+           //vibrate: 'true',
+           //clearBadge: 'true',
+           //clearNotifications: 'true',
+           //forceShow: 'true',
+           //messageKey: '',
+           //titleKey: '',
+           alert: 'true',
+           badge: true,
+           sound: 'true'
+         },
+         ios: {
+             alert: 'true',
+             badge: true,
+             sound: 'true'
+             //clearBadge: 'true'
+         },
+         windows: {},
+         browser: {
+            pushServiceURL: 'http://push.api.phonegap.com/v1/push'
+         }
+      };
+      
+      const pushObject: PushObject = this.push.init(options);
+
+      pushObject.on('notification').subscribe((notification: any) => {
+        this.ngZone.run(() => {
+          alert('Received a notification' + JSON.stringify(notification));
+          // foreground
+
+          if (notification.additionalData.foreground) {
+            
+          } else {
+            
+          }
+
+          //collapse_key  string  (optional)
+          //coldstart  boolean  (optional)
+          //from  string  (optional)
+          //notId
+        });
+      });
+
+      pushObject.on('registration').subscribe((registration: any) => {
+        this.ngZone.run(() => {
+          alert('Device registered' + JSON.stringify(registration));
+
+
+          // TODO: Save deviceID to user's account
+          this.device = 'moo';
+
+          if (this.user) {
+            // TODO: add device + user to firebase database
+            this.setDeviceUserPairing();
+          }
+        });
+      });
+
+      pushObject.on('error').subscribe(error => {
+        this.ngZone.run(() => {
+          alert('Error with Push plugin' + JSON.stringify(error));
+          // TODO: log error
+        });
+      });
+    }
+
+    setDeviceUserPairing() {
+      alert("pair device and user");
     }
 
     // this.showCamera = false;
