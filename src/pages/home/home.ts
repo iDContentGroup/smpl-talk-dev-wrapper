@@ -182,8 +182,6 @@ export class HomePage {
             if (this.loggingIn) {
               this.logUserOutOfBrowser();
             } else {
-              this.loggingIn = true;
-
               this.browser.executeScript({ code: "localStorage.setItem('firebase_id_token_output', '');" });
 
               // Parse the ID token.
@@ -193,6 +191,8 @@ export class HomePage {
                 // The current user is the same user that just logged in, so no need to reauth
                 alert("user was already logged in native");
               } else {
+                this.loggingIn = true;
+
                 var exchangeIDTokenForCustTokenSubscription = this.exchangeIDTokenForCustToken(firebase_id_token).subscribe(data => {
                   this.ngZone.run(() => {
                     this.signInWithCustomToken(data);
