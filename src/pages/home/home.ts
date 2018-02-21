@@ -82,7 +82,10 @@ export class HomePage {
           this.browser.on("loadstop").subscribe(event => {
             // this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
             // this.browser.executeScript({ code: 'window.my.activateAppMode.publicFunc();'});
-
+            alert("laodstop");
+            this.browser.executeScript({
+              code: "localStorage.setItem('nativeAppTime', 'moo');"
+            });
             this.browser.executeScript({
               code: "localStorage.setItem('nativeAppTime', '" + 101 + "');"
             });
