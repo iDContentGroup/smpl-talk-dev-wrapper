@@ -120,17 +120,17 @@ export class HomePage {
 
     browserLoopFunction(delay: number) {
       if (this.browser) {
-        this.browser.executeScript({
-          code: "localStorage.setItem('nativeAppTime', '" + Date.now() + "');"
-        }, values => {
-          var hideWebWrapper = values[0];
+        // this.browser.executeScript({
+        //   code: "localStorage.setItem('nativeAppTime', '" + Date.now() + "');"
+        // }, values => {
+        //   var hideWebWrapper = values[0];
 
-          if (hideWebWrapper) {
-            this.browser.executeScript({ code: "localStorage.setItem('hideWebApp', '');" });
-            this.browser.hide();
-            this.ref.detectChanges();
-          }
-        });
+        //   if (hideWebWrapper) {
+        //     this.browser.executeScript({ code: "localStorage.setItem('hideWebApp', '');" });
+        //     this.browser.hide();
+        //     this.ref.detectChanges();
+        //   }
+        // });
 
         this.browser.executeScript({
           code: "localStorage.getItem('hideWebApp')"
