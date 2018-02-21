@@ -64,6 +64,8 @@ export class HomePage {
             alert("native logged out");
             this.user = null;
           }
+          
+          this.startBrowser();
         });
       });
     }
@@ -141,9 +143,10 @@ export class HomePage {
             
           });
         }
-      } else {
-        this.browser && this.browser.show && this.browser.show();
       }
+      // else {
+      //   this.browser && this.browser.show && this.browser.show();
+      // }
   	}
 
     browserLoopFunction(delay: number) {
