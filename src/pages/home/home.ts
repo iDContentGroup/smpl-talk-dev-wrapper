@@ -36,6 +36,8 @@ export class HomePage {
     imgError: any;
 
     browserLoopSetTimeout: any;
+    browserLoopIsActive: boolean;
+    browserLoopTimestamp: number;
 
     loggingIn: boolean;
     unsubscribeOnAuthStateChanged: any;
@@ -105,7 +107,7 @@ export class HomePage {
             this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
             this.browser.executeScript({code: 'window.my.activateAppMode.publicActivateAppModeFunc();'});
 
-            clearTimeout(this.browserLoopSetTimeout);
+            this.clearBrowserLoop();
           });
 
           this.browser.on("loadstop").subscribe(event => {
@@ -128,9 +130,12 @@ export class HomePage {
               });
             });
 
-            this.loadstopEvents.push(event);
-            clearTimeout(this.browserLoopSetTimeout);
-            this.browserLoopSetTimeout = this.browserLoopFunction(100);
+            // this.loadstopEvents.push(event);
+            if (!this.browserLoopIsActive) {
+              this.browserLoopIsActive = true;
+              this.browserLoopSetTimeout = this.browserLoopFunction(6000);  
+            }
+            
           });
         }
       } else {
@@ -140,6 +145,7 @@ export class HomePage {
 
     browserLoopFunction(delay: number) {
       if (this.browser) {
+        this.browserLoopTimestamp = Date.now();
         this.browser.executeScript({
           code: "localStorage.getItem('hideWebApp')"
         }, values => {
@@ -218,10 +224,17 @@ export class HomePage {
       this.browserLoopSetTimeout = setTimeout(this.browserLoopFunction, delay);
     }
 
+    clearBrowserLoop() {
+      if (this.browserLoopIsActive) {
+        this.browserLoopIsActive = false;
+        clearTimeout(this.browserLoopSetTimeout);
+      }
+    }
+
     logUserOutOfBrowser() {
       if (this.browser) {
         this.browser.executeScript({ code: "localStorage.setItem('shouldLogout', 'moo');" });
-        this.browser.executeScript({ code: 'window.my.activateAppMode.publicShouldLogoutFunc();'});
+        this.browser.executeScript({ code: 'window.my.activateAppMode.publicShouldLogoutFunc();' });
       }
     }
 
