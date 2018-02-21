@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef, NgZone } from '@angular/core';
 // import { Component, Input, Output, EventEmitter, ElementRef, ViewChild,  } from '@angular/core';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 
@@ -43,7 +43,7 @@ export class HomePage {
 
     constructor(public platform: Platform, public navCtrl: NavController, private iab: InAppBrowser, 
       private camera: Camera, private imagePicker: ImagePicker, private ref: ChangeDetectorRef, 
-      private http: Http) {
+      private http: Http, private ngZone: NgZone) {
       this.JSON = JSON;
       this.http = http;
 
@@ -51,14 +51,16 @@ export class HomePage {
   	}
 
     ngOnInit() {
-      this.unsubscribeOnAuthStateChanged = firebase.auth().onAuthStateChanged(user => {
-        if (user) {
-          this.user = user;
-          alert(this.user.uid);
-        } else {
-          alert("logged out");
-          this.user = null;
-        }
+      this.ngZone.run(() => {
+        this.unsubscribeOnAuthStateChanged = firebase.auth().onAuthStateChanged(user => {
+          if (user) {
+            this.user = user;
+            alert(this.user.uid);
+          } else {
+            alert("logged out");
+            this.user = null;
+          }
+        });
       });
     }
 
@@ -97,35 +99,39 @@ export class HomePage {
         }
         if (this.platform.is('cordova')) {
           this.browser = this.iab.create(url, target, this.options);
-          
-          this.browser.on("loadstart").subscribe(event => {
-            this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
-            this.browser.executeScript({code: 'window.my.activateAppMode.publicActivateAppModeFunc();'});
 
-            clearTimeout(this.browserLoopSetTimeout);
+          this.ngZone.run(() => {
+            this.browser.on("loadstart").subscribe(event => {
+              this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
+              this.browser.executeScript({code: 'window.my.activateAppMode.publicActivateAppModeFunc();'});
+
+              clearTimeout(this.browserLoopSetTimeout);
+            });
           });
 
           this.browser.on("loadstop").subscribe(event => {
             // this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
             // this.browser.executeScript({ code: 'window.my.activateAppMode.publicActivateAppModeFunc();'});
+            this.ngZone.run(() => {
+              this.browser.executeScript({
+                code: "localStorage.setItem('nativeAppTime', 'moo');"
+              });
+              this.browser.executeScript({
+                code: "localStorage.setItem('nativeAppTime', '" + Date.now() + "');"
+              }, values => {
+                var hideWebWrapper = values[0];
 
-            this.browser.executeScript({
-              code: "localStorage.setItem('nativeAppTime', 'moo');"
+                if (hideWebWrapper) {
+                  this.browser.executeScript({ code: "localStorage.setItem('hideWebApp', '');" });
+                  this.browser.hide();
+                  this.ref.detectChanges();
+                }
+              });
+
+              this.loadstopEvents.push(event);
             });
-            this.browser.executeScript({
-              code: "localStorage.setItem('nativeAppTime', '" + Date.now() + "');"
-            }, values => {
-              var hideWebWrapper = values[0];
-
-              if (hideWebWrapper) {
-                this.browser.executeScript({ code: "localStorage.setItem('hideWebApp', '');" });
-                this.browser.hide();
-                this.ref.detectChanges();
-              }
-            });
-
-            this.loadstopEvents.push(event);
             // this.browser.show();
+
             clearTimeout(this.browserLoopSetTimeout);
             this.browserLoopSetTimeout = this.browserLoopFunction(100);
 
@@ -171,7 +177,7 @@ export class HomePage {
 
               this.browser.executeScript({ code: "localStorage.setItem('firebase_id_token_output', '');" });
               
-              alert(firebase_id_token);
+              alert('firebase_id_token: ' + firebase_id_token);
               
               var exchangeIDTokenForCustTokenSubscription = this.exchangeIDTokenForCustToken(firebase_id_token).subscribe(data => {
                 this.signInWithCustomToken(data);
@@ -184,6 +190,7 @@ export class HomePage {
               }, () => {
                 // console.log("Token exchange completed.");
                 exchangeIDTokenForCustTokenSubscription.unsubscribe();
+                this.loggingIn = false;
                 // localStorage.setItem("firebase_id_token", "");
               });
 
@@ -203,7 +210,8 @@ export class HomePage {
             this.browser.executeScript({ code: "localStorage.setItem('logoutOfNativeApp', '');" });
             // this.browser.hide();
             // this.ref.detectChanges();
-            alert(shouldLogout);
+            // alert(shouldLogout);
+            this.logUserOutOfBrowser();
             // please update..
           }
         });
@@ -231,7 +239,6 @@ export class HomePage {
     signInWithCustomToken(token: any) {
       return firebase.auth().signInWithCustomToken(token).then(user => {
         // console.log("User with user id: " + user.uid + " created/logged in.");
-        this.loggingIn = false;
       }).catch(error => {
         // Handle Errors here.
         var errorMessage: string;
@@ -258,7 +265,8 @@ export class HomePage {
       firebase.auth().signOut().then(() => {
         // this.user = null;
       }, error => {
-        console.log(error);
+        // console.log(error);
+        alert(error);
       });
     }
 
