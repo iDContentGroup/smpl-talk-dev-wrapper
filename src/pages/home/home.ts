@@ -186,9 +186,9 @@ export class HomePage {
 
               // Parse the ID token.
               const payload = JSON.parse(b64DecodeUnicode(firebase_id_token.split('.')[1]));
-              alert(payload);
+              // alert(payload);
 
-              if (this.user && !this.user.email && this.user.email === payload.email) {
+              if (this.user && this.user.email && this.user.email === payload.email) {
                 // The current user is the same user that just logged in, so no need to reauth
                 alert("user was already logged in native");
               } else {
