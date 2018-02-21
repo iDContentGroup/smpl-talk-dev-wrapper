@@ -2,7 +2,8 @@ import { Component, ChangeDetectorRef } from '@angular/core';
 // import { Component, Input, Output, EventEmitter, ElementRef, ViewChild,  } from '@angular/core';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 
-import { Observable } from 'rxjs/Observable';
+// import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/map';
 
 import { NavController, Platform } from 'ionic-angular';
 
