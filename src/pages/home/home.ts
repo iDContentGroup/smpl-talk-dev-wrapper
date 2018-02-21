@@ -58,9 +58,10 @@ export class HomePage {
         this.ngZone.run(() => {
           if (user) {
             this.user = user;
-            alert(this.user.uid);
+            alert('native logged in: ' + this.user.uid + " | " + this.user.email);
+            // TODO: do some stuff with push notifications
           } else {
-            alert("logged out");
+            alert("native logged out");
             this.user = null;
           }
         });
@@ -146,6 +147,13 @@ export class HomePage {
   	}
 
     browserLoopFunction(delay: number) {
+      function b64DecodeUnicode(str) {
+        // Going backwards: from bytestream, to percent-encoding, to original string.
+        return decodeURIComponent(atob(str).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+      }
+
       if (this.browser) {
         this.ngZone.run(() => {
           this.browserLoopTimestamp = Date.now();
@@ -177,34 +185,33 @@ export class HomePage {
               this.loggingIn = true;
 
               this.browser.executeScript({ code: "localStorage.setItem('firebase_id_token_output', '');" });
-              
-              alert('firebase_id_token: ' + firebase_id_token);
-              
-              var exchangeIDTokenForCustTokenSubscription = this.exchangeIDTokenForCustToken(firebase_id_token).subscribe(data => {
-                this.ngZone.run(() => {
-                  this.signInWithCustomToken(data);
-                });
-                // localStorage.setItem("firebase_id_token", "");
-              }, error => {
-                this.ngZone.run(() => {
-                  alert("Error occurred when attempting to exchange firebase ID token for custom auth token.");
-                  exchangeIDTokenForCustTokenSubscription.unsubscribe();
-                  // localStorage.setItem("firebase_id_token", "");
-                  this.loggingIn = false;
-                });
-              }, () => {
-                this.ngZone.run(() => {
-                  // console.log("Token exchange completed.");
-                  exchangeIDTokenForCustTokenSubscription.unsubscribe();
-                  this.loggingIn = false;
-                  // localStorage.setItem("firebase_id_token", "");
-                });
-              });
 
-              // this.ref.detectChanges();
+              // Parse the ID token.
+              const payload = JSON.parse(b64DecodeUnicode(firebase_id_token.split('.')[1]));
+
+              if (this.user && !this.user.email && this.user.email === payload.email) {
+                // The current user is the same user that just logged in, so no need to reauth
+                alert("user was already logged in native");
+              } else {
+                var exchangeIDTokenForCustTokenSubscription = this.exchangeIDTokenForCustToken(firebase_id_token).subscribe(data => {
+                  this.ngZone.run(() => {
+                    this.signInWithCustomToken(data);
+                  });
+                }, error => {
+                  this.ngZone.run(() => {
+                    alert("Error occurred when attempting to exchange firebase ID token for custom auth token.");
+                    exchangeIDTokenForCustTokenSubscription.unsubscribe();
+                    this.loggingIn = false;
+                  });
+                }, () => {
+                  this.ngZone.run(() => {
+                    // console.log("Token exchange completed.");
+                    exchangeIDTokenForCustTokenSubscription.unsubscribe();
+                    this.loggingIn = false;
+                  });
+                });
+              }
             }
-            
-            // please update..
           }
         });
 
