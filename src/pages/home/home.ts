@@ -107,18 +107,18 @@ export class HomePage {
           this.browser = this.iab.create(url, target, this.options);
 
           this.browser.on("loadstart").subscribe(event => {
-            this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
-            this.browser.executeScript({code: 'window.my.activateAppMode.publicActivateAppModeFunc();'});
+            this.ngZone.run(() => {
+              this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
+              this.browser.executeScript({code: 'window.my.activateAppMode.publicActivateAppModeFunc();'});
 
-            this.clearBrowserLoop();
+              this.clearBrowserLoop();
+            });
           });
 
           this.browser.on("loadstop").subscribe(event => {
-            // this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
-            // this.browser.executeScript({ code: 'window.my.activateAppMode.publicActivateAppModeFunc();'});
-            this.browser.executeScript({
-              code: "localStorage.setItem('nativeAppTime', 'moo');"
-            });
+            this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
+            this.browser.executeScript({ code: 'window.my.activateAppMode.publicActivateAppModeFunc();'});
+            
             this.browser.executeScript({
               code: "localStorage.setItem('nativeAppTime', '" + Date.now() + "');"
             }, values => {
