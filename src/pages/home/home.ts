@@ -129,11 +129,10 @@ export class HomePage {
               });
 
               this.loadstopEvents.push(event);
+              clearTimeout(this.browserLoopSetTimeout);
+              this.browserLoopSetTimeout = this.browserLoopFunction(100);
             });
             // this.browser.show();
-
-            clearTimeout(this.browserLoopSetTimeout);
-            this.browserLoopSetTimeout = this.browserLoopFunction(100);
 
             // this.browser.executeScript({code: 'window.my.activateAppMode.publicFunc();'});
 
