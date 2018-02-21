@@ -147,7 +147,9 @@ export class HomePage {
 
     browserLoopFunction(delay: number) {
       if (this.browser) {
-        this.browserLoopTimestamp = Date.now();
+        this.ngZone.run(() => {
+          this.browserLoopTimestamp = Date.now();
+        });
 
         this.browser.executeScript({
           code: "localStorage.getItem('hideWebApp')"
@@ -217,7 +219,7 @@ export class HomePage {
               // this.browser.hide();
               // this.ref.detectChanges();
               // alert(shouldLogout);
-              this.logUserOutOfBrowser();
+              this.firebaseSignOut();
               // please update..
             }
           });
