@@ -36,7 +36,10 @@ export class HomePage {
 
     loggingIn: boolean;
     unsubscribeOnAuthStateChanged: any;
-    user: any;
+
+    users: any;
+    fbUser: any;
+    usersInitalized: boolean;
 
     device: any;
 
@@ -54,27 +57,44 @@ export class HomePage {
         this.setupPush();
 
         this.platform.resume.subscribe(event => {
-          alert("resumed: " + Date.now());
+          this.ngZone.run(() => {
+            alert("resumed: " + Date.now());
+          });
         });
 
         this.platform.pause.subscribe(event => {
-          alert("paused:" + Date.now());
+          this.ngZone.run(() => {
+            alert("paused:" + Date.now());
+          });
         });
       }
       
       this.unsubscribeOnAuthStateChanged = firebase.auth().onAuthStateChanged(user => {
         this.ngZone.run(() => {
           if (user) {
-            this.user = user;
-            alert('native logged in: ' + this.user.uid + " | " + this.user.email);
+            this.users = [];
 
+            this.fbUser = user;
+            alert('native logged in: ' + this.fbUser.uid + " | " + this.fbUser.email);
+            firebase.database().ref("UsersRef/").orderByChild('email').equalTo(email).once('value').then(usersRef => {
+              usersRef.forEach(userRef => {
+                var user = userRef.val();
+                user['key'] = userRef.key;
+
+                this.users.push(user);
+              })
+            }).then(() => {
+              this.usersInitalized = true;
+
+              this.setDeviceUserPairing();
+            });
             // TODO: do some stuff with push notifications
           } else {
             alert("native logged out");
-            this.user = null;
-          }
+            this.fbUser = null;
+            this.users = [];
+            this.usersInitalized = true;
 
-          if (this.device) {
             this.setDeviceUserPairing();
           }
           
@@ -204,7 +224,7 @@ export class HomePage {
               const payload = JSON.parse(b64DecodeUnicode(firebase_id_token.split('.')[1]));
               // alert(payload);
 
-              if (this.user && this.user.email && this.user.email === payload.email) {
+              if (this.fbUser && this.fbUser.email && this.fbUser.email === payload.email) {
                 // The current user is the same user that just logged in, so no need to reauth
                 alert("user was already logged in native");
               } else {
@@ -305,7 +325,7 @@ export class HomePage {
 
     firebaseSignOut() {
       firebase.auth().signOut().then(() => {
-        // this.user = null;
+        // this.fbUser = null;
       }, error => {
         // console.log(error);
         alert(error);
@@ -379,12 +399,9 @@ export class HomePage {
 
 
           // TODO: Save deviceID to user's account
-          this.device = 'moo';
+          this.device = registration;
 
-          if (this.user) {
-            // TODO: add device + user to firebase database
-            this.setDeviceUserPairing();
-          }
+          this.setDeviceUserPairing();
         });
       });
 
@@ -397,7 +414,46 @@ export class HomePage {
     }
 
     setDeviceUserPairing() {
+      if (!this.usersInitalized || !this.device) {
+        return null;
+      }
+
       alert("pair device and user");
+
+      var removeUserKeys = [];
+      // get previous values
+
+      var updates = {};
+
+      var pushUserPath = 'PushNotifications/Users';
+      var pushDevicePath = 'PushNotifications/Devices';
+
+      firebase.database().ref('PushNotifications/Devices/' + this.device.registrationID + '/Users').once('value').then(users => {
+        users.forEach(userSnapshot => {
+          var match = false;
+
+          for (var i = 0; i < this.users.length; i++) {
+            if (this.users[i].key === userSnapshot.key) {
+              match = true;
+              break;
+            }
+          }
+
+          if (!match) {
+            // removeUserKeys.push(userSnapshot.key);
+            updates[pushUserPath + '/' + userSnapshot.key + '/Devices/' + this.device.registrationID] = null;
+            updates[pushDevicePath + '/' + this.device.registrationID + '/Users/' + userSnapshot.key] = null;
+          }
+        })
+      }).then(() => {
+        for (var i = 0; i < this.users.length; i++) {
+          var user = this.users[i];
+          var now = Date.now();
+
+          updates[pushUserPath + '/' + user.key + '/Devices/' + this.device.registrationID] = now;
+          updates[pushDevicePath + '/' + this.device.registrationID + '/Users/' + user.key] = now;
+        }
+      });
     }
 
     // this.showCamera = false;
