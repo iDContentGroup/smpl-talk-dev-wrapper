@@ -56,6 +56,8 @@ export class HomePage {
 
     ngOnInit() {
       alert('ngOnInit');
+      this.browser = null;
+
       this.navToPost = {postKey: 'postKey', groupKey: 'groupKey', networkKey: 'networkKey', data: {'action': 'liked'}};
 
       if (this.platform.is('cordova')) {
@@ -113,6 +115,7 @@ export class HomePage {
     }
 
   	startBrowser() {
+      alert("startBrowser");
       if (!this.browser) {
         const url = 'https://smpl-talk-develop.firebaseapp.com/#/';
         const target = '_blank';
