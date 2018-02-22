@@ -414,15 +414,12 @@ export class HomePage {
     }
 
     setDeviceUserPairing() {
-      if (!this.usersInitalized || !this.device) {
+      if (!this.usersInitalized || !this.device || !this.device.registrationId) {
         return null;
       }
 
       alert("pair device and user");
-
-      var removeUserKeys = [];
-      // get previous values
-
+      
       var updates = {};
 
       var pushUserPath = 'Users';
