@@ -76,7 +76,7 @@ export class HomePage {
 
             this.fbUser = user;
             alert('native logged in: ' + this.fbUser.uid + " | " + this.fbUser.email);
-            firebase.database().ref("UsersRef/").orderByChild('email').equalTo(email).once('value').then(usersRef => {
+            firebase.database().ref("UsersRef/").orderByChild('email').equalTo(this.fbUser.email).once('value').then(usersRef => {
               usersRef.forEach(userRef => {
                 var user = userRef.val();
                 user['key'] = userRef.key;
