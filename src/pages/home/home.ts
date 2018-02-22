@@ -55,6 +55,7 @@ export class HomePage {
   	}
 
     ngOnInit() {
+      alert('ngOnInit');
       this.navToPost = {postKey: 'postKey', groupKey: 'groupKey', networkKey: 'networkKey', data: {'action': 'liked'}};
 
       if (this.platform.is('cordova')) {
