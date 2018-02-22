@@ -74,6 +74,8 @@ export class HomePage {
         //     alert("paused:" + Date.now());
         //   });
         // });
+      } else {
+        alert("not cordova");
       }
       
       this.unsubscribeOnAuthStateChanged = firebase.auth().onAuthStateChanged(user => {
