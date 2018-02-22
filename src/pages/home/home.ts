@@ -359,6 +359,7 @@ export class HomePage {
     }
 
     setupPush() {
+      alert("setupPush");
       // source: https://www.youtube.com/watch?v=sUjQ3G17T80
 
       // to check if we have permission
