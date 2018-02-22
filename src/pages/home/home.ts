@@ -85,7 +85,7 @@ export class HomePage {
               })
             }).then(() => {
               this.usersInitalized = true;
-
+              alert(this.users);
               this.setDeviceUserPairing();
             });
             // TODO: do some stuff with push notifications
@@ -425,8 +425,8 @@ export class HomePage {
 
       var updates = {};
 
-      var pushUserPath = 'PushNotifications/Users';
-      var pushDevicePath = 'PushNotifications/Devices';
+      var pushUserPath = 'Users';
+      var pushDevicePath = 'Devices';
 
       firebase.database().ref('PushNotifications/Devices/' + this.device.registrationID + '/Users').once('value').then(users => {
         users.forEach(userSnapshot => {
@@ -453,6 +453,16 @@ export class HomePage {
           updates[pushUserPath + '/' + user.key + '/Devices/' + this.device.registrationID] = now;
           updates[pushDevicePath + '/' + this.device.registrationID + '/Users/' + user.key] = now;
         }
+
+        alert(JSON.stringify(updates));
+
+        firebase.database().ref('PushNotifications/').update(updates, error => {
+          if (error) {
+            alert(error);
+          } else {
+            alert("updated pushNotifications in database");
+          }
+        });
       });
     }
 
