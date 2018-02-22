@@ -43,6 +43,8 @@ export class HomePage {
 
     device: any;
 
+    navToPost: any;
+
     constructor(public platform: Platform, public navCtrl: NavController, private iab: InAppBrowser, 
       private camera: Camera, private imagePicker: ImagePicker, private ref: ChangeDetectorRef, 
       private http: Http, private ngZone: NgZone, private push: Push) {
@@ -53,6 +55,8 @@ export class HomePage {
   	}
 
     ngOnInit() {
+      this.navToPost = {postKey: 'postKey', groupKey: 'groupKey', networkKey: 'networkKey', data: {'action': 'liked'}};
+
       if (this.platform.is('cordova')) {
         this.setupPush();
 
@@ -194,6 +198,21 @@ export class HomePage {
         this.ngZone.run(() => {
           this.browserLoopTimestamp = Date.now();
         });
+
+        if (this.navToPost) {
+          this.browser.executeScript({
+            code: "window.my.activateAppMode.publicNavToPostFunc("+ JSON.stringify(this.navToPost) + ");"
+          }, values => {
+            this.ngZone.run(() => {
+              var navStatus = values[0];
+
+              if (navStatus) {
+                alert(navStatus);
+                this.navToPost = null;
+              }
+            });
+          });
+        }
 
         this.browser.executeScript({
           code: "localStorage.getItem('hideWebApp')"
@@ -351,7 +370,7 @@ export class HomePage {
            //senderID: XXXX
            //icon: ?
            //iconColor: ?
-           //vibrate: 'true',
+           vibrate: 'true',
            //clearBadge: 'true',
            //clearNotifications: 'true',
            //forceShow: 'true',
