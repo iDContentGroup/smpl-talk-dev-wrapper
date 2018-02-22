@@ -60,17 +60,17 @@ export class HomePage {
       if (this.platform.is('cordova')) {
         this.setupPush();
 
-        this.platform.resume.subscribe(event => {
-          this.ngZone.run(() => {
-            alert("resumed: " + Date.now());
-          });
-        });
+        // this.platform.resume.subscribe(event => {
+        //   this.ngZone.run(() => {
+        //     alert("resumed: " + Date.now());
+        //   });
+        // });
 
-        this.platform.pause.subscribe(event => {
-          this.ngZone.run(() => {
-            alert("paused:" + Date.now());
-          });
-        });
+        // this.platform.pause.subscribe(event => {
+        //   this.ngZone.run(() => {
+        //     alert("paused:" + Date.now());
+        //   });
+        // });
       }
       
       this.unsubscribeOnAuthStateChanged = firebase.auth().onAuthStateChanged(user => {
@@ -447,6 +447,8 @@ export class HomePage {
       firebase.database().ref('PushNotifications/Devices/' + this.device.registrationId + '/Users').once('value').then(users => {
         users.forEach(userSnapshot => {
           var match = false;
+
+          alert(userSnapshot.key);
 
           for (var i = 0; i < this.users.length; i++) {
             if (this.users[i].key === userSnapshot.key) {
