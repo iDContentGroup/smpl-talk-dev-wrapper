@@ -21,4 +21,7 @@
   <p>{{ loggingIn ? 'logging in..' : 'not logging in'}}</p>
   <p>{{user ? (user.email + ' | ' + user.uid) : 'no user found' }}</p>
 
+  <p *ngFor="let user of users">{{ user.key }} | {{ user.email }}</p>
+  <p *ngIf="device">{{ JSON.stringify(device) }}</p>
+
 </ion-content>

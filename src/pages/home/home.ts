@@ -428,7 +428,7 @@ export class HomePage {
       var pushUserPath = 'Users';
       var pushDevicePath = 'Devices';
 
-      firebase.database().ref('PushNotifications/Devices/' + this.device.registrationID + '/Users').once('value').then(users => {
+      firebase.database().ref('PushNotifications/Devices/' + this.device.registrationId + '/Users').once('value').then(users => {
         users.forEach(userSnapshot => {
           var match = false;
 
@@ -441,8 +441,8 @@ export class HomePage {
 
           if (!match) {
             // removeUserKeys.push(userSnapshot.key);
-            updates[pushUserPath + '/' + userSnapshot.key + '/Devices/' + this.device.registrationID] = null;
-            updates[pushDevicePath + '/' + this.device.registrationID + '/Users/' + userSnapshot.key] = null;
+            updates[pushUserPath + '/' + userSnapshot.key + '/Devices/' + this.device.registrationId] = null;
+            updates[pushDevicePath + '/' + this.device.registrationId + '/Users/' + userSnapshot.key] = null;
           }
         })
       }).then(() => {
@@ -450,8 +450,8 @@ export class HomePage {
           var user = this.users[i];
           var now = Date.now();
 
-          updates[pushUserPath + '/' + user.key + '/Devices/' + this.device.registrationID] = now;
-          updates[pushDevicePath + '/' + this.device.registrationID + '/Users/' + user.key] = now;
+          updates[pushUserPath + '/' + user.key + '/Devices/' + this.device.registrationId] = now;
+          updates[pushDevicePath + '/' + this.device.registrationId + '/Users/' + user.key] = now;
         }
 
         alert(JSON.stringify(updates));
