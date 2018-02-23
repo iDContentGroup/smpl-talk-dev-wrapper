@@ -222,7 +222,9 @@ export class HomePage {
           code: "1 + 1"
         }, values => {
           this.ngZone.run(() => {
-            this.test = 'first step';
+            this.toast(values);
+
+            this.test = 'second step';
           });
         });
 
