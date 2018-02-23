@@ -87,38 +87,41 @@ export class HomePage {
           this.toast(JSON.stringify(this.platform));
         }
         
-        this.unsubscribeOnAuthStateChanged = firebase.auth().onAuthStateChanged(user => {
-          this.ngZone.run(() => {
-            if (user) {
-              this.users = [];
+        this.startBrowser();
 
-              this.fbUser = user;
-              this.toast('native logged in: ' + this.fbUser.uid + " | " + this.fbUser.email);
-              firebase.database().ref("UsersRef/").orderByChild('email').equalTo(this.fbUser.email).once('value').then(usersRef => {
-                usersRef.forEach(userRef => {
-                  var user = userRef.val();
-                  user['key'] = userRef.key;
+        
+        // this.unsubscribeOnAuthStateChanged = firebase.auth().onAuthStateChanged(user => {
+        //   this.ngZone.run(() => {
+        //     if (user) {
+        //       this.users = [];
 
-                  this.users.push(user);
-                })
-              }).then(() => {
-                this.usersInitalized = true;
-                this.toast(this.users);
-                this.setDeviceUserPairing();
-              });
-              // TODO: do some stuff with push notifications
-            } else {
-              this.toast("native logged out");
-              this.fbUser = null;
-              this.users = [];
-              this.usersInitalized = true;
+        //       this.fbUser = user;
+        //       this.toast('native logged in: ' + this.fbUser.uid + " | " + this.fbUser.email);
+        //       firebase.database().ref("UsersRef/").orderByChild('email').equalTo(this.fbUser.email).once('value').then(usersRef => {
+        //         usersRef.forEach(userRef => {
+        //           var user = userRef.val();
+        //           user['key'] = userRef.key;
 
-              this.setDeviceUserPairing();
-            }
+        //           this.users.push(user);
+        //         })
+        //       }).then(() => {
+        //         this.usersInitalized = true;
+        //         this.toast(this.users);
+        //         this.setDeviceUserPairing();
+        //       });
+        //       // TODO: do some stuff with push notifications
+        //     } else {
+        //       this.toast("native logged out");
+        //       this.fbUser = null;
+        //       this.users = [];
+        //       this.usersInitalized = true;
+
+        //       this.setDeviceUserPairing();
+        //     }
             
-            this.startBrowser();
-          });
-        });
+        //     this.startBrowser();
+        //   });
+        // });
       });
     }
 
@@ -236,6 +239,26 @@ export class HomePage {
     }
 
     browserTest() {
+      if (this.browser) {
+        return this.browser.executeScript({
+          code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test', value: 'test ' + Date.now}) + ");"
+        }, values => {
+          return this.ngZone.run(() => {
+            this.webTimestamp = Date.now();
+
+            if (values[0]) {
+              return this.browser.executeScript({
+                code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test2', value: 'test2 ' + Date.now}) + ");"
+              });
+            }
+          });
+        });
+      } else {
+        return Promise.resolve(null);
+      }
+    }
+
+    browserActivateNativeAppMode() {
       if (this.browser) {
         return this.browser.executeScript({
           code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test', value: 'test ' + Date.now}) + ");"
