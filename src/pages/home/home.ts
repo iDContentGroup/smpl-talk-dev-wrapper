@@ -254,6 +254,7 @@ export class HomePage {
     }
 
     browserTest() {
+      alert('started browserTest');
       if (this.browser) {
         return this.browser.executeScript({
           code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test', value: 'test ' + Date.now}) + ");"
@@ -267,6 +268,9 @@ export class HomePage {
               });
             }
           });
+        }).catch(error => {
+          this.error = error;
+          alert(error);
         });
       } else {
         return Promise.resolve(null);
