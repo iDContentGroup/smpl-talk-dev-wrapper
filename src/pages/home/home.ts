@@ -211,8 +211,8 @@ export class HomePage {
       }
   	}
 
-    browserLoopFunction(delay: number) {
-      alert("started browser loop");
+    browserLoopFunction(delay?: number) {
+      // alert("started browser loop");
 
 
       // this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
@@ -228,19 +228,21 @@ export class HomePage {
         this.nativeTimestamp = Date.now();
 
         return this.browserTest().then(values => {
-          // if (values[0]) {
-          //   return this.browser.executeScript({
-          //     code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test2', value: 'test2 ' + Date.now()}) + ");"   
-          //   });
-          // }
-        }).then(() => {
-          alert("got to the last then");
-          this.browserLoopSetTimeout = setTimeout(() => {
-            this.ngZone.run(() => {
-              // alert("should start browser loop");
-              this.browserLoopFunction(delay);
+          if (values && values.length && values[0]) {
+            return this.browser.executeScript({
+              code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test2', value: 'test2 ' + Date.now()}) + ");"   
             });
-          }, delay);
+          }
+        }).then(() => {
+          // alert("got to the last then");
+          if (delay) {
+            this.browserLoopSetTimeout = setTimeout(() => {
+              this.ngZone.run(() => {
+                // alert("should start browser loop");
+                this.browserLoopFunction(delay);
+              });
+            }, delay);
+          }
         }).catch(error => {
           this.error = error;
         });
@@ -255,7 +257,7 @@ export class HomePage {
     }
 
     browserTest() {
-      alert('started browserTest');
+      // alert('started browserTest');
       if (this.browser) {
         return this.browser.executeScript({
           // code: "window.my.activateAppMode.publicDebugFunc("");"
