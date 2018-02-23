@@ -259,16 +259,14 @@ export class HomePage {
         }, values => {
           alert('browserTest exe callback');
 
-          return this.ngZone.run(() => {
             this.webTimestamp = Date.now();
             alert('browserTest exe exe');
-
+            return values;
             // if (values[0]) {
             //   return this.browser.executeScript({
             //     code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test2', value: 'test2 ' + Date.now()}) + ");"
             //   });
             // }
-          });
         }).then(result => {
           alert("then from browserText started");
           // alert(result);
