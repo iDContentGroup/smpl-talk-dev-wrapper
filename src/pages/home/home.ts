@@ -220,8 +220,6 @@ export class HomePage {
           this.browser.executeScript({ 
             code: 'window.my.activateAppMode.publicActivateAppModeFunc();' 
           });
-
-          this.browser.executeScript({ code: "alert('moo');" });
         });
 
 
@@ -298,22 +296,22 @@ export class HomePage {
           }
         });
 
-        this.browser.executeScript({
-          code: "localStorage.getItem('logoutOfNativeApp')"
-        }, values => {
-          this.ngZone.run(() => {
-            var shouldLogout = values[0];
+        // this.browser.executeScript({
+        //   code: "localStorage.getItem('logoutOfNativeApp')"
+        // }, values => {
+        //   this.ngZone.run(() => {
+        //     var shouldLogout = values[0];
 
-            if (shouldLogout) {
-              this.browser.executeScript({ code: "localStorage.setItem('logoutOfNativeApp', '');" });
-              // this.browser.hide();
-              // this.ref.detectChanges();
-              // this.toast(shouldLogout);
-              this.firebaseSignOut();
-              // please update..
-            }
-          });
-        });
+        //     if (shouldLogout) {
+        //       this.browser.executeScript({ code: "localStorage.setItem('logoutOfNativeApp', '');" });
+        //       // this.browser.hide();
+        //       // this.ref.detectChanges();
+        //       // this.toast(shouldLogout);
+        //       this.firebaseSignOut();
+        //       // please update..
+        //     }
+        //   });
+        // });
       }
 
       this.browserLoopSetTimeout = setTimeout(() => {
