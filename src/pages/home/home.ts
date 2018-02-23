@@ -54,9 +54,9 @@ export class HomePage {
   	}
 
     ngOnInit() {
-      // toast('ngOnInit');
+      // this.toast('ngOnInit');
       this.platform.ready().then(() => {
-        // toast('platform is ready');
+        // this.toast('platform is ready');
 
         this.webNav = {postKey: 'postKey', groupKey: 'groupKey', networkKey: 'networkKey', data: {'action': 'liked'}};
 
@@ -65,18 +65,18 @@ export class HomePage {
 
           // this.platform.resume.subscribe(event => {
           //   this.ngZone.run(() => {
-          //     toast("resumed: " + Date.now());
+          //     this.toast("resumed: " + Date.now());
           //   });
           // });
 
           // this.platform.pause.subscribe(event => {
           //   this.ngZone.run(() => {
-          //     toast("paused:" + Date.now());
+          //     this.toast("paused:" + Date.now());
           //   });
           // });
         } else {
-          toast("not cordova");
-          toast(JSON.stringify(this.platform));
+          this.toast("not cordova");
+          this.toast(JSON.stringify(this.platform));
         }
         
         this.unsubscribeOnAuthStateChanged = firebase.auth().onAuthStateChanged(user => {
@@ -85,7 +85,7 @@ export class HomePage {
               this.users = [];
 
               this.fbUser = user;
-              toast('native logged in: ' + this.fbUser.uid + " | " + this.fbUser.email);
+              this.toast('native logged in: ' + this.fbUser.uid + " | " + this.fbUser.email);
               firebase.database().ref("UsersRef/").orderByChild('email').equalTo(this.fbUser.email).once('value').then(usersRef => {
                 usersRef.forEach(userRef => {
                   var user = userRef.val();
@@ -95,12 +95,12 @@ export class HomePage {
                 })
               }).then(() => {
                 this.usersInitalized = true;
-                toast(this.users);
+                this.toast(this.users);
                 this.setDeviceUserPairing();
               });
               // TODO: do some stuff with push notifications
             } else {
-              toast("native logged out");
+              this.toast("native logged out");
               this.fbUser = null;
               this.users = [];
               this.usersInitalized = true;
@@ -119,7 +119,7 @@ export class HomePage {
     }
 
   	startBrowser() {
-      // toast("startBrowser");
+      // this.toast("startBrowser");
       if (!this.browser) {
         const url = 'https://smpl-talk-develop.firebaseapp.com/#/';
         const target = '_blank';
@@ -214,7 +214,7 @@ export class HomePage {
               var navStatus = values[0];
 
               if (navStatus) {
-                toast(navStatus);
+                this.toast(navStatus);
                 this.webNav = null;
               }
             });
@@ -248,11 +248,11 @@ export class HomePage {
 
               // Parse the ID token.
               const payload = JSON.parse(b64DecodeUnicode(firebase_id_token.split('.')[1]));
-              // toast(payload);
+              // this.toast(payload);
 
               if (this.fbUser && this.fbUser.email && this.fbUser.email === payload.email) {
                 // The current user is the same user that just logged in, so no need to reauth
-                toast("user was already logged in native");
+                this.toast("user was already logged in native");
               } else {
                 this.loggingIn = true;
 
@@ -262,7 +262,7 @@ export class HomePage {
                   });
                 }, error => {
                   this.ngZone.run(() => {
-                    toast("Error occurred when attempting to exchange firebase ID token for custom auth token.");
+                    this.toast("Error occurred when attempting to exchange firebase ID token for custom auth token.");
                     exchangeIDTokenForCustTokenSubscription.unsubscribe();
                     this.loggingIn = false;
                   });
@@ -288,7 +288,7 @@ export class HomePage {
               this.browser.executeScript({ code: "localStorage.setItem('logoutOfNativeApp', '');" });
               // this.browser.hide();
               // this.ref.detectChanges();
-              // toast(shouldLogout);
+              // this.toast(shouldLogout);
               this.firebaseSignOut();
               // please update..
             }
@@ -345,7 +345,7 @@ export class HomePage {
         this.loggingIn = false;
         this.logUserOutOfBrowser();
 
-        toast(errorMessage);
+        this.toast(errorMessage);
       });
     }
 
@@ -354,20 +354,20 @@ export class HomePage {
         // this.fbUser = null;
       }, error => {
         // console.log(error);
-        toast(error);
+        this.toast(error);
       });
     }
 
     setupPush() {
-      // toast("setupPush");
+      // this.toast("setupPush");
       // source: https://www.youtube.com/watch?v=sUjQ3G17T80
 
       // to check if we have permission
       this.push.hasPermission().then((res: any) => {
         if (res.isEnabled) {
-          toast('We have permission to send push notifications');
+          this.toast('We have permission to send push notifications');
         } else {
-          toast('We do not have permission to send push notifications');
+          this.toast('We do not have permission to send push notifications');
         }
       });
 
@@ -401,11 +401,11 @@ export class HomePage {
       };
       
       const pushObject: PushObject = this.push.init(options);
-      // toast(JSON.stringify(pushObject));
+      // this.toast(JSON.stringify(pushObject));
 
       pushObject.on('notification').subscribe((notification: any) => {
         this.ngZone.run(() => {
-          toast('Received a notification' + JSON.stringify(notification));
+          this.toast('Received a notification' + JSON.stringify(notification));
           // foreground
 
           if (notification.additionalData.foreground) {
@@ -423,7 +423,7 @@ export class HomePage {
 
       pushObject.on('registration').subscribe((registration: any) => {
         this.ngZone.run(() => {
-          toast('Device registered' + JSON.stringify(registration));
+          this.toast('Device registered' + JSON.stringify(registration));
 
 
           // TODO: Save deviceID to user's account
@@ -435,7 +435,7 @@ export class HomePage {
 
       pushObject.on('error').subscribe(error => {
         this.ngZone.run(() => {
-          toast('Error with Push plugin' + JSON.stringify(error));
+          this.toast('Error with Push plugin' + JSON.stringify(error));
           // TODO: log error
         });
       });
@@ -446,7 +446,7 @@ export class HomePage {
         return null;
       }
 
-      toast("pair device and user");
+      this.toast("pair device and user");
       
       var updates = {};
 
@@ -457,7 +457,7 @@ export class HomePage {
         users.forEach(userSnapshot => {
           var match = false;
 
-          toast(userSnapshot.key);
+          this.toast(userSnapshot.key);
 
           for (var i = 0; i < this.users.length; i++) {
             if (this.users[i].key === userSnapshot.key) {
@@ -481,13 +481,13 @@ export class HomePage {
           updates[pushDevicePath + '/' + this.device.registrationId + '/Users/' + user.key] = now;
         }
 
-        toast(JSON.stringify(updates));
+        this.toast(JSON.stringify(updates));
 
         firebase.database().ref('PushNotifications/').update(updates, error => {
           if (error) {
-            toast(error);
+            this.toast(error);
           } else {
-            toast("updated pushNotifications in database");
+            this.toast("updated pushNotifications in database");
           }
         });
       });
