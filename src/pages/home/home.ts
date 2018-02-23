@@ -32,7 +32,9 @@ export class HomePage {
 
     browserLoopSetTimeout: any;
     browserLoopIsActive: boolean;
-    browserLoopTimestamp: number;
+
+    webTimestamp: number;
+    nativeTimestamp: number;
 
     loggingIn: boolean;
     unsubscribeOnAuthStateChanged: any;
@@ -223,24 +225,26 @@ export class HomePage {
           code: "1 + 1"
         }, values => {
           this.ngZone.run(() => {
-            this.toast('third step');
-            this.toast(values);
+            this.toast('pre annoying message');
 
-            if (this.toast(values == 2)) {
-              this.toast('wtf it equals 2... so its not an array');
-            } 
+            if (values[0] === 2) {
+              this.toast("annoying it is 2 message: " + Date.now());
+              this.toast("annoying it is 2 message dup: " + Date.now());
+            }
 
             this.test = 'second step';
             this.test2 = values;
           });
         });
 
-        // this.ngZone.run(() => {
-        //   this.browserLoopTimestamp = Date.now();
-        //   this.browser.executeScript({ 
-        //     code: 'window.my.activateAppMode.publicActivateAppModeFunc();' 
-        //   });
-        // });
+        this.ngZone.run(() => {
+          this.webTimestamp = Date.now();
+          this.nativeTimestamp = Date.now();
+
+          // this.browser.executeScript({ 
+          //   code: 'window.my.activateAppMode.publicActivateAppModeFunc();' 
+          // });
+        });
 
 
 
@@ -344,6 +348,16 @@ export class HomePage {
         this.browserLoopIsActive = false;
         clearTimeout(this.browserLoopSetTimeout);
       }
+    }
+
+    browserScript(code: any, ) {
+      // this.browser.executeScript({
+      //     code: code
+      //   }, values => {
+      //     this.ngZone.run(() => {
+            
+      //     });
+      //   });
     }
 
     logUserOutOfBrowser() {
