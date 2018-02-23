@@ -186,7 +186,7 @@ export class HomePage {
               // this.loadstopEvents.push(event);
               if (!this.browserLoopIsActive) {
                 this.browserLoopIsActive = true;
-                this.browserLoopFunction(6000);
+                this.browserLoopFunction(100);
               }
             });
           });
@@ -227,13 +227,17 @@ export class HomePage {
       this.ngZone.run(() => {
         this.nativeTimestamp = Date.now();
 
-        return this.browserTest().then(result => {
-          alert('browserTest promise then');
+        return this.browserTest().then(values => {
+          if (values[0]) {
+            return this.browser.executeScript({
+              code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test2', value: 'test2 ' + Date.now()}) + ");"
+            });
+          }
         }).then(() => {
           alert("got to the last then");
           this.browserLoopSetTimeout = setTimeout(() => {
             this.ngZone.run(() => {
-              alert("should start browser loop");
+              // alert("should start browser loop");
               this.browserLoopFunction(delay);
             });
           }, delay);
@@ -254,33 +258,18 @@ export class HomePage {
       alert('started browserTest');
       if (this.browser) {
         return this.browser.executeScript({
-          // code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test', value: 'test ' + Date.now()}) + ");"
-          code: "1 + 1"
+          code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test', value: 'test ' + Date.now()}) + ");"
+          // code: "1 + 1"
         }).then(values => {
-          return this.ngZone.run(() => {
-            alert('browserTest exe callback');
-
-            this.webTimestamp = Date.now();
-            alert('browserTest exe exe');
-            alert(values);
-            return values;
-            // if (values[0]) {
-            //   return this.browser.executeScript({
-            //     code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test2', value: 'test2 ' + Date.now()}) + ");"
-            //   });
-            // }
-          });
-        }).then(result => {
-          alert("then from browserText started");
-          alert(result);
-          return result;
+          this.webTimestamp = Date.now();
+          return values;
         }).catch(error => {
           this.error = error;
-          alert(error);
+          // alert(error);
+          return null;
         });
       } else {
-        alert('no browser');
-
+        // alert('no browser');
         return Promise.resolve(null);
       }
     }
