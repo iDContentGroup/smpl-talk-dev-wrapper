@@ -425,7 +425,6 @@ export class HomePage {
         this.ngZone.run(() => {
           this.toast('Device registered' + JSON.stringify(registration));
 
-
           // TODO: Save deviceID to user's account
           this.device = registration;
 
@@ -494,8 +493,9 @@ export class HomePage {
     }
 
     toast(message: any) {
+      
       if (this.browser) {
-        this.browser.executeScript({ code: 'alert(`Native: ' + message + '`);' });
+        this.browser.executeScript({ code: 'alert(`Native: ' + JSON.stringify(message) + '`);' });
       } else {
         message = JSON.stringify(message);
 
