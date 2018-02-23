@@ -212,6 +212,7 @@ export class HomePage {
   	}
 
     browserLoopFunction(delay?: number) {
+      alert('browserLoopFunction');
       this.ngZone.run(() => {
         this.nativeTimestamp = Date.now();
         return this.browserActivateNativeAppMode().then(values => {
@@ -225,11 +226,11 @@ export class HomePage {
           //   }
           // });
         }).then(() => {
-          // alert("got to the last then");
+          alert("got to the last then");
           if (delay) {
             this.browserLoopSetTimeout = setTimeout(() => {
               this.ngZone.run(() => {
-                // alert("should start browser loop");
+                alert("should start browser loop");
                 this.browserLoopFunction(delay);
               });
             }, delay);
@@ -269,10 +270,15 @@ export class HomePage {
     }
 
     browserActivateNativeAppMode() {
+      alert('browserActivateNativeAppMode');
       if (this.browser && !this.nativeAppModeActivated) {
+        alert("do it");
         return this.browser.executeScript({
           code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicActivateAppModeFunc && window.my.activateAppMode.publicActivateAppModeFunc();"
         }).then(values => {
+          alert("then values");
+          alert(values);
+
           if (values && values.length && values[0]) {
             this.nativeAppModeActivated = true;
             return this.browser.executeScript({
@@ -308,7 +314,7 @@ export class HomePage {
             return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
         }).join(''));
       }
-      
+
       if (this.browser && !this.nativeAppModeActivated) {
         this.browser.executeScript({
           code: "localStorage.getItem('firebase_id_token_output')"
