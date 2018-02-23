@@ -66,7 +66,6 @@ export class HomePage {
     ngOnInit() {
       // this.toast('ngOnInit');
       this.platform.ready().then(() => {
-        // alert("no alerts");
         // this.toast('platform is ready');
 
         // this.webNav = {postKey: 'postKey', groupKey: 'groupKey', networkKey: 'networkKey', data: {'action': 'liked'}};
@@ -87,7 +86,7 @@ export class HomePage {
           // });
         }
 
-        // this.startBrowser();
+        this.startBrowser();
 
         
         // this.unsubscribeOnAuthStateChanged = firebase.auth().onAuthStateChanged(user => {
@@ -177,25 +176,20 @@ export class HomePage {
           // });
 
           // loadstop doesn't seem to work on iOS
-          // this.browser.on("loadstart").subscribe(event => {
-          //   this.ngZone.run(() => {
-          //     // this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
-          //     // this.browser.executeScript({code: 'window.my.activateAppMode.publicActivateAppModeFunc();'});
+          this.browser.on("loadstart").subscribe(event => {
+            this.ngZone.run(() => {
+              // this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
+              // this.browser.executeScript({code: 'window.my.activateAppMode.publicActivateAppModeFunc();'});
 
-          //     // this.clearBrowserLoop();
+              // this.clearBrowserLoop();
 
-          //     // this.loadstopEvents.push(event);
-          //     if (!this.browserLoopIsActive) {
-          //       this.browserLoopIsActive = true;
-          //       this.browserLoopFunction(6000);
-          //     }
-          //   });
-          // });
-
-          // if (!this.browserLoopIsActive) {
-          //   this.browserLoopIsActive = true;
-          //   this.browserLoopFunction(6000);
-          // }
+              // this.loadstopEvents.push(event);
+              if (!this.browserLoopIsActive) {
+                this.browserLoopIsActive = true;
+                this.browserLoopFunction(6000);
+              }
+            });
+          });
 
           // this.browser.on("loadstop").subscribe(event => {
             
@@ -218,35 +212,35 @@ export class HomePage {
   	}
 
     browserLoopFunction(delay?: number) {
-      this.toast("toast worked");
-      // this.ngZone.run(() => {
-      //   alert('browserLoopFunction');
+      // this.toast("toast worked");
+      this.ngZone.run(() => {
+        this.toast('browserLoopFunction');
 
-      //   this.nativeTimestamp = Date.now();
-      // //   return this.browserActivateNativeAppMode().then(values => {
-      // //     // nothing
-      // //   }).then(() => {
-      // //     // return this.browserTest().then(values => {
-      // //     //   if (values && values.length && values[0]) {
-      // //     //     return this.browser.executeScript({
-      // //     //       code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test2', value: 'test2 ' + Date.now()}) + ");"
-      // //     //     });
-      // //     //   }
-      // //     // });
-      // //   }).then(() => {
-      // //     alert("got to the last then");
-      // //     if (delay) {
-      // //       this.browserLoopSetTimeout = setTimeout(() => {
-      // //         this.ngZone.run(() => {
-      // //           alert("should start browser loop");
-      // //           this.browserLoopFunction(delay);
-      // //         });
-      // //       }, delay);
-      // //     }
-      // //   }).catch(error => {
-      // //     this.error = error;
-      // //   });
-      // });
+        this.nativeTimestamp = Date.now();
+        return this.browserActivateNativeAppMode().then(values => {
+          // nothing
+        }).then(() => {
+          // return this.browserTest().then(values => {
+          //   if (values && values.length && values[0]) {
+          //     return this.browser.executeScript({
+          //       code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test2', value: 'test2 ' + Date.now()}) + ");"
+          //     });
+          //   }
+          // });
+        }).then(() => {
+          this.toast("got to the last then");
+          if (delay) {
+            this.browserLoopSetTimeout = setTimeout(() => {
+              this.ngZone.run(() => {
+                this.toast("should start browser loop");
+                this.browserLoopFunction(delay);
+              });
+            }, delay);
+          }
+        }).catch(error => {
+          this.error = error;
+        });
+      });
     }
 
     clearBrowserLoop() {
