@@ -220,13 +220,13 @@ export class HomePage {
         return this.browserActivateNativeAppMode().then(values => {
           // nothing
         }).then(() => {
-          // return this.browserTest().then(values => {
-          //   if (values && values.length && values[0]) {
-          //     return this.browser.executeScript({
-          //       code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test2', value: 'test2 ' + Date.now()}) + ");"
-          //     });
-          //   }
-          // });
+          return this.browserTest().then(values => {
+            if (values && values.length && values[0]) {
+              return this.browser.executeScript({
+                code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test2', value: 'test2 ' + Date.now()}) + ");"
+              });
+            }
+          });
         }).then(() => {
           this.toast("got to the last then");
           if (delay) {
