@@ -257,10 +257,14 @@ export class HomePage {
       alert('started browserTest');
       if (this.browser) {
         return this.browser.executeScript({
+          // code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test', value: 'test ' + Date.now}) + ");"
           code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test', value: 'test ' + Date.now}) + ");"
         }, values => {
+          alert('browserTest exe callback');
+
           return this.ngZone.run(() => {
             this.webTimestamp = Date.now();
+            alert('browserTest exe exe');
 
             if (values[0]) {
               return this.browser.executeScript({
@@ -268,11 +272,17 @@ export class HomePage {
               });
             }
           });
+        }).then(result => {
+          alert("then from browserText started");
+          alert(result);
+          return result;
         }).catch(error => {
           this.error = error;
           alert(error);
         });
       } else {
+        alert('no browser');
+
         return Promise.resolve(null);
       }
     }
