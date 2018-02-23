@@ -84,9 +84,6 @@ export class HomePage {
           //     this.toast("paused:" + Date.now());
           //   });
           // });
-        } else {
-          this.toast("not cordova");
-          this.toast(JSON.stringify(this.platform));
         }
 
         this.startBrowser();
@@ -143,7 +140,7 @@ export class HomePage {
 
         optionAry.push("disallowoverscroll=yes");//(iOS) Turns on/off the UIWebViewBounce property.
         optionAry.push("keyboardDisplayRequiresUserAction=no");// (iOS) Should take care of ios not allowing focus on inputs
-        // optionAry.push("hidden=yes");
+        optionAry.push("hidden=yes");
         this.doDebug = true;
         
         if (this.doDebug) {
@@ -260,7 +257,7 @@ export class HomePage {
         alert(this.browser.executeScript({code: '1 + 1'}));
         return this.browser.executeScript({
           // code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test', value: 'test ' + Date.now}) + ");"
-          code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test', value: 'test ' + Date.now}) + ");"
+          code: "1 + 1"
         }, values => {
           alert('browserTest exe callback');
 
