@@ -140,7 +140,7 @@ export class HomePage {
 
         optionAry.push("disallowoverscroll=yes");//(iOS) Turns on/off the UIWebViewBounce property.
         optionAry.push("keyboardDisplayRequiresUserAction=no");// (iOS) Should take care of ios not allowing focus on inputs
-        // optionAry.push("hidden=yes");
+        optionAry.push("hidden=yes");
         this.doDebug = true;
         
         if (this.doDebug) {
@@ -278,12 +278,12 @@ export class HomePage {
     }
 
     browserActivateNativeAppMode() {
-      if (this.browser) {
+      if (this.browser && !this.nativeAppModeActivated) {
         return this.browser.executeScript({
           code: "window.my.activateAppMode.publicActivateAppModeFunc();"
         }, values => {
           return this.ngZone.run(() => {
-            if (values[0]) {
+            if (values && values.length && values[0]) {
               this.nativeAppModeActivated = true;
               return this.browser.executeScript({
                 code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'nativeAppMode', value: 'nativeAppMode was activiated by native app ' + Date.now()}) + ");"
@@ -295,6 +295,8 @@ export class HomePage {
         return Promise.resolve(null);
       }
     }
+
+    
 
     browserNav() {
       if (this.webNav) {
