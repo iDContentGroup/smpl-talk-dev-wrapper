@@ -55,10 +55,9 @@ export class HomePage {
   	}
 
     ngOnInit() {
-
-      alert('ngOnInit');
+      // alert('ngOnInit');
       this.platform.ready().then(() => {
-        alert('platform is ready');
+        // alert('platform is ready');
 
         this.webNav = {postKey: 'postKey', groupKey: 'groupKey', networkKey: 'networkKey', data: {'action': 'liked'}};
 
@@ -121,7 +120,7 @@ export class HomePage {
     }
 
   	startBrowser() {
-      alert("startBrowser");
+      // alert("startBrowser");
       if (!this.browser) {
         const url = 'https://smpl-talk-develop.firebaseapp.com/#/';
         const target = '_blank';
@@ -359,7 +358,7 @@ export class HomePage {
     }
 
     setupPush() {
-      alert("setupPush");
+      // alert("setupPush");
       // source: https://www.youtube.com/watch?v=sUjQ3G17T80
 
       // to check if we have permission
@@ -401,7 +400,7 @@ export class HomePage {
       };
       
       const pushObject: PushObject = this.push.init(options);
-      alert(JSON.stringify(pushObject));
+      // alert(JSON.stringify(pushObject));
 
       pushObject.on('notification').subscribe((notification: any) => {
         this.ngZone.run(() => {
