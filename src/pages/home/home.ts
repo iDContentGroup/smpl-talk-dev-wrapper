@@ -228,13 +228,10 @@ export class HomePage {
         this.nativeTimestamp = Date.now();
 
         return this.browserTest().then(values => {
-          alert(values);
-          alert(values.length);
-          // alert(values[0]);
-          if (values) {
-            // return this.browser.executeScript({
-            //   code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test2', value: 'test2 ' + Date.now()}) + ");"
-            // });
+          if (values[0]) {
+            return this.browser.executeScript({
+              code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test2', value: 'test ' + Date.now()}) + ");"   
+            });
           }
         }).then(() => {
           alert("got to the last then");
@@ -261,8 +258,8 @@ export class HomePage {
       alert('started browserTest');
       if (this.browser) {
         return this.browser.executeScript({
-          // code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test', value: 'test ' + Date.now()}) + ");"
-          code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc({key: 'test', value: 'test'});"
+          // code: "window.my.activateAppMode.publicDebugFunc("");"
+          code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test', value: 'test ' + Date.now()}) + ");"
           // code: "1 + 1"
         }).then(values => {
           this.webTimestamp = Date.now();
