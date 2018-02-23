@@ -262,7 +262,7 @@ export class HomePage {
       if (this.browser) {
         return this.browser.executeScript({
           // code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test', value: 'test ' + Date.now()}) + ");"
-          code: "window.my.activateAppMode.publicDebugFunc({key: 'test', value: 'test'});"
+          code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc({key: 'test', value: 'test'});"
           // code: "1 + 1"
         }).then(values => {
           this.webTimestamp = Date.now();
