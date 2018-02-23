@@ -262,6 +262,7 @@ export class HomePage {
 
             this.webTimestamp = Date.now();
             alert('browserTest exe exe');
+            alert(values);
             return values;
             // if (values[0]) {
             //   return this.browser.executeScript({
@@ -271,7 +272,7 @@ export class HomePage {
           });
         }).then(result => {
           alert("then from browserText started");
-          // alert(result);
+          alert(result);
           return result;
         }).catch(error => {
           this.error = error;
