@@ -223,7 +223,10 @@ export class HomePage {
         }).join(''));
       }
 
-      this.nativeTimestamp = Date.now();
+      this.ngZone.run(() => {
+        this.nativeTimestamp = Date.now();
+      });
+      
 
       return this.browserTest().then(result => {
 
@@ -273,6 +276,33 @@ export class HomePage {
               this.nativeAppModeActivated = true;
               return this.browser.executeScript({
                 code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'nativeAppMode', value: 'nativeAppMode was activiated by native app ' + Date.now}) + ");"
+              });
+            }
+          });
+        });
+      } else {
+        return Promise.resolve(null);
+      }
+    }
+
+    browserNav() {
+      if (this.webNav) {
+        return this.browser.executeScript({
+          code: "window.my.activateAppMode.publicWebNavFunc("+ JSON.stringify(this.webNav) + ");"
+        }, values => {
+          this.ngZone.run(() => {
+            var navStatus = values[0];
+
+            if (navStatus) {
+              this.toast("Native navStatus: " + navStatus);
+              this.webNav = null;
+            }
+
+            if (values[0]) {
+              this.webNav = null;
+
+              return this.browser.executeScript({
+                code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'webNavStatus', value: 'nav by native app happened: ' + Date.now}) + ");"
               });
             }
           });
