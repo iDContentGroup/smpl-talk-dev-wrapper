@@ -217,34 +217,35 @@ export class HomePage {
   	}
 
     browserLoopFunction(delay?: number) {
-      this.ngZone.run(() => {
-        alert('browserLoopFunction');
+      alert("worked");
+      // this.ngZone.run(() => {
+      //   alert('browserLoopFunction');
 
-        this.nativeTimestamp = Date.now();
-      //   return this.browserActivateNativeAppMode().then(values => {
-      //     // nothing
-      //   }).then(() => {
-      //     // return this.browserTest().then(values => {
-      //     //   if (values && values.length && values[0]) {
-      //     //     return this.browser.executeScript({
-      //     //       code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test2', value: 'test2 ' + Date.now()}) + ");"
-      //     //     });
-      //     //   }
-      //     // });
-      //   }).then(() => {
-      //     alert("got to the last then");
-      //     if (delay) {
-      //       this.browserLoopSetTimeout = setTimeout(() => {
-      //         this.ngZone.run(() => {
-      //           alert("should start browser loop");
-      //           this.browserLoopFunction(delay);
-      //         });
-      //       }, delay);
-      //     }
-      //   }).catch(error => {
-      //     this.error = error;
-      //   });
-      });
+      //   this.nativeTimestamp = Date.now();
+      // //   return this.browserActivateNativeAppMode().then(values => {
+      // //     // nothing
+      // //   }).then(() => {
+      // //     // return this.browserTest().then(values => {
+      // //     //   if (values && values.length && values[0]) {
+      // //     //     return this.browser.executeScript({
+      // //     //       code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test2', value: 'test2 ' + Date.now()}) + ");"
+      // //     //     });
+      // //     //   }
+      // //     // });
+      // //   }).then(() => {
+      // //     alert("got to the last then");
+      // //     if (delay) {
+      // //       this.browserLoopSetTimeout = setTimeout(() => {
+      // //         this.ngZone.run(() => {
+      // //           alert("should start browser loop");
+      // //           this.browserLoopFunction(delay);
+      // //         });
+      // //       }, delay);
+      // //     }
+      // //   }).catch(error => {
+      // //     this.error = error;
+      // //   });
+      // });
     }
 
     clearBrowserLoop() {
