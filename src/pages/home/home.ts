@@ -69,7 +69,7 @@ export class HomePage {
         this.webNav = {postKey: 'postKey', groupKey: 'groupKey', networkKey: 'networkKey', data: {'action': 'liked'}};
 
         if (this.platform.is('cordova')) {
-          this.setupPush();
+          // this.setupPush();
 
           // this.platform.resume.subscribe(event => {
           //   this.ngZone.run(() => {
@@ -192,22 +192,22 @@ export class HomePage {
             });
           });
 
-          this.browser.on("loadstop").subscribe(event => {
+          // this.browser.on("loadstop").subscribe(event => {
             
-            // this.browser.executeScript({
-            //   code: "localStorage.setItem('nativeAppTime', '" + Date.now() + "');"
-            // }, values => {
-            //   this.ngZone.run(() => {
-            //     var hideWebWrapper = values[0];
+          //   this.browser.executeScript({
+          //     code: "localStorage.setItem('nativeAppTime', '" + Date.now() + "');"
+          //   }, values => {
+          //     this.ngZone.run(() => {
+          //       var hideWebWrapper = values[0];
 
-            //     if (hideWebWrapper) {
-            //       this.browser.executeScript({ code: "localStorage.setItem('hideWebApp', '');" });
-            //       this.browser.hide();
-            //       this.ref.detectChanges();
-            //     }
-            //   });
-            // });
-          });
+          //       if (hideWebWrapper) {
+          //         this.browser.executeScript({ code: "localStorage.setItem('hideWebApp', '');" });
+          //         this.browser.hide();
+          //         this.ref.detectChanges();
+          //       }
+          //     });
+          //   });
+          // });
         }
       }
   	}
@@ -266,14 +266,13 @@ export class HomePage {
     browserActivateNativeAppMode() {
       if (this.browser) {
         return this.browser.executeScript({
-          code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test', value: 'test ' + Date.now}) + ");"
+          code: "window.my.activateAppMode.publicActivateAppModeFunc();"
         }, values => {
           return this.ngZone.run(() => {
-            this.webTimestamp = Date.now();
-
             if (values[0]) {
+              this.nativeAppModeActivated = true;
               return this.browser.executeScript({
-                code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test2', value: 'test2 ' + Date.now}) + ");"
+                code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'nativeAppMode', value: 'nativeAppMode was activiated by native app ' + Date.now}) + ");"
               });
             }
           });
