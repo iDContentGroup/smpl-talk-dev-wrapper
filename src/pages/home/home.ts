@@ -86,7 +86,7 @@ export class HomePage {
           this.toast("not cordova");
           this.toast(JSON.stringify(this.platform));
         }
-        
+
         this.startBrowser();
 
         
@@ -213,6 +213,7 @@ export class HomePage {
   	}
 
     browserLoopFunction(delay: number) {
+
       // this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
             
       function b64DecodeUnicode(str) {
@@ -222,11 +223,15 @@ export class HomePage {
         }).join(''));
       }
 
+      this.nativeTimestamp = Date.now();
+
       return this.browserTest().then(result => {
 
       }).then(() => {
         this.browserLoopSetTimeout = setTimeout(() => {
-          this.browserLoopFunction(delay);
+          this.ngZone.run(() => {
+            this.browserLoopFunction(delay);
+          });
         }, delay);
       });
     }
