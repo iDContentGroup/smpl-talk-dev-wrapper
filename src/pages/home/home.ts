@@ -161,7 +161,7 @@ export class HomePage {
           }
         }
         if (this.platform.is('cordova')) {
-          this.browser = this.iab.create(url, target, this.options);
+          // this.browser = this.iab.create(url, target, this.options);
 
           // this.browser.on("loadstart").subscribe(event => {
           //   this.browser.executeScript({ code: "alert('loadstart');" });
@@ -175,21 +175,26 @@ export class HomePage {
           //   this.browser.executeScript({ code: "alert('loaderror');" });
           // });
 
-          // loadstop doesn't seem to work on 
-          this.browser.on("loadstart").subscribe(event => {
-            this.ngZone.run(() => {
-              // this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
-              // this.browser.executeScript({code: 'window.my.activateAppMode.publicActivateAppModeFunc();'});
+          // loadstop doesn't seem to work on iOS
+          // this.browser.on("loadstart").subscribe(event => {
+          //   this.ngZone.run(() => {
+          //     // this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
+          //     // this.browser.executeScript({code: 'window.my.activateAppMode.publicActivateAppModeFunc();'});
 
-              // this.clearBrowserLoop();
+          //     // this.clearBrowserLoop();
 
-              // this.loadstopEvents.push(event);
-              if (!this.browserLoopIsActive) {
+          //     // this.loadstopEvents.push(event);
+          //     if (!this.browserLoopIsActive) {
+          //       this.browserLoopIsActive = true;
+          //       this.browserLoopFunction(6000);
+          //     }
+          //   });
+          // });
+
+          if (!this.browserLoopIsActive) {
                 this.browserLoopIsActive = true;
                 this.browserLoopFunction(6000);
               }
-            });
-          });
 
           // this.browser.on("loadstop").subscribe(event => {
             
