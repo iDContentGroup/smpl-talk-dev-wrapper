@@ -9,7 +9,7 @@
 
 <ion-content padding>
 
-  <p>test: 42 iOS executeScripts test</p>
+  <p>test: 42 iOS executeScripts test 2</p>
   <p>{{ options }}</p>
   <button ion-button secondary (click)="startBrowser()">open smpl talk using inAppBrowser</button>
 
@@ -23,5 +23,8 @@
 
   <p *ngFor="let user of users">{{ user.key }} | {{ user.email }}</p>
   <p *ngIf="device">{{ JSON.stringify(device) }}</p>
+
+  <p>{{ test ? 'Works' : 'Nope iOS sucks' }}</p>
+
 
 </ion-content>
