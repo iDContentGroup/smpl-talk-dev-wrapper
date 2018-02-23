@@ -225,6 +225,8 @@ export class HomePage {
           code: "1 + 1"
         }, values => {
           this.ngZone.run(() => {
+            this.webTimestamp = Date.now();
+
             this.toast('pre annoying message');
 
             if (values[0] === 2) {
@@ -238,7 +240,6 @@ export class HomePage {
         });
 
         this.ngZone.run(() => {
-          this.webTimestamp = Date.now();
           this.nativeTimestamp = Date.now();
 
           // this.browser.executeScript({ 
@@ -337,10 +338,6 @@ export class HomePage {
         //   });
         // });
       }
-
-      this.browserLoopSetTimeout = setTimeout(() => {
-        this.browserLoopFunction(delay);
-      }, delay);
     }
 
     clearBrowserLoop() {
