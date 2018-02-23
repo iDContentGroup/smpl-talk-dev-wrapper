@@ -204,7 +204,10 @@ export class HomePage {
       if (this.browser) {
         this.ngZone.run(() => {
           this.browserLoopTimestamp = Date.now();
+          this.browser.executeScript({ code: "alert('moo');" });
         });
+
+
 
         if (this.webNav) {
           this.browser.executeScript({
@@ -493,7 +496,7 @@ export class HomePage {
     }
 
     toast(message: any) {
-      
+
       if (this.browser) {
         this.browser.executeScript({ code: 'alert(`Native: ' + JSON.stringify(message) + '`);' });
       } else {
