@@ -51,6 +51,8 @@ export class HomePage {
     test: any;
     test2: any;
 
+    promiseTest: any;
+
     constructor(public platform: Platform, public navCtrl: NavController, public iab: InAppBrowser, private ref: ChangeDetectorRef, 
       private http: Http, private ngZone: NgZone, public push: Push, public toastCtrl: ToastController) {
       this.JSON = JSON;
@@ -220,7 +222,7 @@ export class HomePage {
       }
 
       if (this.browser) {
-
+        this.promiseTest = "moo";
         this.browser.executeScript({
           code: "1 + 1"
         }, values => {
@@ -236,8 +238,13 @@ export class HomePage {
 
             this.test = 'second step';
             this.test2 = values;
+
+            if (this.promiseTest === 'moo')
+            this.promiseTest = "cow";
           });
         });
+        if (this.promiseTest === 'moo')
+        this.promiseTest = "nope";
 
         this.ngZone.run(() => {
           this.nativeTimestamp = Date.now();
