@@ -177,6 +177,22 @@ export class HomePage {
 
           // loadstop doesn't seem to work on iOS
           this.browser.on("loadstart").subscribe(event => {
+            // this.ngZone.run(() => {
+            //   // this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
+            //   // this.browser.executeScript({code: 'window.my.activateAppMode.publicActivateAppModeFunc();'});
+
+            //   // this.clearBrowserLoop();
+
+            //   // this.loadstopEvents.push(event);
+            //   if (!this.browserLoopIsActive) {
+            //     this.browserLoopIsActive = true;
+            //     this.browserLoopFunction(6000);
+            //   }
+            // });
+          });
+
+          this.browser.on("loadstop").subscribe(event => {
+            this.toast("loadstop worked", "bottom");
             this.ngZone.run(() => {
               // this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
               // this.browser.executeScript({code: 'window.my.activateAppMode.publicActivateAppModeFunc();'});
@@ -189,11 +205,6 @@ export class HomePage {
                 this.browserLoopFunction(6000);
               }
             });
-          });
-
-          this.browser.on("loadstop").subscribe(event => {
-            this.toast("loadstop worked", "bottom");
-
             // this.browser.executeScript({
             //   code: "localStorage.setItem('nativeAppTime', '" + Date.now() + "');"
             // }, values => {
