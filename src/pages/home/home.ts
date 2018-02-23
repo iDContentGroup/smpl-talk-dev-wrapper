@@ -297,23 +297,19 @@ export class HomePage {
       }
     }
 
-    // browserLogoutOfNativeApp() {
-    // if (this.browser && !this.nativeAppModeActivated) {
-    //   return this.browser.executeScript({
-    //     code: "localStorage.getItem('logoutOfNativeApp')"
-    //   }, values => {
-    //     return this.ngZone.run(() => {
-    //       if (values && values.length && values[0]) {
-    //         this.nativeAppModeActivated = true;
-    //         return this.browser.executeScript({
-    //           code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'nativeAppMode', value: 'nativeAppMode was activiated by native app ' + Date.now()}) + ");"
-    //         });
-    //       }
-    //     });
-    //   });
-    // } else {
-    //   return Promise.resolve(null);
-    // }
+    browserLogoutOfNativeApp() {
+      if (this.browser && !this.nativeAppModeActivated) {
+        return this.browser.executeScript({
+          code: "localStorage.getItem('logoutOfNativeApp')"
+        }).then(values => {
+          if (values && values.length && values[0]) {
+            this.firebaseSignOut();
+          }
+        });
+      } else {
+        return Promise.resolve(null);
+      }
+    }
 
     // this.browser.executeScript({
           
@@ -407,7 +403,7 @@ export class HomePage {
         // this.fbUser = null;
       }, error => {
         // console.log(error);
-        this.toast(error);
+        // this.toast(error);
       });
     }
 
