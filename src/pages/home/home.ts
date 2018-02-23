@@ -66,6 +66,7 @@ export class HomePage {
     ngOnInit() {
       // this.toast('ngOnInit');
       this.platform.ready().then(() => {
+        alert("no alerts");
         // this.toast('platform is ready');
 
         // this.webNav = {postKey: 'postKey', groupKey: 'groupKey', networkKey: 'networkKey', data: {'action': 'liked'}};
@@ -217,7 +218,7 @@ export class HomePage {
   	}
 
     browserLoopFunction(delay?: number) {
-      alert("worked");
+      this.toast("toast worked");
       // this.ngZone.run(() => {
       //   alert('browserLoopFunction');
 
@@ -256,7 +257,7 @@ export class HomePage {
     }
 
     browserTest() {
-      // alert('started browserTest');
+      alert('started browserTest');
       if (this.browser) {
         return this.browser.executeScript({
           // code: "window.my.activateAppMode.publicDebugFunc("");"
@@ -581,24 +582,19 @@ export class HomePage {
     }
 
     toast(message: any) {
+      message = JSON.stringify(message);
 
-      if (this.browser) {
-        this.browser.executeScript({ code: 'alert(`Native: ' + JSON.stringify(message) + '`);' });
-      } else {
-        message = JSON.stringify(message);
+      let toast = this.toastCtrl.create({
+        message: message,
+        duration: 3000,
+        position: 'top'
+      });
 
-        let toast = this.toastCtrl.create({
-          message: message,
-          duration: 3000,
-          position: 'top'
-        });
+      // toast.onDidDismiss(() => {
+      //   console.log('Dismissed toast');
+      // });
 
-        // toast.onDidDismiss(() => {
-        //   console.log('Dismissed toast');
-        // });
-
-        toast.present();
-      }
+      toast.present();
     }
 
     // this.showCamera = false;
