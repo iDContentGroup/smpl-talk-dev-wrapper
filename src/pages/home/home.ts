@@ -191,10 +191,10 @@ export class HomePage {
           //   });
           // });
 
-          if (!this.browserLoopIsActive) {
-                this.browserLoopIsActive = true;
-                this.browserLoopFunction(6000);
-              }
+          // if (!this.browserLoopIsActive) {
+          //   this.browserLoopIsActive = true;
+          //   this.browserLoopFunction(6000);
+          // }
 
           // this.browser.on("loadstop").subscribe(event => {
             
