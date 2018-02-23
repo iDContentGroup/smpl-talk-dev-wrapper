@@ -257,7 +257,8 @@ export class HomePage {
           // code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test', value: 'test ' + Date.now()}) + ");"
           code: "1 + 1"
         }, values => {
-          alert('browserTest exe callback');
+          return this.ngZone.run(() => {
+            alert('browserTest exe callback');
 
             this.webTimestamp = Date.now();
             alert('browserTest exe exe');
@@ -267,13 +268,14 @@ export class HomePage {
             //     code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test2', value: 'test2 ' + Date.now()}) + ");"
             //   });
             // }
+          });
         }).then(result => {
           alert("then from browserText started");
           // alert(result);
           return result;
         }).catch(error => {
           this.error = error;
-          // alert(error);
+          alert(error);
         });
       } else {
         alert('no browser');
