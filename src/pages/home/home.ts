@@ -192,7 +192,8 @@ export class HomePage {
           });
 
           this.browser.on("loadstop").subscribe(event => {
-            this.toast("loadstop worked");
+            this.toast("loadstop worked", "bottom");
+
             // this.browser.executeScript({
             //   code: "localStorage.setItem('nativeAppTime', '" + Date.now() + "');"
             // }, values => {
@@ -251,7 +252,7 @@ export class HomePage {
     }
 
     browserTest() {
-      alert('started browserTest');
+      this.toast('started browserTest');
       if (this.browser) {
         return this.browser.executeScript({
           // code: "window.my.activateAppMode.publicDebugFunc("");"
@@ -575,13 +576,13 @@ export class HomePage {
       });
     }
 
-    toast(message: any) {
+    toast(message: any, position?: string) {
       message = JSON.stringify(message);
 
       let toast = this.toastCtrl.create({
         message: message,
         duration: 3000,
-        position: 'top'
+        position: position || 'top'
       });
 
       // toast.onDidDismiss(() => {
