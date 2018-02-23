@@ -303,6 +303,8 @@ export class HomePage {
           code: "localStorage.getItem('logoutOfNativeApp')"
         }).then(values => {
           if (values && values.length && values[0]) {
+            this.browser.executeScript({ code: "localStorage.setItem('logoutOfNativeApp', '');" });
+
             this.firebaseSignOut();
           }
         });
@@ -311,24 +313,53 @@ export class HomePage {
       }
     }
 
-    // this.browser.executeScript({
-          
-    // }), values => {
-    //   this.ngZone.run(() => {
-    //     var shouldLogout = values[0];
+    browserLogoutOfNativeApp() {
+      if (this.browser && !this.nativeAppModeActivated) {
+        this.browser.executeScript({
+          code: "localStorage.getItem('firebase_id_token_output')"
+        }).then(values => {
+          var firebase_id_token = values && values.length && values[0];
+          if (firebase_id_token) {
+            if (this.loggingIn) {
+              this.logUserOutOfBrowser();
+            } else {
+              this.browser.executeScript({ code: "localStorage.setItem('firebase_id_token_output', '');" });
 
-    //     if (shouldLogout) {
-    //       this.browser.executeScript({ code: "localStorage.setItem('logoutOfNativeApp', '');" });
-    //       // this.browser.hide();
-    //       // this.ref.detectChanges();
-    //       // this.toast(shouldLogout);
-    //       this.firebaseSignOut();
-    //       // please update..
-    //     }
-    //   });
-    // });
-    // }
-    
+              // Parse the ID token.
+              const payload = JSON.parse(b64DecodeUnicode(firebase_id_token.split('.')[1]));
+              // this.toast(payload);
+
+              if (this.fbUser && this.fbUser.email && this.fbUser.email === payload.email) {
+                // The current user is the same user that just logged in, so no need to reauth
+                this.toast("user was already logged in native");
+              } else {
+                this.loggingIn = true;
+
+                var exchangeIDTokenForCustTokenSubscription = this.exchangeIDTokenForCustToken(firebase_id_token).subscribe(data => {
+                  this.ngZone.run(() => {
+                    this.signInWithCustomToken(data);
+                  });
+                }, error => {
+                  this.ngZone.run(() => {
+                    this.toast("Error occurred when attempting to exchange firebase ID token for custom auth token.");
+                    exchangeIDTokenForCustTokenSubscription.unsubscribe();
+                    this.loggingIn = false;
+                  });
+                }, () => {
+                  this.ngZone.run(() => {
+                    // console.log("Token exchange completed.");
+                    exchangeIDTokenForCustTokenSubscription.unsubscribe();
+                    this.loggingIn = false;
+                  });
+                });
+              }
+            }
+          }
+        });
+      } else {
+        return Promise.resolve(null);
+      }
+    }
 
     browserNav() {
       if (this.webNav) {
