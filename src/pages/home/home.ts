@@ -53,6 +53,8 @@ export class HomePage {
 
     promiseTest: any;
 
+    error: any;
+
     constructor(public platform: Platform, public navCtrl: NavController, public iab: InAppBrowser, private ref: ChangeDetectorRef, 
       private http: Http, private ngZone: NgZone, public push: Push, public toastCtrl: ToastController) {
       this.JSON = JSON;
@@ -236,6 +238,8 @@ export class HomePage {
             this.browserLoopFunction(delay);
           });
         }, delay);
+      }).catch(error => {
+        this.error = error;
       });
     }
 
