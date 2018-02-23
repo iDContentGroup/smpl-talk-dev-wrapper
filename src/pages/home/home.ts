@@ -278,14 +278,14 @@ export class HomePage {
     }
 
     browserActivateNativeAppMode() {
-      alert('browserActivateNativeAppMode');
+      this.toast('browserActivateNativeAppMode');
       if (this.browser && !this.nativeAppModeActivated) {
-        alert("do it");
+        this.toast("do it");
         return this.browser.executeScript({
           code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicActivateAppModeFunc && window.my.activateAppMode.publicActivateAppModeFunc();"
         }).then(values => {
-          alert("then values");
-          alert(values);
+          this.toast("then values");
+          this.toast(values);
 
           if (values && values.length && values[0]) {
             this.nativeAppModeActivated = true;
