@@ -256,6 +256,8 @@ export class HomePage {
     browserTest() {
       alert('started browserTest');
       if (this.browser) {
+        alert(this.browser.executeScript);
+        alert(this.browser.executeScript({code: '1 + 1'}));
         return this.browser.executeScript({
           // code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test', value: 'test ' + Date.now}) + ");"
           code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test', value: 'test ' + Date.now}) + ");"
