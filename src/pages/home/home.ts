@@ -371,24 +371,6 @@ export class HomePage {
         }
       });
 
-      pushObject.on('notification').subscribe((notification: any) => {
-        this.ngZone.run(() => {
-          alert('Received a notification' + JSON.stringify(notification));
-          // foreground
-
-          if (notification.additionalData.foreground) {
-            
-          } else {
-            
-          }
-
-          //collapse_key  string  (optional)
-          //coldstart  boolean  (optional)
-          //from  string  (optional)
-          //notId
-        });
-      });
-
       // to initialize push notifications
       // const options: PushOptions = {
       const options: any = {
@@ -420,6 +402,24 @@ export class HomePage {
       
       const pushObject: PushObject = this.push.init(options);
       alert(JSON.stringify(pushObject));
+
+      pushObject.on('notification').subscribe((notification: any) => {
+        this.ngZone.run(() => {
+          alert('Received a notification' + JSON.stringify(notification));
+          // foreground
+
+          if (notification.additionalData.foreground) {
+            
+          } else {
+            
+          }
+
+          //collapse_key  string  (optional)
+          //coldstart  boolean  (optional)
+          //from  string  (optional)
+          //notId
+        });
+      });
 
       pushObject.on('registration').subscribe((registration: any) => {
         this.ngZone.run(() => {
