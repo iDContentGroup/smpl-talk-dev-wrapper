@@ -191,22 +191,22 @@ export class HomePage {
             });
           });
 
-          // this.browser.on("loadstop").subscribe(event => {
-            
-          //   this.browser.executeScript({
-          //     code: "localStorage.setItem('nativeAppTime', '" + Date.now() + "');"
-          //   }, values => {
-          //     this.ngZone.run(() => {
-          //       var hideWebWrapper = values[0];
+          this.browser.on("loadstop").subscribe(event => {
+            this.toast("loadstop worked");
+            // this.browser.executeScript({
+            //   code: "localStorage.setItem('nativeAppTime', '" + Date.now() + "');"
+            // }, values => {
+            //   this.ngZone.run(() => {
+            //     var hideWebWrapper = values[0];
 
-          //       if (hideWebWrapper) {
-          //         this.browser.executeScript({ code: "localStorage.setItem('hideWebApp', '');" });
-          //         this.browser.hide();
-          //         this.ref.detectChanges();
-          //       }
-          //     });
-          //   });
-          // });
+            //     if (hideWebWrapper) {
+            //       this.browser.executeScript({ code: "localStorage.setItem('hideWebApp', '');" });
+            //       this.browser.hide();
+            //       this.ref.detectChanges();
+            //     }
+            //   });
+            // });
+          });
         }
       }
   	}
