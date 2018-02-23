@@ -47,6 +47,7 @@ export class HomePage {
     nativeAppModeActivated: boolean;
 
     test: any;
+    test2: any;
 
     constructor(public platform: Platform, public navCtrl: NavController, public iab: InAppBrowser, private ref: ChangeDetectorRef, 
       private http: Http, private ngZone: NgZone, public push: Push, public toastCtrl: ToastController) {
@@ -222,9 +223,11 @@ export class HomePage {
           code: "1 + 1"
         }, values => {
           this.ngZone.run(() => {
-            this.toast(values);
+            this.toast('third step');
+            // this.toast(values);
 
             this.test = 'second step';
+            this.test2 = values;
           });
         });
 

@@ -24,7 +24,8 @@
   <p *ngFor="let user of users">{{ user.key }} | {{ user.email }}</p>
   <p *ngIf="device">{{ JSON.stringify(device) }}</p>
 
-  <p>{{ test ? 'Works' : 'Nope iOS sucks' }}</p>
+  <p>{{ test ? test : 'Nope iOS sucks' }}</p>
+  <p>{{ test2 ? test2 : 'Nope iOS sucks 2' }}</p>
 
 
 </ion-content>
