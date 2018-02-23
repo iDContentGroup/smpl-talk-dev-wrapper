@@ -215,6 +215,8 @@ export class HomePage {
   	}
 
     browserLoopFunction(delay: number) {
+      alert("started browser loop");
+
 
       // this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
             
@@ -227,19 +229,20 @@ export class HomePage {
 
       this.ngZone.run(() => {
         this.nativeTimestamp = Date.now();
-      });
-      
 
-      return this.browserTest().then(result => {
-
-      }).then(() => {
-        this.browserLoopSetTimeout = setTimeout(() => {
-          this.ngZone.run(() => {
-            this.browserLoopFunction(delay);
-          });
-        }, delay);
-      }).catch(error => {
-        this.error = error;
+        return this.browserTest().then(result => {
+          alert('browserTest promise then');
+        }).then(() => {
+          alert("got to the last then");
+          this.browserLoopSetTimeout = setTimeout(() => {
+            this.ngZone.run(() => {
+              alert("should start browser loop");
+              this.browserLoopFunction(delay);
+            });
+          }, delay);
+        }).catch(error => {
+          this.error = error;
+        });
       });
     }
 
