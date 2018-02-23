@@ -493,7 +493,8 @@ export class HomePage {
       });
     }
 
-    toast(message: string) {
+    toast(message: any) {
+      message = JSON.stringify(message);
       let toast = this.toastCtrl.create({
         message: message,
         duration: 3000,
