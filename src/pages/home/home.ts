@@ -232,9 +232,9 @@ export class HomePage {
           alert(values.length);
           // alert(values[0]);
           if (values) {
-            return this.browser.executeScript({
-              code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test2', value: 'test2 ' + Date.now()}) + ");"
-            });
+            // return this.browser.executeScript({
+            //   code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test2', value: 'test2 ' + Date.now()}) + ");"
+            // });
           }
         }).then(() => {
           alert("got to the last then");
@@ -261,8 +261,8 @@ export class HomePage {
       alert('started browserTest');
       if (this.browser) {
         return this.browser.executeScript({
-          code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test', value: 'test ' + Date.now()}) + ");"
-          // code: "1 + 1"
+          // code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test', value: 'test ' + Date.now()}) + ");"
+          code: "1 + 1"
         }).then(values => {
           this.webTimestamp = Date.now();
           return values;
