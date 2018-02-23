@@ -186,7 +186,7 @@ export class HomePage {
               // this.loadstopEvents.push(event);
               if (!this.browserLoopIsActive) {
                 this.browserLoopIsActive = true;
-                this.browserLoopFunction(100);
+                this.browserLoopFunction(6000);
               }
             });
           });
@@ -228,11 +228,11 @@ export class HomePage {
         this.nativeTimestamp = Date.now();
 
         return this.browserTest().then(values => {
-          if (values[0]) {
-            return this.browser.executeScript({
-              code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test2', value: 'test ' + Date.now()}) + ");"   
-            });
-          }
+          // if (values[0]) {
+          //   return this.browser.executeScript({
+          //     code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test2', value: 'test2 ' + Date.now()}) + ");"   
+          //   });
+          // }
         }).then(() => {
           alert("got to the last then");
           this.browserLoopSetTimeout = setTimeout(() => {
