@@ -55,59 +55,63 @@ export class HomePage {
   	}
 
     ngOnInit() {
+
       alert('ngOnInit');
+      this.platform.ready().then(() => {
+        alert('platform is ready');
 
-      this.navToPost = {postKey: 'postKey', groupKey: 'groupKey', networkKey: 'networkKey', data: {'action': 'liked'}};
+        this.navToPost = {postKey: 'postKey', groupKey: 'groupKey', networkKey: 'networkKey', data: {'action': 'liked'}};
 
-      if (this.platform.is('cordova')) {
-        this.setupPush();
+        if (this.platform.is('cordova')) {
+          this.setupPush();
 
-        // this.platform.resume.subscribe(event => {
-        //   this.ngZone.run(() => {
-        //     alert("resumed: " + Date.now());
-        //   });
-        // });
+          // this.platform.resume.subscribe(event => {
+          //   this.ngZone.run(() => {
+          //     alert("resumed: " + Date.now());
+          //   });
+          // });
 
-        // this.platform.pause.subscribe(event => {
-        //   this.ngZone.run(() => {
-        //     alert("paused:" + Date.now());
-        //   });
-        // });
-      } else {
-        alert("not cordova");
-        alert(JSON.stringify(this.platform));
-      }
-      
-      this.unsubscribeOnAuthStateChanged = firebase.auth().onAuthStateChanged(user => {
-        this.ngZone.run(() => {
-          if (user) {
-            this.users = [];
+          // this.platform.pause.subscribe(event => {
+          //   this.ngZone.run(() => {
+          //     alert("paused:" + Date.now());
+          //   });
+          // });
+        } else {
+          alert("not cordova");
+          alert(JSON.stringify(this.platform));
+        }
+        
+        this.unsubscribeOnAuthStateChanged = firebase.auth().onAuthStateChanged(user => {
+          this.ngZone.run(() => {
+            if (user) {
+              this.users = [];
 
-            this.fbUser = user;
-            alert('native logged in: ' + this.fbUser.uid + " | " + this.fbUser.email);
-            firebase.database().ref("UsersRef/").orderByChild('email').equalTo(this.fbUser.email).once('value').then(usersRef => {
-              usersRef.forEach(userRef => {
-                var user = userRef.val();
-                user['key'] = userRef.key;
+              this.fbUser = user;
+              alert('native logged in: ' + this.fbUser.uid + " | " + this.fbUser.email);
+              firebase.database().ref("UsersRef/").orderByChild('email').equalTo(this.fbUser.email).once('value').then(usersRef => {
+                usersRef.forEach(userRef => {
+                  var user = userRef.val();
+                  user['key'] = userRef.key;
 
-                this.users.push(user);
-              })
-            }).then(() => {
+                  this.users.push(user);
+                })
+              }).then(() => {
+                this.usersInitalized = true;
+                alert(this.users);
+                this.setDeviceUserPairing();
+              });
+              // TODO: do some stuff with push notifications
+            } else {
+              alert("native logged out");
+              this.fbUser = null;
+              this.users = [];
               this.usersInitalized = true;
-              alert(this.users);
-              this.setDeviceUserPairing();
-            });
-            // TODO: do some stuff with push notifications
-          } else {
-            alert("native logged out");
-            this.fbUser = null;
-            this.users = [];
-            this.usersInitalized = true;
 
-            this.setDeviceUserPairing();
-          }
-          
-          this.startBrowser();
+              this.setDeviceUserPairing();
+            }
+            
+            this.startBrowser();
+          });
         });
       });
     }
@@ -358,6 +362,33 @@ export class HomePage {
       alert("setupPush");
       // source: https://www.youtube.com/watch?v=sUjQ3G17T80
 
+      // to check if we have permission
+      this.push.hasPermission().then((res: any) => {
+        if (res.isEnabled) {
+          alert('We have permission to send push notifications');
+        } else {
+          alert('We do not have permission to send push notifications');
+        }
+      });
+
+      pushObject.on('notification').subscribe((notification: any) => {
+        this.ngZone.run(() => {
+          alert('Received a notification' + JSON.stringify(notification));
+          // foreground
+
+          if (notification.additionalData.foreground) {
+            
+          } else {
+            
+          }
+
+          //collapse_key  string  (optional)
+          //coldstart  boolean  (optional)
+          //from  string  (optional)
+          //notId
+        });
+      });
+
       // to initialize push notifications
       // const options: PushOptions = {
       const options: any = {
@@ -389,33 +420,6 @@ export class HomePage {
       
       const pushObject: PushObject = this.push.init(options);
       alert(JSON.stringify(pushObject));
-
-      // to check if we have permission
-      this.push.hasPermission().then((res: any) => {
-        if (res.isEnabled) {
-          alert('We have permission to send push notifications');
-        } else {
-          alert('We do not have permission to send push notifications');
-        }
-      });
-
-      pushObject.on('notification').subscribe((notification: any) => {
-        this.ngZone.run(() => {
-          alert('Received a notification' + JSON.stringify(notification));
-          // foreground
-
-          if (notification.additionalData.foreground) {
-            
-          } else {
-            
-          }
-
-          //collapse_key  string  (optional)
-          //coldstart  boolean  (optional)
-          //from  string  (optional)
-          //notId
-        });
-      });
 
       pushObject.on('registration').subscribe((registration: any) => {
         this.ngZone.run(() => {
