@@ -175,6 +175,10 @@ export class HomePage {
           //   this.browser.executeScript({ code: "alert('loaderror');" });
           // });
 
+          this.browser.on("exit").subscribe(event => {
+            this.browser = null;
+          });
+
           // loadstop doesn't seem to work on iOS
           this.browser.on("loadstart").subscribe(event => {
             // this.ngZone.run(() => {
