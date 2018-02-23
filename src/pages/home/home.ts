@@ -5,11 +5,11 @@ import { Http, Response, Headers, RequestOptions } from '@angular/http';
 // import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
-import { NavController, Platform } from 'ionic-angular';
+import { NavController, Platform, ToastController } from 'ionic-angular';
 
 import { InAppBrowser } from '@ionic-native/in-app-browser';
-import { Camera, CameraOptions } from '@ionic-native/camera';
-import { ImagePicker } from '@ionic-native/image-picker';
+// import { Camera, CameraOptions } from '@ionic-native/camera';
+// import { ImagePicker } from '@ionic-native/image-picker';
 
 import { Push, PushObject, PushOptions } from '@ionic-native/push';
 
@@ -45,9 +45,8 @@ export class HomePage {
 
     webNav: any;
 
-    constructor(public platform: Platform, public navCtrl: NavController, private iab: InAppBrowser, 
-      private camera: Camera, private imagePicker: ImagePicker, private ref: ChangeDetectorRef, 
-      private http: Http, private ngZone: NgZone, private push: Push) {
+    constructor(public platform: Platform, public navCtrl: NavController, public iab: InAppBrowser, private ref: ChangeDetectorRef, 
+      private http: Http, private ngZone: NgZone, public push: Push, public toastCtrl: ToastController) {
       this.JSON = JSON;
       this.http = http;
 
@@ -55,9 +54,9 @@ export class HomePage {
   	}
 
     ngOnInit() {
-      // alert('ngOnInit');
+      // toast('ngOnInit');
       this.platform.ready().then(() => {
-        // alert('platform is ready');
+        // toast('platform is ready');
 
         this.webNav = {postKey: 'postKey', groupKey: 'groupKey', networkKey: 'networkKey', data: {'action': 'liked'}};
 
@@ -66,18 +65,18 @@ export class HomePage {
 
           // this.platform.resume.subscribe(event => {
           //   this.ngZone.run(() => {
-          //     alert("resumed: " + Date.now());
+          //     toast("resumed: " + Date.now());
           //   });
           // });
 
           // this.platform.pause.subscribe(event => {
           //   this.ngZone.run(() => {
-          //     alert("paused:" + Date.now());
+          //     toast("paused:" + Date.now());
           //   });
           // });
         } else {
-          alert("not cordova");
-          alert(JSON.stringify(this.platform));
+          toast("not cordova");
+          toast(JSON.stringify(this.platform));
         }
         
         this.unsubscribeOnAuthStateChanged = firebase.auth().onAuthStateChanged(user => {
@@ -86,7 +85,7 @@ export class HomePage {
               this.users = [];
 
               this.fbUser = user;
-              alert('native logged in: ' + this.fbUser.uid + " | " + this.fbUser.email);
+              toast('native logged in: ' + this.fbUser.uid + " | " + this.fbUser.email);
               firebase.database().ref("UsersRef/").orderByChild('email').equalTo(this.fbUser.email).once('value').then(usersRef => {
                 usersRef.forEach(userRef => {
                   var user = userRef.val();
@@ -96,12 +95,12 @@ export class HomePage {
                 })
               }).then(() => {
                 this.usersInitalized = true;
-                alert(this.users);
+                toast(this.users);
                 this.setDeviceUserPairing();
               });
               // TODO: do some stuff with push notifications
             } else {
-              alert("native logged out");
+              toast("native logged out");
               this.fbUser = null;
               this.users = [];
               this.usersInitalized = true;
@@ -120,7 +119,7 @@ export class HomePage {
     }
 
   	startBrowser() {
-      // alert("startBrowser");
+      // toast("startBrowser");
       if (!this.browser) {
         const url = 'https://smpl-talk-develop.firebaseapp.com/#/';
         const target = '_blank';
@@ -215,7 +214,7 @@ export class HomePage {
               var navStatus = values[0];
 
               if (navStatus) {
-                alert(navStatus);
+                toast(navStatus);
                 this.webNav = null;
               }
             });
@@ -249,11 +248,11 @@ export class HomePage {
 
               // Parse the ID token.
               const payload = JSON.parse(b64DecodeUnicode(firebase_id_token.split('.')[1]));
-              // alert(payload);
+              // toast(payload);
 
               if (this.fbUser && this.fbUser.email && this.fbUser.email === payload.email) {
                 // The current user is the same user that just logged in, so no need to reauth
-                alert("user was already logged in native");
+                toast("user was already logged in native");
               } else {
                 this.loggingIn = true;
 
@@ -263,7 +262,7 @@ export class HomePage {
                   });
                 }, error => {
                   this.ngZone.run(() => {
-                    alert("Error occurred when attempting to exchange firebase ID token for custom auth token.");
+                    toast("Error occurred when attempting to exchange firebase ID token for custom auth token.");
                     exchangeIDTokenForCustTokenSubscription.unsubscribe();
                     this.loggingIn = false;
                   });
@@ -289,7 +288,7 @@ export class HomePage {
               this.browser.executeScript({ code: "localStorage.setItem('logoutOfNativeApp', '');" });
               // this.browser.hide();
               // this.ref.detectChanges();
-              // alert(shouldLogout);
+              // toast(shouldLogout);
               this.firebaseSignOut();
               // please update..
             }
@@ -346,7 +345,7 @@ export class HomePage {
         this.loggingIn = false;
         this.logUserOutOfBrowser();
 
-        alert(errorMessage);
+        toast(errorMessage);
       });
     }
 
@@ -355,20 +354,20 @@ export class HomePage {
         // this.fbUser = null;
       }, error => {
         // console.log(error);
-        alert(error);
+        toast(error);
       });
     }
 
     setupPush() {
-      // alert("setupPush");
+      // toast("setupPush");
       // source: https://www.youtube.com/watch?v=sUjQ3G17T80
 
       // to check if we have permission
       this.push.hasPermission().then((res: any) => {
         if (res.isEnabled) {
-          alert('We have permission to send push notifications');
+          toast('We have permission to send push notifications');
         } else {
-          alert('We do not have permission to send push notifications');
+          toast('We do not have permission to send push notifications');
         }
       });
 
@@ -402,11 +401,11 @@ export class HomePage {
       };
       
       const pushObject: PushObject = this.push.init(options);
-      // alert(JSON.stringify(pushObject));
+      // toast(JSON.stringify(pushObject));
 
       pushObject.on('notification').subscribe((notification: any) => {
         this.ngZone.run(() => {
-          alert('Received a notification' + JSON.stringify(notification));
+          toast('Received a notification' + JSON.stringify(notification));
           // foreground
 
           if (notification.additionalData.foreground) {
@@ -424,7 +423,7 @@ export class HomePage {
 
       pushObject.on('registration').subscribe((registration: any) => {
         this.ngZone.run(() => {
-          alert('Device registered' + JSON.stringify(registration));
+          toast('Device registered' + JSON.stringify(registration));
 
 
           // TODO: Save deviceID to user's account
@@ -436,7 +435,7 @@ export class HomePage {
 
       pushObject.on('error').subscribe(error => {
         this.ngZone.run(() => {
-          alert('Error with Push plugin' + JSON.stringify(error));
+          toast('Error with Push plugin' + JSON.stringify(error));
           // TODO: log error
         });
       });
@@ -447,7 +446,7 @@ export class HomePage {
         return null;
       }
 
-      alert("pair device and user");
+      toast("pair device and user");
       
       var updates = {};
 
@@ -458,7 +457,7 @@ export class HomePage {
         users.forEach(userSnapshot => {
           var match = false;
 
-          alert(userSnapshot.key);
+          toast(userSnapshot.key);
 
           for (var i = 0; i < this.users.length; i++) {
             if (this.users[i].key === userSnapshot.key) {
@@ -482,16 +481,30 @@ export class HomePage {
           updates[pushDevicePath + '/' + this.device.registrationId + '/Users/' + user.key] = now;
         }
 
-        alert(JSON.stringify(updates));
+        toast(JSON.stringify(updates));
 
         firebase.database().ref('PushNotifications/').update(updates, error => {
           if (error) {
-            alert(error);
+            toast(error);
           } else {
-            alert("updated pushNotifications in database");
+            toast("updated pushNotifications in database");
           }
         });
       });
+    }
+
+    toast(message: string) {
+      let toast = this.toastCtrl.create({
+        message: message,
+        duration: 3000,
+        position: 'top'
+      });
+
+      // toast.onDidDismiss(() => {
+      //   console.log('Dismissed toast');
+      // });
+
+      toast.present();
     }
 
     // this.showCamera = false;
