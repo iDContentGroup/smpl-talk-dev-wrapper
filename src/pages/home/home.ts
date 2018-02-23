@@ -256,7 +256,7 @@ export class HomePage {
         return this.browser.executeScript({
           // code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test', value: 'test ' + Date.now()}) + ");"
           code: "1 + 1"
-        }, values => {
+        }).then(values => {
           return this.ngZone.run(() => {
             alert('browserTest exe callback');
 
