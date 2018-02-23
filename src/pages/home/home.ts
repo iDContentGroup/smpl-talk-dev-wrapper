@@ -224,7 +224,11 @@ export class HomePage {
         }, values => {
           this.ngZone.run(() => {
             this.toast('third step');
-            // this.toast(values);
+            this.toast(values);
+
+            if (this.toast(values == 2)) {
+              this.toast('wtf it equals 2... so its not an array');
+            } 
 
             this.test = 'second step';
             this.test2 = values;
