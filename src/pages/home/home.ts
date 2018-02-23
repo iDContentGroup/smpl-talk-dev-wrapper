@@ -161,7 +161,7 @@ export class HomePage {
           }
         }
         if (this.platform.is('cordova')) {
-          // this.browser = this.iab.create(url, target, this.options);
+          this.browser = this.iab.create(url, target, this.options);
 
           // this.browser.on("loadstart").subscribe(event => {
           //   this.browser.executeScript({ code: "alert('loadstart');" });
