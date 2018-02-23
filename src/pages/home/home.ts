@@ -121,8 +121,7 @@ export class HomePage {
   	startBrowser() {
       // this.toast("startBrowser");
       if (!this.browser) {
-        const url = 'https://google.com';
-        // const url = 'https://smpl-talk-develop.firebaseapp.com/#/';
+        const url = 'https://smpl-talk-develop.firebaseapp.com/#/';
         const target = '_blank';
 
         this.options = '';
