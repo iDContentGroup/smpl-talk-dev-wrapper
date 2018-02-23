@@ -226,13 +226,16 @@ export class HomePage {
 
       this.ngZone.run(() => {
         this.nativeTimestamp = Date.now();
-
-        return this.browserTest().then(values => {
-          if (values && values.length && values[0]) {
-            return this.browser.executeScript({
-              code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test2', value: 'test2 ' + Date.now()}) + ");"   
-            });
-          }
+        return this.browserActivateNativeAppMode().then(values => {
+          // nothing
+        }).then(() => {
+          this.browserTest().then(values => {
+            if (values && values.length && values[0]) {
+              return this.browser.executeScript({
+                code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test2', value: 'test2 ' + Date.now()}) + ");"
+              });
+            }
+          });
         }).then(() => {
           // alert("got to the last then");
           if (delay) {
@@ -280,22 +283,55 @@ export class HomePage {
     browserActivateNativeAppMode() {
       if (this.browser && !this.nativeAppModeActivated) {
         return this.browser.executeScript({
-          code: "window.my.activateAppMode.publicActivateAppModeFunc();"
+          code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicActivateAppModeFunc && window.my.activateAppMode.publicActivateAppModeFunc();"
         }, values => {
-          return this.ngZone.run(() => {
-            if (values && values.length && values[0]) {
-              this.nativeAppModeActivated = true;
-              return this.browser.executeScript({
-                code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'nativeAppMode', value: 'nativeAppMode was activiated by native app ' + Date.now()}) + ");"
-              });
-            }
-          });
+          if (values && values.length && values[0]) {
+            this.nativeAppModeActivated = true;
+            return this.browser.executeScript({
+              code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'nativeAppModeActivated', value: 'activated at ' + Date.now()}) + ");"
+            });
+          }
         });
       } else {
         return Promise.resolve(null);
       }
     }
 
+    // browserLogoutOfNativeApp() {
+    // if (this.browser && !this.nativeAppModeActivated) {
+    //   return this.browser.executeScript({
+    //     code: "localStorage.getItem('logoutOfNativeApp')"
+    //   }, values => {
+    //     return this.ngZone.run(() => {
+    //       if (values && values.length && values[0]) {
+    //         this.nativeAppModeActivated = true;
+    //         return this.browser.executeScript({
+    //           code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'nativeAppMode', value: 'nativeAppMode was activiated by native app ' + Date.now()}) + ");"
+    //         });
+    //       }
+    //     });
+    //   });
+    // } else {
+    //   return Promise.resolve(null);
+    // }
+
+    // this.browser.executeScript({
+          
+    // }), values => {
+    //   this.ngZone.run(() => {
+    //     var shouldLogout = values[0];
+
+    //     if (shouldLogout) {
+    //       this.browser.executeScript({ code: "localStorage.setItem('logoutOfNativeApp', '');" });
+    //       // this.browser.hide();
+    //       // this.ref.detectChanges();
+    //       // this.toast(shouldLogout);
+    //       this.firebaseSignOut();
+    //       // please update..
+    //     }
+    //   });
+    // });
+    // }
     
 
     browserNav() {
