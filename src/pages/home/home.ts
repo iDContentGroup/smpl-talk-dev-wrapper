@@ -229,8 +229,9 @@ export class HomePage {
 
         return this.browserTest().then(values => {
           alert(values);
-          alert(values[0]);
-          if (values[0]) {
+          alert(values.length);
+          // alert(values[0]);
+          if (values) {
             return this.browser.executeScript({
               code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test2', value: 'test2 ' + Date.now()}) + ");"
             });
