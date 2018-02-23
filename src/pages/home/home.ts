@@ -66,7 +66,7 @@ export class HomePage {
     ngOnInit() {
       // this.toast('ngOnInit');
       this.platform.ready().then(() => {
-        alert("no alerts");
+        // alert("no alerts");
         // this.toast('platform is ready');
 
         // this.webNav = {postKey: 'postKey', groupKey: 'groupKey', networkKey: 'networkKey', data: {'action': 'liked'}};
