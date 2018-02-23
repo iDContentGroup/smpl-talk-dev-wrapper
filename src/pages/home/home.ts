@@ -495,7 +495,7 @@ export class HomePage {
 
     toast(message: any) {
       if (this.browser) {
-        this.browser.executeScript({ code: 'alert(' + message + ');' });
+        this.browser.executeScript({ code: 'alert(`Native: ' + message + '`);' });
       } else {
         message = JSON.stringify(message);
 
