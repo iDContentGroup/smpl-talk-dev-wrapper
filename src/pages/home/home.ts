@@ -121,7 +121,8 @@ export class HomePage {
   	startBrowser() {
       // this.toast("startBrowser");
       if (!this.browser) {
-        const url = 'https://smpl-talk-develop.firebaseapp.com/#/';
+        const url = 'https://google.com';
+        // const url = 'https://smpl-talk-develop.firebaseapp.com/#/';
         const target = '_blank';
 
         this.options = '';
@@ -154,41 +155,53 @@ export class HomePage {
           this.browser = this.iab.create(url, target, this.options);
 
           this.browser.on("loadstart").subscribe(event => {
-            this.ngZone.run(() => {
-              this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
-              this.browser.executeScript({code: 'window.my.activateAppMode.publicActivateAppModeFunc();'});
-
-              this.clearBrowserLoop();
-            });
+            this.browser.executeScript({ code: "alert('loadstart');" });
           });
 
           this.browser.on("loadstop").subscribe(event => {
-            this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
-            this.browser.executeScript({ code: 'window.my.activateAppMode.publicActivateAppModeFunc();'});
-            
-            this.browser.executeScript({
-              code: "localStorage.setItem('nativeAppTime', '" + Date.now() + "');"
-            }, values => {
-              this.ngZone.run(() => {
-                var hideWebWrapper = values[0];
-
-                if (hideWebWrapper) {
-                  this.browser.executeScript({ code: "localStorage.setItem('hideWebApp', '');" });
-                  this.browser.hide();
-                  this.ref.detectChanges();
-                }
-              });
-            });
-
-            // this.loadstopEvents.push(event);
-            if (!this.browserLoopIsActive) {
-              this.browserLoopIsActive = true;
-              this.browserLoopSetTimeout = setTimeout(() => {
-                this.browserLoopFunction(100);
-              }, 100); 
-            }
-            
+            this.browser.executeScript({ code: "alert('loadstop');" });
           });
+
+          this.browser.on("loaderror").subscribe(event => {
+            this.browser.executeScript({ code: "alert('loaderror');" });
+          });
+
+          // this.browser.on("loadstart").subscribe(event => {
+          //   this.ngZone.run(() => {
+          //     this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
+          //     this.browser.executeScript({code: 'window.my.activateAppMode.publicActivateAppModeFunc();'});
+
+          //     this.clearBrowserLoop();
+          //   });
+          // });
+
+          // this.browser.on("loadstop").subscribe(event => {
+          //   this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
+          //   this.browser.executeScript({ code: 'window.my.activateAppMode.publicActivateAppModeFunc();'});
+            
+          //   this.browser.executeScript({
+          //     code: "localStorage.setItem('nativeAppTime', '" + Date.now() + "');"
+          //   }, values => {
+          //     this.ngZone.run(() => {
+          //       var hideWebWrapper = values[0];
+
+          //       if (hideWebWrapper) {
+          //         this.browser.executeScript({ code: "localStorage.setItem('hideWebApp', '');" });
+          //         this.browser.hide();
+          //         this.ref.detectChanges();
+          //       }
+          //     });
+          //   });
+
+          //   // this.loadstopEvents.push(event);
+          //   if (!this.browserLoopIsActive) {
+          //     this.browserLoopIsActive = true;
+          //     this.browserLoopSetTimeout = setTimeout(() => {
+          //       this.browserLoopFunction(100);
+          //     }, 100); 
+          //   }
+            
+          // });
         }
       }
   	}
