@@ -229,7 +229,7 @@ export class HomePage {
         return this.browserActivateNativeAppMode().then(values => {
           // nothing
         }).then(() => {
-          this.browserTest().then(values => {
+          return this.browserTest().then(values => {
             if (values && values.length && values[0]) {
               return this.browser.executeScript({
                 code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test2', value: 'test2 ' + Date.now()}) + ");"
@@ -284,7 +284,7 @@ export class HomePage {
       if (this.browser && !this.nativeAppModeActivated) {
         return this.browser.executeScript({
           code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicActivateAppModeFunc && window.my.activateAppMode.publicActivateAppModeFunc();"
-        }, values => {
+        }).then(values => {
           if (values && values.length && values[0]) {
             this.nativeAppModeActivated = true;
             return this.browser.executeScript({
