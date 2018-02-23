@@ -176,36 +176,34 @@ export class HomePage {
           // loadstop doesn't seem to work on 
           this.browser.on("loadstart").subscribe(event => {
             this.ngZone.run(() => {
-              this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
-              this.browser.executeScript({code: 'window.my.activateAppMode.publicActivateAppModeFunc();'});
+              // this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
+              // this.browser.executeScript({code: 'window.my.activateAppMode.publicActivateAppModeFunc();'});
 
               // this.clearBrowserLoop();
 
               // this.loadstopEvents.push(event);
               if (!this.browserLoopIsActive) {
                 this.browserLoopIsActive = true;
-                this.browserLoopSetTimeout = setTimeout(() => {
-                  this.browserLoopFunction(100);
-                }, 100); 
+                this.browserLoopFunction(6000);
               }
             });
           });
 
           this.browser.on("loadstop").subscribe(event => {
             
-            this.browser.executeScript({
-              code: "localStorage.setItem('nativeAppTime', '" + Date.now() + "');"
-            }, values => {
-              this.ngZone.run(() => {
-                var hideWebWrapper = values[0];
+            // this.browser.executeScript({
+            //   code: "localStorage.setItem('nativeAppTime', '" + Date.now() + "');"
+            // }, values => {
+            //   this.ngZone.run(() => {
+            //     var hideWebWrapper = values[0];
 
-                if (hideWebWrapper) {
-                  this.browser.executeScript({ code: "localStorage.setItem('hideWebApp', '');" });
-                  this.browser.hide();
-                  this.ref.detectChanges();
-                }
-              });
-            });
+            //     if (hideWebWrapper) {
+            //       this.browser.executeScript({ code: "localStorage.setItem('hideWebApp', '');" });
+            //       this.browser.hide();
+            //       this.ref.detectChanges();
+            //     }
+            //   });
+            // });
           });
         }
       }
@@ -221,130 +219,13 @@ export class HomePage {
         }).join(''));
       }
 
-      if (this.browser) {
-        this.promiseTest = "moo";
-        this.browser.executeScript({
-          code: "1 + 1"
-        }, values => {
-          this.ngZone.run(() => {
-            this.webTimestamp = Date.now();
+      return this.browserTest().then(result => {
 
-            this.toast('pre annoying message');
-
-            if (values[0] === 2) {
-              this.toast("annoying it is 2 message: " + Date.now());
-              this.toast("annoying it is 2 message dup: " + Date.now());
-            }
-
-            this.test = 'second step';
-            this.test2 = values;
-
-            if (this.promiseTest === 'moo')
-            this.promiseTest = "cow";
-          });
-        });
-        if (this.promiseTest === 'moo')
-        this.promiseTest = "nope";
-
-        this.ngZone.run(() => {
-          this.nativeTimestamp = Date.now();
-
-          // this.browser.executeScript({ 
-          //   code: 'window.my.activateAppMode.publicActivateAppModeFunc();' 
-          // });
-        });
-
-
-
-        // if (this.webNav) {
-        //   this.browser.executeScript({
-        //     code: "window.my.activateAppMode.publicWebNavFunc("+ JSON.stringify(this.webNav) + ");"
-        //   }, values => {
-        //     this.ngZone.run(() => {
-        //       var navStatus = values[0];
-
-        //       if (navStatus) {
-        //         this.toast("Native navStatus: " + navStatus);
-        //         this.webNav = null;
-        //       }
-        //     });
-        //   });
-        // }
-
-        // this.browser.executeScript({
-        //   code: "localStorage.getItem('hideWebApp')"
-        // }, values => {
-        //   this.ngZone.run(() => {
-        //     var hideWebWrapper = values[0];
-
-        //     if (hideWebWrapper) {
-        //       this.browser.executeScript({ code: "localStorage.setItem('hideWebApp', '');" });
-        //       this.browser.hide();
-        //       // this.ref.detectChanges();
-        //     }
-        //   });
-        // });
-
-        // this.browser.executeScript({
-        //   code: "localStorage.getItem('firebase_id_token_output')"
-        // }, values => {
-        //   var firebase_id_token = values[0];
-
-        //   if (firebase_id_token) {
-        //     if (this.loggingIn) {
-        //       this.logUserOutOfBrowser();
-        //     } else {
-        //       this.browser.executeScript({ code: "localStorage.setItem('firebase_id_token_output', '');" });
-
-        //       // Parse the ID token.
-        //       const payload = JSON.parse(b64DecodeUnicode(firebase_id_token.split('.')[1]));
-        //       // this.toast(payload);
-
-        //       if (this.fbUser && this.fbUser.email && this.fbUser.email === payload.email) {
-        //         // The current user is the same user that just logged in, so no need to reauth
-        //         this.toast("user was already logged in native");
-        //       } else {
-        //         this.loggingIn = true;
-
-        //         var exchangeIDTokenForCustTokenSubscription = this.exchangeIDTokenForCustToken(firebase_id_token).subscribe(data => {
-        //           this.ngZone.run(() => {
-        //             this.signInWithCustomToken(data);
-        //           });
-        //         }, error => {
-        //           this.ngZone.run(() => {
-        //             this.toast("Error occurred when attempting to exchange firebase ID token for custom auth token.");
-        //             exchangeIDTokenForCustTokenSubscription.unsubscribe();
-        //             this.loggingIn = false;
-        //           });
-        //         }, () => {
-        //           this.ngZone.run(() => {
-        //             // console.log("Token exchange completed.");
-        //             exchangeIDTokenForCustTokenSubscription.unsubscribe();
-        //             this.loggingIn = false;
-        //           });
-        //         });
-        //       }
-        //     }
-        //   }
-        // });
-
-        // this.browser.executeScript({
-        //   code: "localStorage.getItem('logoutOfNativeApp')"
-        // }, values => {
-        //   this.ngZone.run(() => {
-        //     var shouldLogout = values[0];
-
-        //     if (shouldLogout) {
-        //       this.browser.executeScript({ code: "localStorage.setItem('logoutOfNativeApp', '');" });
-        //       // this.browser.hide();
-        //       // this.ref.detectChanges();
-        //       // this.toast(shouldLogout);
-        //       this.firebaseSignOut();
-        //       // please update..
-        //     }
-        //   });
-        // });
-      }
+      }).then(() => {
+        this.browserLoopSetTimeout = setTimeout(() => {
+          this.browserLoopFunction(delay);
+        }, delay);
+      });
     }
 
     clearBrowserLoop() {
@@ -354,14 +235,24 @@ export class HomePage {
       }
     }
 
-    browserScript(code: any, ) {
-      // this.browser.executeScript({
-      //     code: code
-      //   }, values => {
-      //     this.ngZone.run(() => {
-            
-      //     });
-      //   });
+    browserTest() {
+      if (this.browser) {
+        return this.browser.executeScript({
+          code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test', value: 'test ' + Date.now}) + ");"
+        }, values => {
+          return this.ngZone.run(() => {
+            this.webTimestamp = Date.now();
+
+            if (values[0]) {
+              return this.browser.executeScript({
+                code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test2', value: 'test2 ' + Date.now}) + ");"
+              });
+            }
+          });
+        });
+      } else {
+        return Promise.resolve(null);
+      }
     }
 
     logUserOutOfBrowser() {
