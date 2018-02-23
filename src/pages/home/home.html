@@ -28,6 +28,7 @@
   <p>error: {{JSON.stringify(error)}}</p>
 
   <button ion-button (click)="browserTest()">browserTest</button>
-  <button ion-button (click)="browserLoopFunction(0)">browserLoopFunction</button>
+  <button ion-button (click)="browserLoopFunction()">browserLoopFunction once</button>
+  <button ion-button (click)="browserLoopFunction(6000)">browserLoopFunction 6000</button>
 
 </ion-content>
