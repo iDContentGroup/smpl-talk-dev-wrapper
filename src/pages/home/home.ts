@@ -253,11 +253,8 @@ export class HomePage {
     browserTest() {
       alert('started browserTest');
       if (this.browser) {
-        alert(this.browser.executeScript);
-        alert(this.browser.executeScript({code: '1 + 1'}));
         return this.browser.executeScript({
-          // code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test', value: 'test ' + Date.now}) + ");"
-          code: "1 + 1"
+          code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test', value: 'test ' + Date.now()}) + ");"
         }, values => {
           alert('browserTest exe callback');
 
@@ -267,7 +264,7 @@ export class HomePage {
 
             if (values[0]) {
               return this.browser.executeScript({
-                code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test2', value: 'test2 ' + Date.now}) + ");"
+                code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test2', value: 'test2 ' + Date.now()}) + ");"
               });
             }
           });
@@ -295,7 +292,7 @@ export class HomePage {
             if (values[0]) {
               this.nativeAppModeActivated = true;
               return this.browser.executeScript({
-                code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'nativeAppMode', value: 'nativeAppMode was activiated by native app ' + Date.now}) + ");"
+                code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'nativeAppMode', value: 'nativeAppMode was activiated by native app ' + Date.now()}) + ");"
               });
             }
           });
@@ -322,7 +319,7 @@ export class HomePage {
               this.webNav = null;
 
               return this.browser.executeScript({
-                code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'webNavStatus', value: 'nav by native app happened: ' + Date.now}) + ");"
+                code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'webNavStatus', value: 'nav by native app happened: ' + Date.now()}) + ");"
               });
             }
           });
