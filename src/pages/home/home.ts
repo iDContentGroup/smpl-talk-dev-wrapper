@@ -212,18 +212,6 @@ export class HomePage {
   	}
 
     browserLoopFunction(delay?: number) {
-      // alert("started browser loop");
-
-
-      // this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
-            
-      function b64DecodeUnicode(str) {
-        // Going backwards: from bytestream, to percent-encoding, to original string.
-        return decodeURIComponent(atob(str).split('').map(function(c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-      }
-
       this.ngZone.run(() => {
         this.nativeTimestamp = Date.now();
         return this.browserActivateNativeAppMode().then(values => {
@@ -313,7 +301,14 @@ export class HomePage {
       }
     }
 
-    browserLogoutOfNativeApp() {
+    browserGetFirebaseIdToken() {
+      function b64DecodeUnicode(str) {
+        // Going backwards: from bytestream, to percent-encoding, to original string.
+        return decodeURIComponent(atob(str).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+      }
+      
       if (this.browser && !this.nativeAppModeActivated) {
         this.browser.executeScript({
           code: "localStorage.getItem('firebase_id_token_output')"
