@@ -56,7 +56,6 @@ export class HomePage {
 
     ngOnInit() {
       alert('ngOnInit');
-      this.browser = null;
 
       this.navToPost = {postKey: 'postKey', groupKey: 'groupKey', networkKey: 'networkKey', data: {'action': 'liked'}};
 
@@ -119,77 +118,74 @@ export class HomePage {
 
   	startBrowser() {
       alert("startBrowser");
-      if (!this.browser) {
-        const url = 'https://smpl-talk-develop.firebaseapp.com/#/';
-        const target = '_blank';
+      // if (!this.browser) {
+      //   const url = 'https://smpl-talk-develop.firebaseapp.com/#/';
+      //   const target = '_blank';
 
-        this.options = '';
+      //   this.options = '';
 
-        var optionAry = [];
+      //   var optionAry = [];
 
-        optionAry.push("disallowoverscroll=yes");//(iOS) Turns on/off the UIWebViewBounce property.
-        optionAry.push("keyboardDisplayRequiresUserAction=no");// (iOS) Should take care of ios not allowing focus on inputs
-        // optionAry.push("hidden=yes");
-        if (this.doDebug) {
-          optionAry.push("toolbar=yes");// (iOS) Should be testing only
-          optionAry.push("location=yes"); // Should be testing only
-          optionAry.push("clearcache=yes");// Should be testing only
-          optionAry.push("clearsessioncache=yes");// Should be testing only
-        } else {
-          optionAry.push("toolbar=no");// (iOS) Should be testing only
-          optionAry.push("location=no"); // Should be testing only
-        }
+      //   optionAry.push("disallowoverscroll=yes");//(iOS) Turns on/off the UIWebViewBounce property.
+      //   optionAry.push("keyboardDisplayRequiresUserAction=no");// (iOS) Should take care of ios not allowing focus on inputs
+      //   // optionAry.push("hidden=yes");
+      //   if (this.doDebug) {
+      //     optionAry.push("toolbar=yes");// (iOS) Should be testing only
+      //     optionAry.push("location=yes"); // Should be testing only
+      //     optionAry.push("clearcache=yes");// Should be testing only
+      //     optionAry.push("clearsessioncache=yes");// Should be testing only
+      //   } else {
+      //     optionAry.push("toolbar=no");// (iOS) Should be testing only
+      //     optionAry.push("location=no"); // Should be testing only
+      //   }
         
 
-        for (var i = 0; i < optionAry.length; i++) {
-          this.options += optionAry[i];
-          if (i !== optionAry.length - 1) {
-           this.options += ",";
-          }
-        }
-        if (this.platform.is('cordova')) {
-          this.browser = this.iab.create(url, target, this.options);
+      //   for (var i = 0; i < optionAry.length; i++) {
+      //     this.options += optionAry[i];
+      //     if (i !== optionAry.length - 1) {
+      //      this.options += ",";
+      //     }
+      //   }
+      //   if (this.platform.is('cordova')) {
+      //     this.browser = this.iab.create(url, target, this.options);
 
-          this.browser.on("loadstart").subscribe(event => {
-            this.ngZone.run(() => {
-              this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
-              this.browser.executeScript({code: 'window.my.activateAppMode.publicActivateAppModeFunc();'});
+      //     this.browser.on("loadstart").subscribe(event => {
+      //       this.ngZone.run(() => {
+      //         this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
+      //         this.browser.executeScript({code: 'window.my.activateAppMode.publicActivateAppModeFunc();'});
 
-              this.clearBrowserLoop();
-            });
-          });
+      //         this.clearBrowserLoop();
+      //       });
+      //     });
 
-          this.browser.on("loadstop").subscribe(event => {
-            this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
-            this.browser.executeScript({ code: 'window.my.activateAppMode.publicActivateAppModeFunc();'});
+      //     this.browser.on("loadstop").subscribe(event => {
+      //       this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
+      //       this.browser.executeScript({ code: 'window.my.activateAppMode.publicActivateAppModeFunc();'});
             
-            this.browser.executeScript({
-              code: "localStorage.setItem('nativeAppTime', '" + Date.now() + "');"
-            }, values => {
-              this.ngZone.run(() => {
-                var hideWebWrapper = values[0];
+      //       this.browser.executeScript({
+      //         code: "localStorage.setItem('nativeAppTime', '" + Date.now() + "');"
+      //       }, values => {
+      //         this.ngZone.run(() => {
+      //           var hideWebWrapper = values[0];
 
-                if (hideWebWrapper) {
-                  this.browser.executeScript({ code: "localStorage.setItem('hideWebApp', '');" });
-                  this.browser.hide();
-                  this.ref.detectChanges();
-                }
-              });
-            });
+      //           if (hideWebWrapper) {
+      //             this.browser.executeScript({ code: "localStorage.setItem('hideWebApp', '');" });
+      //             this.browser.hide();
+      //             this.ref.detectChanges();
+      //           }
+      //         });
+      //       });
 
-            // this.loadstopEvents.push(event);
-            if (!this.browserLoopIsActive) {
-              this.browserLoopIsActive = true;
-              this.browserLoopSetTimeout = setTimeout(() => {
-                this.browserLoopFunction(100);
-              }, 100); 
-            }
+      //       // this.loadstopEvents.push(event);
+      //       if (!this.browserLoopIsActive) {
+      //         this.browserLoopIsActive = true;
+      //         this.browserLoopSetTimeout = setTimeout(() => {
+      //           this.browserLoopFunction(100);
+      //         }, 100); 
+      //       }
             
-          });
-        }
-      }
-      // else {
-      //   this.browser && this.browser.show && this.browser.show();
+      //     });
+      //   }
       // }
   	}
 
@@ -362,15 +358,6 @@ export class HomePage {
       alert("setupPush");
       // source: https://www.youtube.com/watch?v=sUjQ3G17T80
 
-      // to check if we have permission
-      this.push.hasPermission().then((res: any) => {
-        if (res.isEnabled) {
-          alert('We have permission to send push notifications');
-        } else {
-          alert('We do not have permission to send push notifications');
-        }
-      });
-
       // to initialize push notifications
       // const options: PushOptions = {
       const options: any = {
@@ -390,7 +377,7 @@ export class HomePage {
          },
          ios: {
              alert: 'true',
-             badge: true,
+             // badge: true,
              sound: 'true'
              //clearBadge: 'true'
          },
@@ -401,6 +388,16 @@ export class HomePage {
       };
       
       const pushObject: PushObject = this.push.init(options);
+      alert(JSON.stringify(pushObject));
+
+      // to check if we have permission
+      this.push.hasPermission().then((res: any) => {
+        if (res.isEnabled) {
+          alert('We have permission to send push notifications');
+        } else {
+          alert('We do not have permission to send push notifications');
+        }
+      });
 
       pushObject.on('notification').subscribe((notification: any) => {
         this.ngZone.run(() => {
