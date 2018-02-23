@@ -212,32 +212,33 @@ export class HomePage {
   	}
 
     browserLoopFunction(delay?: number) {
-      alert('browserLoopFunction');
       this.ngZone.run(() => {
+        alert('browserLoopFunction');
+
         this.nativeTimestamp = Date.now();
-        return this.browserActivateNativeAppMode().then(values => {
-          // nothing
-        }).then(() => {
-          // return this.browserTest().then(values => {
-          //   if (values && values.length && values[0]) {
-          //     return this.browser.executeScript({
-          //       code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test2', value: 'test2 ' + Date.now()}) + ");"
-          //     });
-          //   }
-          // });
-        }).then(() => {
-          alert("got to the last then");
-          if (delay) {
-            this.browserLoopSetTimeout = setTimeout(() => {
-              this.ngZone.run(() => {
-                alert("should start browser loop");
-                this.browserLoopFunction(delay);
-              });
-            }, delay);
-          }
-        }).catch(error => {
-          this.error = error;
-        });
+      //   return this.browserActivateNativeAppMode().then(values => {
+      //     // nothing
+      //   }).then(() => {
+      //     // return this.browserTest().then(values => {
+      //     //   if (values && values.length && values[0]) {
+      //     //     return this.browser.executeScript({
+      //     //       code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test2', value: 'test2 ' + Date.now()}) + ");"
+      //     //     });
+      //     //   }
+      //     // });
+      //   }).then(() => {
+      //     alert("got to the last then");
+      //     if (delay) {
+      //       this.browserLoopSetTimeout = setTimeout(() => {
+      //         this.ngZone.run(() => {
+      //           alert("should start browser loop");
+      //           this.browserLoopFunction(delay);
+      //         });
+      //       }, delay);
+      //     }
+      //   }).catch(error => {
+      //     this.error = error;
+      //   });
       });
     }
 
@@ -291,76 +292,76 @@ export class HomePage {
       }
     }
 
-    browserLogoutOfNativeApp() {
-      if (this.browser && !this.nativeAppModeActivated) {
-        return this.browser.executeScript({
-          code: "localStorage.getItem('logoutOfNativeApp')"
-        }).then(values => {
-          if (values && values.length && values[0]) {
-            this.browser.executeScript({ code: "localStorage.setItem('logoutOfNativeApp', '');" });
+    // browserLogoutOfNativeApp() {
+    //   if (this.browser && !this.nativeAppModeActivated) {
+    //     return this.browser.executeScript({
+    //       code: "localStorage.getItem('logoutOfNativeApp')"
+    //     }).then(values => {
+    //       if (values && values.length && values[0]) {
+    //         this.browser.executeScript({ code: "localStorage.setItem('logoutOfNativeApp', '');" });
 
-            this.firebaseSignOut();
-          }
-        });
-      } else {
-        return Promise.resolve(null);
-      }
-    }
+    //         this.firebaseSignOut();
+    //       }
+    //     });
+    //   } else {
+    //     return Promise.resolve(null);
+    //   }
+    // }
 
-    browserGetFirebaseIdToken() {
-      function b64DecodeUnicode(str) {
-        // Going backwards: from bytestream, to percent-encoding, to original string.
-        return decodeURIComponent(atob(str).split('').map(function(c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-      }
+    // browserGetFirebaseIdToken() {
+    //   function b64DecodeUnicode(str) {
+    //     // Going backwards: from bytestream, to percent-encoding, to original string.
+    //     return decodeURIComponent(atob(str).split('').map(function(c) {
+    //         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    //     }).join(''));
+    //   }
 
-      if (this.browser && !this.nativeAppModeActivated) {
-        this.browser.executeScript({
-          code: "localStorage.getItem('firebase_id_token_output')"
-        }).then(values => {
-          var firebase_id_token = values && values.length && values[0];
-          if (firebase_id_token) {
-            if (this.loggingIn) {
-              this.logUserOutOfBrowser();
-            } else {
-              this.browser.executeScript({ code: "localStorage.setItem('firebase_id_token_output', '');" });
+    //   if (this.browser && !this.nativeAppModeActivated) {
+    //     this.browser.executeScript({
+    //       code: "localStorage.getItem('firebase_id_token_output')"
+    //     }).then(values => {
+    //       var firebase_id_token = values && values.length && values[0];
+    //       if (firebase_id_token) {
+    //         if (this.loggingIn) {
+    //           this.logUserOutOfBrowser();
+    //         } else {
+    //           this.browser.executeScript({ code: "localStorage.setItem('firebase_id_token_output', '');" });
 
-              // Parse the ID token.
-              const payload = JSON.parse(b64DecodeUnicode(firebase_id_token.split('.')[1]));
-              // this.toast(payload);
+    //           // Parse the ID token.
+    //           const payload = JSON.parse(b64DecodeUnicode(firebase_id_token.split('.')[1]));
+    //           // this.toast(payload);
 
-              if (this.fbUser && this.fbUser.email && this.fbUser.email === payload.email) {
-                // The current user is the same user that just logged in, so no need to reauth
-                this.toast("user was already logged in native");
-              } else {
-                this.loggingIn = true;
+    //           if (this.fbUser && this.fbUser.email && this.fbUser.email === payload.email) {
+    //             // The current user is the same user that just logged in, so no need to reauth
+    //             this.toast("user was already logged in native");
+    //           } else {
+    //             this.loggingIn = true;
 
-                var exchangeIDTokenForCustTokenSubscription = this.exchangeIDTokenForCustToken(firebase_id_token).subscribe(data => {
-                  this.ngZone.run(() => {
-                    this.signInWithCustomToken(data);
-                  });
-                }, error => {
-                  this.ngZone.run(() => {
-                    this.toast("Error occurred when attempting to exchange firebase ID token for custom auth token.");
-                    exchangeIDTokenForCustTokenSubscription.unsubscribe();
-                    this.loggingIn = false;
-                  });
-                }, () => {
-                  this.ngZone.run(() => {
-                    // console.log("Token exchange completed.");
-                    exchangeIDTokenForCustTokenSubscription.unsubscribe();
-                    this.loggingIn = false;
-                  });
-                });
-              }
-            }
-          }
-        });
-      } else {
-        return Promise.resolve(null);
-      }
-    }
+    //             var exchangeIDTokenForCustTokenSubscription = this.exchangeIDTokenForCustToken(firebase_id_token).subscribe(data => {
+    //               this.ngZone.run(() => {
+    //                 this.signInWithCustomToken(data);
+    //               });
+    //             }, error => {
+    //               this.ngZone.run(() => {
+    //                 this.toast("Error occurred when attempting to exchange firebase ID token for custom auth token.");
+    //                 exchangeIDTokenForCustTokenSubscription.unsubscribe();
+    //                 this.loggingIn = false;
+    //               });
+    //             }, () => {
+    //               this.ngZone.run(() => {
+    //                 // console.log("Token exchange completed.");
+    //                 exchangeIDTokenForCustTokenSubscription.unsubscribe();
+    //                 this.loggingIn = false;
+    //               });
+    //             });
+    //           }
+    //         }
+    //       }
+    //     });
+    //   } else {
+    //     return Promise.resolve(null);
+    //   }
+    // }
 
     browserNav() {
       if (this.webNav) {
