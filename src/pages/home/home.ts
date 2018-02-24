@@ -144,7 +144,7 @@ export class HomePage {
         this.doDebug = true;
         
         if (this.doDebug) {
-          optionAry.push("toolbar=yes");// (iOS) Should be testing only
+          // optionAry.push("toolbar=yes");// (iOS) Should be testing only
           optionAry.push("location=yes"); // Should be testing only
           optionAry.push("clearcache=yes");// Should be testing only
           optionAry.push("clearsessioncache=yes");// Should be testing only
@@ -161,7 +161,7 @@ export class HomePage {
           }
         }
         if (this.platform.is('cordova')) {
-          this.browser = this.iab.create(url, target, this.options);
+          this.browser = this.browser || this.iab.create(url, target, this.options);
 
           // this.browser.on("loadstart").subscribe(event => {
           //   this.browser.executeScript({ code: "alert('loadstart');" });
@@ -175,54 +175,57 @@ export class HomePage {
           //   this.browser.executeScript({ code: "alert('loaderror');" });
           // });
 
-          this.browser.on("exit").subscribe(event => {
-            this.browser = null;
-          });
-
-          // loadstop doesn't seem to work on iOS
-          this.browser.on("loadstart").subscribe(event => {
-            // this.ngZone.run(() => {
-            //   // this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
-            //   // this.browser.executeScript({code: 'window.my.activateAppMode.publicActivateAppModeFunc();'});
-
-            //   // this.clearBrowserLoop();
-
-            //   // this.loadstopEvents.push(event);
-            //   if (!this.browserLoopIsActive) {
-            //     this.browserLoopIsActive = true;
-            //     this.browserLoopFunction(6000);
-            //   }
-            // });
-          });
-
-          this.browser.on("loadstop").subscribe(event => {
-            this.toast("loadstop worked", "bottom");
-            this.ngZone.run(() => {
-              // this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
-              // this.browser.executeScript({code: 'window.my.activateAppMode.publicActivateAppModeFunc();'});
-
-              // this.clearBrowserLoop();
-
-              // this.loadstopEvents.push(event);
-              if (!this.browserLoopIsActive) {
-                this.browserLoopIsActive = true;
-                this.browserLoopFunction(6000);
-              }
+          setTimeout(() => {
+            this.browser.on("exit").subscribe(event => {
+              this.browser = null;
             });
-            // this.browser.executeScript({
-            //   code: "localStorage.setItem('nativeAppTime', '" + Date.now() + "');"
-            // }, values => {
-            //   this.ngZone.run(() => {
-            //     var hideWebWrapper = values[0];
 
-            //     if (hideWebWrapper) {
-            //       this.browser.executeScript({ code: "localStorage.setItem('hideWebApp', '');" });
-            //       this.browser.hide();
-            //       this.ref.detectChanges();
-            //     }
-            //   });
-            // });
-          });
+            // loadstop doesn't seem to work on iOS
+            this.browser.on("loadstart").subscribe(event => {
+              // this.ngZone.run(() => {
+              //   // this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
+              //   // this.browser.executeScript({code: 'window.my.activateAppMode.publicActivateAppModeFunc();'});
+
+              //   // this.clearBrowserLoop();
+
+              //   // this.loadstopEvents.push(event);
+              //   if (!this.browserLoopIsActive) {
+              //     this.browserLoopIsActive = true;
+              //     this.browserLoopFunction(6000);
+              //   }
+              // });
+            });
+
+            this.browser.on("loadstop").subscribe(event => {
+              this.toast("loadstop worked", "bottom");
+              this.ngZone.run(() => {
+                // this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
+                // this.browser.executeScript({code: 'window.my.activateAppMode.publicActivateAppModeFunc();'});
+
+                // this.clearBrowserLoop();
+
+                // this.loadstopEvents.push(event);
+                if (!this.browserLoopIsActive) {
+                  this.browserLoopIsActive = true;
+                  this.browserLoopFunction(6000);
+                }
+              });
+              // this.browser.executeScript({
+              //   code: "localStorage.setItem('nativeAppTime', '" + Date.now() + "');"
+              // }, values => {
+              //   this.ngZone.run(() => {
+              //     var hideWebWrapper = values[0];
+
+              //     if (hideWebWrapper) {
+              //       this.browser.executeScript({ code: "localStorage.setItem('hideWebApp', '');" });
+              //       this.browser.hide();
+              //       this.ref.detectChanges();
+              //     }
+              //   });
+              // });
+            });
+          }, 1);
+
         }
       }
   	}
