@@ -258,17 +258,27 @@ export class HomePage {
             }
           });
         }).then(() => {
-          this.toast("got to the last then");
+          // this.toast("got to the last then");
           if (delay) {
             this.browserLoopSetTimeout = setTimeout(() => {
               this.ngZone.run(() => {
-                this.toast("should start browser loop");
+                // this.toast("should start browser loop");
                 this.browserLoopFunction(delay);
               });
             }, delay);
           }
         }).catch(error => {
+          this.toast('Unexpected error during browser loop');
           this.errors.push(error);
+
+          if (delay) {
+            this.browserLoopSetTimeout = setTimeout(() => {
+              this.ngZone.run(() => {
+                // this.toast("should start browser loop");
+                this.browserLoopFunction(delay);
+              });
+            }, delay);
+          }
         });
       });
     }
@@ -281,7 +291,7 @@ export class HomePage {
     }
 
     browserTest() {
-      this.toast('started browserTest');
+      // this.toast('started browserTest');
       if (this.browser) {
         return this.browser.executeScript({
           code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test', value: this.getDateString() + ' test'}) + ");"
@@ -290,7 +300,7 @@ export class HomePage {
           return values;
         }).catch(error => {
           this.errors.push(error);
-          // alert(error);
+          // this.toast(error);
           return null;
         });
       } else {
@@ -310,6 +320,10 @@ export class HomePage {
         }).then(values => {
           this.toast("then values");
           this.toast(values);
+        }).catch(error => {
+          this.errors.push(error);
+          // this.toast(error);
+          return null;
         });
       } else {
         return Promise.resolve(null);
@@ -330,6 +344,10 @@ export class HomePage {
               });
             });
           }
+        }).catch(error => {
+          this.errors.push(error);
+          // this.toast(error);
+          return null;
         });
       } else {
         return Promise.resolve(null);
@@ -389,6 +407,10 @@ export class HomePage {
               });
             }
           }
+        }).catch(error => {
+          this.errors.push(error);
+          // this.toast(error);
+          return null;
         });
       } else {
         return Promise.resolve(null);
@@ -424,6 +446,10 @@ export class HomePage {
           return this.browser.executeScript({
             code: 'window.my && window.my.activateAppMode && window.my.activateAppMode.publicShouldLogoutFunc && window.my.activateAppMode.publicShouldLogoutFunc();'
           });
+        }).catch(error => {
+          this.errors.push(error);
+          // this.toast(error);
+          return null;
         });
       } else {
         return Promise.resolve(null);
@@ -459,6 +485,8 @@ export class HomePage {
         // console.log(errorMessage);
         this.loggingIn = false;
         this.toast(errorMessage);
+
+        this.errors.push(error);
 
         return this.logUserOutOfBrowser();
       });
@@ -551,13 +579,14 @@ export class HomePage {
         this.ngZone.run(() => {
           this.toast('Error with Push plugin' + JSON.stringify(error));
           // TODO: log error
+          this.errors.push(error);
         });
       });
     }
 
     setDeviceUserPairing() {
       if (!this.usersInitalized || !this.device || !this.device.registrationId) {
-        return null;
+        return Promise.resolve(null);
       }
 
       this.toast("pair device and user");
@@ -567,7 +596,7 @@ export class HomePage {
       var pushUserPath = 'Users';
       var pushDevicePath = 'Devices';
 
-      firebase.database().ref('PushNotifications/Devices/' + this.device.registrationId + '/Users').once('value').then(userSnapshots => {
+      return firebase.database().ref('PushNotifications/Devices/' + this.device.registrationId + '/Users').once('value').then(userSnapshots => {
         userSnapshots.forEach(userSnapshot => {
           var match = false;
 
@@ -603,14 +632,19 @@ export class HomePage {
         return firebase.database().ref('PushNotifications/').update(updates, error => {
           if (error) {
             this.toast(error);
+            this.errors.push(error);
           } else {
             this.toast("updated pushNotifications in database");
           }
         });
       }).then(() => {
-        this.browser.executeScript({
+        return this.browser.executeScript({
           code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'setDeviceUserPairing', value: this.getDateString() + ' device user pairing'}) + ");"
         });
+      }).catch(error => {
+        this.errors.push(error);
+        // this.toast(error);
+        return null;
       });
     }
 
