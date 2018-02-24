@@ -175,65 +175,59 @@ export class HomePage {
           //   this.browser.executeScript({ code: "alert('loaderror');" });
           // });
 
-          setTimeout(() => {
-            this.browser.on("exit").subscribe(event => {
-              this.browser = null;
+          this.browser.on("exit").subscribe(event => {
+            this.browser = null;
+          });
+
+          this.browser.on("loadstart").subscribe(event => {
+            // this.ngZone.run(() => {
+            //   // this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
+            //   // this.browser.executeScript({code: 'window.my.activateAppMode.publicActivateAppModeFunc();'});
+
+            //   // this.clearBrowserLoop();
+
+            //   // this.loadstopEvents.push(event);
+            //   if (!this.browserLoopIsActive) {
+            //     this.browserLoopIsActive = true;
+            //     this.browserLoopFunction(6000);
+            //   }
+            // });
+          });
+
+          this.browser.on("loadstop").subscribe(event => {
+            this.toast("loadstop worked", "bottom");
+            this.ngZone.run(() => {
+              // this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
+              // this.browser.executeScript({code: 'window.my.activateAppMode.publicActivateAppModeFunc();'});
+
+              // this.clearBrowserLoop();
+
+              // this.loadstopEvents.push(event);
+              if (!this.browserLoopIsActive) {
+                this.browserLoopIsActive = true;
+                this.browserLoopFunction(6000);
+              }
             });
+            // this.browser.executeScript({
+            //   code: "localStorage.setItem('nativeAppTime', '" + Date.now() + "');"
+            // }, values => {
+            //   this.ngZone.run(() => {
+            //     var hideWebWrapper = values[0];
 
-            // loadstop doesn't seem to work on iOS
-            this.browser.on("loadstart").subscribe(event => {
-              // this.ngZone.run(() => {
-              //   // this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
-              //   // this.browser.executeScript({code: 'window.my.activateAppMode.publicActivateAppModeFunc();'});
-
-              //   // this.clearBrowserLoop();
-
-              //   // this.loadstopEvents.push(event);
-              //   if (!this.browserLoopIsActive) {
-              //     this.browserLoopIsActive = true;
-              //     this.browserLoopFunction(6000);
-              //   }
-              // });
-            });
-
-            this.browser.on("loadstop").subscribe(event => {
-              this.toast("loadstop worked", "bottom");
-              this.ngZone.run(() => {
-                // this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
-                // this.browser.executeScript({code: 'window.my.activateAppMode.publicActivateAppModeFunc();'});
-
-                // this.clearBrowserLoop();
-
-                // this.loadstopEvents.push(event);
-                if (!this.browserLoopIsActive) {
-                  this.browserLoopIsActive = true;
-                  this.browserLoopFunction(6000);
-                }
-              });
-              // this.browser.executeScript({
-              //   code: "localStorage.setItem('nativeAppTime', '" + Date.now() + "');"
-              // }, values => {
-              //   this.ngZone.run(() => {
-              //     var hideWebWrapper = values[0];
-
-              //     if (hideWebWrapper) {
-              //       this.browser.executeScript({ code: "localStorage.setItem('hideWebApp', '');" });
-              //       this.browser.hide();
-              //       this.ref.detectChanges();
-              //     }
-              //   });
-              // });
-            });
-          }, 1);
-
+            //     if (hideWebWrapper) {
+            //       this.browser.executeScript({ code: "localStorage.setItem('hideWebApp', '');" });
+            //       this.browser.hide();
+            //       this.ref.detectChanges();
+            //     }
+            //   });
+            // });
+          });
         }
       }
   	}
 
     showBrowser() {
-      setTimeout(() => {
-        this.browser && this.browser.show();
-      }, 1);
+      this.browser && this.browser.show();
     }
 
     browserLoopFunction(delay?: number) {
@@ -244,6 +238,14 @@ export class HomePage {
         this.nativeTimestamp = Date.now();
         return this.browserActivateNativeAppMode().then(values => {
           // nothing
+        }).then(() => {
+          return this.browserLogoutOfNativeApp().then(values => {
+            // nothing
+          });
+        }).then(() => {
+          return this.browserGetFirebaseIdToken().then(values => {
+            // nothing
+          });
         }).then(() => {
           return this.browserTest().then(values => {
             if (values && values.length && values[0]) {
@@ -279,9 +281,7 @@ export class HomePage {
       this.toast('started browserTest');
       if (this.browser) {
         return this.browser.executeScript({
-          // code: "window.my.activateAppMode.publicDebugFunc("");"
           code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test', value: 'test ' + Date.now()}) + ");"
-          // code: "1 + 1"
         }).then(values => {
           this.webTimestamp = Date.now();
           return values;
@@ -305,11 +305,20 @@ export class HomePage {
         }).then(values => {
           this.toast("then values");
           this.toast(values);
+        });
+      } else {
+        return Promise.resolve(null);
+      }
+    }
 
+    browserLogoutOfNativeApp() {
+      if (this.browser && this.nativeAppModeActivated) {
+        return this.browser.executeScript({
+          code: "localStorage.getItem('logoutOfNativeApp')"
+        }).then(values => {
           if (values && values.length && values[0]) {
-            this.nativeAppModeActivated = true;
-            return this.browser.executeScript({
-              code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'nativeAppModeActivated', value: 'activated at ' + Date.now()}) + ");"
+            return this.browser.executeScript({ code: "localStorage.setItem('logoutOfNativeApp', '');" }).then(() => {
+              return this.firebaseSignOut();
             });
           }
         });
@@ -318,108 +327,93 @@ export class HomePage {
       }
     }
 
-    // browserLogoutOfNativeApp() {
-    //   if (this.browser && !this.nativeAppModeActivated) {
-    //     return this.browser.executeScript({
-    //       code: "localStorage.getItem('logoutOfNativeApp')"
-    //     }).then(values => {
-    //       if (values && values.length && values[0]) {
-    //         this.browser.executeScript({ code: "localStorage.setItem('logoutOfNativeApp', '');" });
+    browserGetFirebaseIdToken() {
+      function b64DecodeUnicode(str) {
+        // Going backwards: from bytestream, to percent-encoding, to original string.
+        return decodeURIComponent(atob(str).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+      }
 
-    //         this.firebaseSignOut();
-    //       }
-    //     });
-    //   } else {
-    //     return Promise.resolve(null);
-    //   }
-    // }
+      if (this.browser && this.nativeAppModeActivated) {
+        this.browser.executeScript({
+          code: "localStorage.getItem('firebase_id_token_output')"
+        }).then(values => {
+          var firebase_id_token = values && values.length && values[0];
+          if (firebase_id_token) {
+            if (this.loggingIn) {
+              return this.logUserOutOfBrowser();
+            } else {
+              // Parse the ID token.
+              const payload = JSON.parse(b64DecodeUnicode(firebase_id_token.split('.')[1]));
+              // this.toast(payload);
 
-    // browserGetFirebaseIdToken() {
-    //   function b64DecodeUnicode(str) {
-    //     // Going backwards: from bytestream, to percent-encoding, to original string.
-    //     return decodeURIComponent(atob(str).split('').map(function(c) {
-    //         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    //     }).join(''));
-    //   }
+              if (this.fbUser && this.fbUser.email && this.fbUser.email === payload.email) {
+                // The current user is the same user that just logged in, so no need to reauth
+                this.toast("user was already logged in native");
+              } else {
+                this.loggingIn = true;
 
-    //   if (this.browser && !this.nativeAppModeActivated) {
-    //     this.browser.executeScript({
-    //       code: "localStorage.getItem('firebase_id_token_output')"
-    //     }).then(values => {
-    //       var firebase_id_token = values && values.length && values[0];
-    //       if (firebase_id_token) {
-    //         if (this.loggingIn) {
-    //           this.logUserOutOfBrowser();
-    //         } else {
-    //           this.browser.executeScript({ code: "localStorage.setItem('firebase_id_token_output', '');" });
+                var exchangeIDTokenForCustTokenSubscription = this.exchangeIDTokenForCustToken(firebase_id_token).subscribe(data => {
+                  this.ngZone.run(() => {
+                    this.signInWithCustomToken(data);
+                  });
+                }, error => {
+                  this.ngZone.run(() => {
+                    this.toast("Error occurred when attempting to exchange firebase ID token for custom auth token.");
+                    exchangeIDTokenForCustTokenSubscription.unsubscribe();
+                    this.loggingIn = false;
+                  });
+                }, () => {
+                  this.ngZone.run(() => {
+                    // console.log("Token exchange completed.");
+                    exchangeIDTokenForCustTokenSubscription.unsubscribe();
+                    this.loggingIn = false;
+                  });
+                });
+              }
 
-    //           // Parse the ID token.
-    //           const payload = JSON.parse(b64DecodeUnicode(firebase_id_token.split('.')[1]));
-    //           // this.toast(payload);
-
-    //           if (this.fbUser && this.fbUser.email && this.fbUser.email === payload.email) {
-    //             // The current user is the same user that just logged in, so no need to reauth
-    //             this.toast("user was already logged in native");
-    //           } else {
-    //             this.loggingIn = true;
-
-    //             var exchangeIDTokenForCustTokenSubscription = this.exchangeIDTokenForCustToken(firebase_id_token).subscribe(data => {
-    //               this.ngZone.run(() => {
-    //                 this.signInWithCustomToken(data);
-    //               });
-    //             }, error => {
-    //               this.ngZone.run(() => {
-    //                 this.toast("Error occurred when attempting to exchange firebase ID token for custom auth token.");
-    //                 exchangeIDTokenForCustTokenSubscription.unsubscribe();
-    //                 this.loggingIn = false;
-    //               });
-    //             }, () => {
-    //               this.ngZone.run(() => {
-    //                 // console.log("Token exchange completed.");
-    //                 exchangeIDTokenForCustTokenSubscription.unsubscribe();
-    //                 this.loggingIn = false;
-    //               });
-    //             });
-    //           }
-    //         }
-    //       }
-    //     });
-    //   } else {
-    //     return Promise.resolve(null);
-    //   }
-    // }
-
-    browserNav() {
-      if (this.webNav) {
-        return this.browser.executeScript({
-          code: "window.my.activateAppMode.publicWebNavFunc("+ JSON.stringify(this.webNav) + ");"
-        }, values => {
-          this.ngZone.run(() => {
-            var navStatus = values[0];
-
-            if (navStatus) {
-              this.toast("Native navStatus: " + navStatus);
-              this.webNav = null;
+              return this.browser.executeScript({ code: "localStorage.setItem('firebase_id_token_output', '');" });
             }
-
-            if (values[0]) {
-              this.webNav = null;
-
-              return this.browser.executeScript({
-                code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'webNavStatus', value: 'nav by native app happened: ' + Date.now()}) + ");"
-              });
-            }
-          });
+          }
         });
       } else {
         return Promise.resolve(null);
       }
     }
 
+    // browserNav() {
+    //   if (this.browser && this.webNav) {
+    //     return this.browser.executeScript({
+    //       code: "window.my.activateAppMode.publicWebNavFunc("+ JSON.stringify(this.webNav) + ");"
+    //     }).then(values => {
+    //       var 
+    //         if (values && values.length && values[0]) {
+    //           this.toast("Native navStatus: " + values[0]);
+    //           this.webNav = null;
+
+    //           return this.browser.executeScript({
+    //             code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'webNavStatus', value: 'nav by native app happened: ' + Date.now()}) + ");"
+    //           });
+    //         }
+    //       });
+    //     });
+    //   } else {
+    //     return Promise.resolve(null);
+    //   }
+    // }
+
     logUserOutOfBrowser() {
       if (this.browser) {
-        this.browser.executeScript({ code: "localStorage.setItem('shouldLogout', 'moo');" });
-        this.browser.executeScript({ code: 'window.my.activateAppMode.publicShouldLogoutFunc();' });
+        return this.browser.executeScript({
+          code: "localStorage.setItem('shouldLogout', 'moo');"
+        }).then(() => {
+          return this.browser.executeScript({
+            code: 'window.my && window.my.activateAppMode && window.my.activateAppMode.publicShouldLogoutFunc && window.my.activateAppMode.publicShouldLogoutFunc();'
+          });
+        });
+      } else {
+        return Promise.resolve(null);
       }
     }
 
@@ -458,7 +452,7 @@ export class HomePage {
     }
 
     firebaseSignOut() {
-      firebase.auth().signOut().then(() => {
+      return firebase.auth().signOut().then(() => {
         // this.fbUser = null;
       }, error => {
         // console.log(error);
