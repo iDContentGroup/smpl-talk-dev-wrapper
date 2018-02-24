@@ -17,15 +17,21 @@
   <button ion-button secondary (click)="toggleDebug()">toggleDebug status: {{!doDebug ? 'nope' : 'yup'}}</button>
 
   <p *ngIf="browser" [style.background]="'grey'">{{ JSON.stringify(browser) }}</p>
-  <p>browserLoopActive: {{ browserLoopIsActive ? 'yup' : 'nope' }} | web: {{ webTimestamp }} | native: {{ nativeTimestamp }}</p>
-  <p>{{ loggingIn ? 'logging in..' : 'not logging in'}}</p>
-  <p>{{user ? (user.email + ' | ' + user.uid) : 'no user found' }}</p>
+  
+  <p>nativeAppModeActivated: {{nativeAppModeActivated ? 'yup' : 'nope'}}</p>
 
+  <p>browserLoopActive: {{ browserLoopIsActive ? 'yup' : 'nope' }} | web: {{ webTimestamp }} | native: {{ nativeTimestamp }}</p>
+  <p>{{ loggingIn ? 'logging in..' : 'not logging in'}} | {{ loginCount }}</p>
+  <p>fbUser: {{ fbUser ? (fbUser.email + ' | ' + fbUser.uid) : 'no fbUser found' }}</p>
+  <p>users: {{ !users.length ? ' (none)' : users.length}}</p>
   <p *ngFor="let user of users">{{ user.key }} | {{ user.email }}</p>
   <p *ngIf="device">{{ JSON.stringify(device) }}</p>
 
-  <p>nativeAppModeActivated: {{nativeAppModeActivated ? 'yup' : 'nope'}}</p>
-  <p>error: {{JSON.stringify(error)}}</p>
+  <p>errors: {{ !errors.length ? ' (none)' : errors.length}}</p>
+  <p *ngFor="let error of errors">{{JSON.stringify(error)}}</p>
+
+  <p>fbUpdates: {{ !fbUpdates.length ? ' (none)' : fbUpdates.length}}</p>
+  <p *ngFor="let fbUpdate of fbUpdates">{{JSON.stringify(fbUpdate)}}</p>
 
   <button ion-button (click)="browserTest()">browserTest</button>
   <button ion-button (click)="browserLoopFunction()">browserLoopFunction once</button>

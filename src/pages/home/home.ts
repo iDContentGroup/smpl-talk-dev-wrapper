@@ -51,6 +51,8 @@ export class HomePage {
 
     errors: any[];
 
+    fbUpdates: any[];
+
     constructor(public platform: Platform, public navCtrl: NavController, public iab: InAppBrowser, private ref: ChangeDetectorRef, 
       private http: Http, private ngZone: NgZone, public push: Push, public toastCtrl: ToastController) {
       this.JSON = JSON;
@@ -61,6 +63,8 @@ export class HomePage {
 
     ngOnInit() {
       this.errors = [];
+      this.fbUpdates = [];
+      this.users = [];
       this.loginCount = 0;
 
       // this.toast('ngOnInit');
@@ -94,6 +98,8 @@ export class HomePage {
               this.fbUser = user;
               this.toast('native logged in: ' + this.fbUser.uid + " | " + this.fbUser.email);
               firebase.database().ref("UsersRef/").orderByChild('email').equalTo(this.fbUser.email).once('value').then(usersRef => {
+                this.users = [];
+
                 usersRef.forEach(userRef => {
                   var user = userRef.val();
                   user['key'] = userRef.key;
@@ -150,7 +156,6 @@ export class HomePage {
           optionAry.push("toolbar=no");// (iOS) Should be testing only
           optionAry.push("location=no"); // Should be testing only
         }
-        
 
         for (var i = 0; i < optionAry.length; i++) {
           this.options += optionAry[i];
@@ -248,7 +253,7 @@ export class HomePage {
           return this.browserTest().then(values => {
             if (values && values.length && values[0]) {
               return this.browser.executeScript({
-                code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test2', value: 'test2 ' + this.getDateString()}) + ");"
+                code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test2', value: this.getDateString() + ' test2' }) + ");"
               });
             }
           });
@@ -279,7 +284,7 @@ export class HomePage {
       this.toast('started browserTest');
       if (this.browser) {
         return this.browser.executeScript({
-          code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test', value: 'test ' + this.getDateString()}) + ");"
+          code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test', value: this.getDateString() + ' test'}) + ");"
         }).then(values => {
           this.webTimestamp = this.getDateString();
           return values;
@@ -320,7 +325,7 @@ export class HomePage {
             return this.browser.executeScript({ code: "localStorage.setItem('logoutOfNativeApp', '');" }).then(() => {
               return this.firebaseSignOut().then(() => {
                 return this.browser.executeScript({
-                  code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'nativeAuthOut', value: 'native signed out at ' + this.getDateString()}) + ");"
+                  code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'nativeAuthOut', value: this.getDateString() + ' native signed out at' }) + ");"
                 });
               });
             });
@@ -379,7 +384,7 @@ export class HomePage {
 
               return this.browser.executeScript({ code: "localStorage.setItem('firebase_id_token_output', '');" }).then(() => {
                 return this.browser.executeScript({
-                  code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'nativeAuthIn', value: 'native signed in at ' + this.getDateString()}) + ");"
+                  code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'nativeAuthIn', value: this.getDateString() + ' native signed in at'}) + ");"
                 });
               });
             }
@@ -469,7 +474,7 @@ export class HomePage {
     }
 
     setupPush() {
-      // this.toast("setupPush");
+      this.toast("setupPush");
       // source: https://www.youtube.com/watch?v=sUjQ3G17T80
 
       // to check if we have permission
@@ -562,16 +567,18 @@ export class HomePage {
       var pushUserPath = 'Users';
       var pushDevicePath = 'Devices';
 
-      firebase.database().ref('PushNotifications/Devices/' + this.device.registrationId + '/Users').once('value').then(users => {
-        users.forEach(userSnapshot => {
+      firebase.database().ref('PushNotifications/Devices/' + this.device.registrationId + '/Users').once('value').then(userSnapshots => {
+        userSnapshots.forEach(userSnapshot => {
           var match = false;
 
           this.toast(userSnapshot.key);
 
-          for (var i = 0; i < this.users.length; i++) {
-            if (this.users[i].key === userSnapshot.key) {
-              match = true;
-              break;
+          if (this.users) {
+            for (var i = 0; i < this.users.length; i++) {
+              if (this.users[i].key === userSnapshot.key) {
+                match = true;
+                break;
+              }
             }
           }
 
@@ -591,13 +598,18 @@ export class HomePage {
         }
 
         this.toast(JSON.stringify(updates));
+        this.fbUpdates.push(updates);
 
-        firebase.database().ref('PushNotifications/').update(updates, error => {
+        return firebase.database().ref('PushNotifications/').update(updates, error => {
           if (error) {
             this.toast(error);
           } else {
             this.toast("updated pushNotifications in database");
           }
+        });
+      }).then(() => {
+        this.browser.executeScript({
+          code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'setDeviceUserPairing', value: this.getDateString() + ' device user pairing'}) + ");"
         });
       });
     }
