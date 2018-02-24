@@ -318,7 +318,11 @@ export class HomePage {
         }).then(values => {
           if (values && values.length && values[0]) {
             return this.browser.executeScript({ code: "localStorage.setItem('logoutOfNativeApp', '');" }).then(() => {
-              return this.firebaseSignOut();
+              return this.firebaseSignOut().then(() => {
+                return this.browser.executeScript({
+                  code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'nativeAuthOut', value: 'native signed out at ' + Date.now()}) + ");"
+                });
+              });
             });
           }
         });
@@ -373,7 +377,11 @@ export class HomePage {
                 });
               }
 
-              return this.browser.executeScript({ code: "localStorage.setItem('firebase_id_token_output', '');" });
+              return this.browser.executeScript({ code: "localStorage.setItem('firebase_id_token_output', '');" }).then(() => {
+                return this.browser.executeScript({
+                  code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'nativeAuthIn', value: 'native signed in at ' + Date.now()}) + ");"
+                });
+              });
             }
           }
         });
