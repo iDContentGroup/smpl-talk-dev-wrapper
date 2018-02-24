@@ -103,6 +103,7 @@ export class HomePage {
               }).then(() => {
                 this.usersInitalized = true;
                 this.toast(this.users);
+
                 this.setDeviceUserPairing();
               });
               // TODO: do some stuff with push notifications
@@ -296,7 +297,9 @@ export class HomePage {
     browserActivateNativeAppMode() {
       this.toast('browserActivateNativeAppMode');
       if (this.browser && !this.nativeAppModeActivated) {
-        this.toast("do it");
+        this.toast("native app mode activated");
+        this.nativeAppModeActivated = true;
+        
         return this.browser.executeScript({
           code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicActivateAppModeFunc && window.my.activateAppMode.publicActivateAppModeFunc();"
         }).then(values => {
