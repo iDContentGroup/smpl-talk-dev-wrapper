@@ -13,7 +13,7 @@
   <p>{{ options }}</p>
   <button ion-button secondary (click)="startBrowser()">open smpl talk using inAppBrowser</button>
 
-  <button ion-button secondary (click)="browser.show()">show browser</button>
+  <button ion-button secondary (click)="showBrowser()">show browser</button>
   <button ion-button secondary (click)="toggleDebug()">toggleDebug status: {{!doDebug ? 'nope' : 'yup'}}</button>
 
   <p *ngIf="browser" [style.background]="'grey'">{{ JSON.stringify(browser) }}</p>
