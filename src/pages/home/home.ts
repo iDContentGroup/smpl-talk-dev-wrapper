@@ -28,15 +28,16 @@ export class HomePage {
     JSON: any;
     browser: any;
 
-    doDebug: boolean;
+    doDebug: boolean;//for debug
 
     browserLoopSetTimeout: any;
     browserLoopIsActive: boolean;
 
-    webTimestamp: number;
-    nativeTimestamp: number;
+    webTimestamp: number;//for debug
+    nativeTimestamp: number;//for debug
 
     loggingIn: boolean;
+    loginCount: number;//for debug
     unsubscribeOnAuthStateChanged: any;
 
     users: any;
@@ -48,12 +49,7 @@ export class HomePage {
     webNav: any;
     nativeAppModeActivated: boolean;
 
-    test: any;
-    test2: any;
-
-    promiseTest: any;
-
-    error: any;
+    errors: any[];
 
     constructor(public platform: Platform, public navCtrl: NavController, public iab: InAppBrowser, private ref: ChangeDetectorRef, 
       private http: Http, private ngZone: NgZone, public push: Push, public toastCtrl: ToastController) {
@@ -64,6 +60,9 @@ export class HomePage {
   	}
 
     ngOnInit() {
+      this.errors = [];
+      this.loginCount = 0;
+
       // this.toast('ngOnInit');
       this.platform.ready().then(() => {
         // this.toast('platform is ready');
@@ -75,13 +74,13 @@ export class HomePage {
 
           // this.platform.resume.subscribe(event => {
           //   this.ngZone.run(() => {
-          //     this.toast("resumed: " + Date.now());
+          //     this.toast("resumed: " + this.getDateString());
           //   });
           // });
 
           // this.platform.pause.subscribe(event => {
           //   this.ngZone.run(() => {
-          //     this.toast("paused:" + Date.now());
+          //     this.toast("paused:" + this.getDateString());
           //   });
           // });
         }
@@ -89,6 +88,7 @@ export class HomePage {
         this.unsubscribeOnAuthStateChanged = firebase.auth().onAuthStateChanged(user => {
           this.ngZone.run(() => {
             if (user) {
+              this.loginCount += 1;
               this.users = [];
 
               this.fbUser = user;
@@ -207,7 +207,7 @@ export class HomePage {
               }
             });
             // this.browser.executeScript({
-            //   code: "localStorage.setItem('nativeAppTime', '" + Date.now() + "');"
+            //   code: "localStorage.setItem('nativeAppTime', '" + this.getDateString() + "');"
             // }, values => {
             //   this.ngZone.run(() => {
             //     var hideWebWrapper = values[0];
@@ -233,7 +233,7 @@ export class HomePage {
       this.ngZone.run(() => {
         this.toast('browserLoopFunction');
 
-        this.nativeTimestamp = Date.now();
+        this.nativeTimestamp = this.getDateString();
         return this.browserActivateNativeAppMode().then(values => {
           // nothing
         }).then(() => {
@@ -248,7 +248,7 @@ export class HomePage {
           return this.browserTest().then(values => {
             if (values && values.length && values[0]) {
               return this.browser.executeScript({
-                code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test2', value: 'test2 ' + Date.now()}) + ");"
+                code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test2', value: 'test2 ' + this.getDateString()}) + ");"
               });
             }
           });
@@ -263,7 +263,7 @@ export class HomePage {
             }, delay);
           }
         }).catch(error => {
-          this.error = error;
+          this.errors.push(error);
         });
       });
     }
@@ -279,12 +279,12 @@ export class HomePage {
       this.toast('started browserTest');
       if (this.browser) {
         return this.browser.executeScript({
-          code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test', value: 'test ' + Date.now()}) + ");"
+          code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test', value: 'test ' + this.getDateString()}) + ");"
         }).then(values => {
-          this.webTimestamp = Date.now();
+          this.webTimestamp = this.getDateString();
           return values;
         }).catch(error => {
-          this.error = error;
+          this.errors.push(error);
           // alert(error);
           return null;
         });
@@ -320,7 +320,7 @@ export class HomePage {
             return this.browser.executeScript({ code: "localStorage.setItem('logoutOfNativeApp', '');" }).then(() => {
               return this.firebaseSignOut().then(() => {
                 return this.browser.executeScript({
-                  code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'nativeAuthOut', value: 'native signed out at ' + Date.now()}) + ");"
+                  code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'nativeAuthOut', value: 'native signed out at ' + this.getDateString()}) + ");"
                 });
               });
             });
@@ -379,7 +379,7 @@ export class HomePage {
 
               return this.browser.executeScript({ code: "localStorage.setItem('firebase_id_token_output', '');" }).then(() => {
                 return this.browser.executeScript({
-                  code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'nativeAuthIn', value: 'native signed in at ' + Date.now()}) + ");"
+                  code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'nativeAuthIn', value: 'native signed in at ' + this.getDateString()}) + ");"
                 });
               });
             }
@@ -401,7 +401,7 @@ export class HomePage {
     //           this.webNav = null;
 
     //           return this.browser.executeScript({
-    //             code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'webNavStatus', value: 'nav by native app happened: ' + Date.now()}) + ");"
+    //             code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'webNavStatus', value: 'nav by native app happened: ' + this.getDateString()}) + ");"
     //           });
     //         }
     //       });
@@ -616,6 +616,26 @@ export class HomePage {
       // });
 
       toast.present();
+    }
+
+    getDateString(timestamp?: number) {
+      var u;
+
+      if (timestamp) {
+        u = new Date(timestamp);
+      } else {
+        u = new Date();
+      }
+
+      // source: https://stackoverflow.com/questions/19485353/function-to-convert-timestamp-to-human-date-in-javascript
+      // ex: 2016-04-30 08:36:26.000
+      return u.getUTCFullYear() +
+        '-' + ('0' + u.getUTCMonth()).slice(-2) +
+        '-' + ('0' + u.getUTCDate()).slice(-2) + 
+        ' ' + ('0' + u.getUTCHours()).slice(-2) +
+        ':' + ('0' + u.getUTCMinutes()).slice(-2) +
+        ':' + ('0' + u.getUTCSeconds()).slice(-2) +
+        '.' + (u.getUTCMilliseconds() / 1000).toFixed(3).slice(2, 5);
     }
 
     // this.showCamera = false;
