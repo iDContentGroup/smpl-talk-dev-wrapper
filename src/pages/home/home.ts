@@ -299,7 +299,7 @@ export class HomePage {
       if (this.browser && !this.nativeAppModeActivated) {
         this.toast("native app mode activated");
         this.nativeAppModeActivated = true;
-        
+
         return this.browser.executeScript({
           code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicActivateAppModeFunc && window.my.activateAppMode.publicActivateAppModeFunc();"
         }).then(values => {
@@ -336,7 +336,7 @@ export class HomePage {
       }
 
       if (this.browser && this.nativeAppModeActivated) {
-        this.browser.executeScript({
+        return this.browser.executeScript({
           code: "localStorage.getItem('firebase_id_token_output')"
         }).then(values => {
           var firebase_id_token = values && values.length && values[0];
