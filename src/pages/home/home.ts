@@ -119,7 +119,7 @@ export class HomePage {
               this.users = [];
               this.usersInitalized = true;
 
-              this.setDeviceUserPairing();
+              // this.setDeviceUserPairing();
             }
             
             this.startBrowser();
@@ -337,11 +337,18 @@ export class HomePage {
         }).then(values => {
           if (values && values.length && values[0]) {
             return this.browser.executeScript({ code: "localStorage.setItem('logoutOfNativeApp', '');" }).then(() => {
-              return this.firebaseSignOut().then(() => {
+              this.users = [];
+              return this.setDeviceUserPairing().then(result => {
+                // handle firebaseSignOut here
+              }).then(() => {
+                return this.firebaseSignOut().then(result => {
+                  // handle firebaseSignOut here
+                });
+              }).then(() => {
                 return this.browser.executeScript({
                   code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'nativeAuthOut', value: this.getDateString() + ' native signed out at' }) + ");"
                 });
-              });
+              });;
             });
           }
         }).catch(error => {
@@ -498,6 +505,7 @@ export class HomePage {
       }, error => {
         // console.log(error);
         // this.toast(error);
+        this.errors.push(error);
       });
     }
 
