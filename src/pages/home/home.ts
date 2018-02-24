@@ -33,8 +33,8 @@ export class HomePage {
     browserLoopSetTimeout: any;
     browserLoopIsActive: boolean;
 
-    webTimestamp: number;//for debug
-    nativeTimestamp: number;//for debug
+    webTimestamp: string;//for debug
+    nativeTimestamp: string;//for debug
 
     loggingIn: boolean;
     loginCount: number;//for debug
