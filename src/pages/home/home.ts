@@ -71,7 +71,7 @@ export class HomePage {
         // this.webNav = {postKey: 'postKey', groupKey: 'groupKey', networkKey: 'networkKey', data: {'action': 'liked'}};
 
         if (this.platform.is('cordova')) {
-          // this.setupPush();
+          this.setupPush();
 
           // this.platform.resume.subscribe(event => {
           //   this.ngZone.run(() => {
@@ -86,41 +86,38 @@ export class HomePage {
           // });
         }
 
-        this.startBrowser();
+        this.unsubscribeOnAuthStateChanged = firebase.auth().onAuthStateChanged(user => {
+          this.ngZone.run(() => {
+            if (user) {
+              this.users = [];
 
-        
-        // this.unsubscribeOnAuthStateChanged = firebase.auth().onAuthStateChanged(user => {
-        //   this.ngZone.run(() => {
-        //     if (user) {
-        //       this.users = [];
+              this.fbUser = user;
+              this.toast('native logged in: ' + this.fbUser.uid + " | " + this.fbUser.email);
+              firebase.database().ref("UsersRef/").orderByChild('email').equalTo(this.fbUser.email).once('value').then(usersRef => {
+                usersRef.forEach(userRef => {
+                  var user = userRef.val();
+                  user['key'] = userRef.key;
 
-        //       this.fbUser = user;
-        //       this.toast('native logged in: ' + this.fbUser.uid + " | " + this.fbUser.email);
-        //       firebase.database().ref("UsersRef/").orderByChild('email').equalTo(this.fbUser.email).once('value').then(usersRef => {
-        //         usersRef.forEach(userRef => {
-        //           var user = userRef.val();
-        //           user['key'] = userRef.key;
+                  this.users.push(user);
+                })
+              }).then(() => {
+                this.usersInitalized = true;
+                this.toast(this.users);
+                this.setDeviceUserPairing();
+              });
+              // TODO: do some stuff with push notifications
+            } else {
+              this.toast("native logged out");
+              this.fbUser = null;
+              this.users = [];
+              this.usersInitalized = true;
 
-        //           this.users.push(user);
-        //         })
-        //       }).then(() => {
-        //         this.usersInitalized = true;
-        //         this.toast(this.users);
-        //         this.setDeviceUserPairing();
-        //       });
-        //       // TODO: do some stuff with push notifications
-        //     } else {
-        //       this.toast("native logged out");
-        //       this.fbUser = null;
-        //       this.users = [];
-        //       this.usersInitalized = true;
-
-        //       this.setDeviceUserPairing();
-        //     }
+              this.setDeviceUserPairing();
+            }
             
-        //     this.startBrowser();
-        //   });
-        // });
+            this.startBrowser();
+          });
+        });
       });
     }
 
