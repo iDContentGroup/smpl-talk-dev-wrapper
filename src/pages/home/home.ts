@@ -71,7 +71,7 @@ export class HomePage {
       this.platform.ready().then(() => {
         // this.toast('platform is ready');
 
-        // this.webNav = {postKey: 'postKey', groupKey: 'groupKey', networkKey: 'networkKey', data: {'action': 'liked'}};
+        this.webNav = {postKey: 'postKey', groupKey: 'groupKey', networkKey: 'networkKey', data: {'action': 'liked'}};
 
         if (this.platform.is('cordova')) {
           this.setupPush();
@@ -250,6 +250,10 @@ export class HomePage {
             // nothing
           });
         }).then(() => {
+          return this.browserSetNav().then(values => {
+            // nothing
+          });
+        }).then(() => {
           return this.browserTest().then(values => {
             if (values && values.length && values[0]) {
               return this.browser.executeScript({
@@ -312,14 +316,11 @@ export class HomePage {
     browserActivateNativeAppMode() {
       this.toast('browserActivateNativeAppMode');
       if (this.browser && !this.nativeAppModeActivated) {
-        this.toast("native app mode activated");
-        this.nativeAppModeActivated = true;
-
         return this.browser.executeScript({
           code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicActivateAppModeFunc && window.my.activateAppMode.publicActivateAppModeFunc();"
         }).then(values => {
-          this.toast("then values");
-          this.toast(values);
+          this.toast("native app mode activated");
+          this.nativeAppModeActivated = true;
         }).catch(error => {
           this.errors.push(error);
           // this.toast(error);
@@ -424,26 +425,23 @@ export class HomePage {
       }
     }
 
-    // browserNav() {
-    //   if (this.browser && this.webNav) {
-    //     return this.browser.executeScript({
-    //       code: "window.my.activateAppMode.publicWebNavFunc("+ JSON.stringify(this.webNav) + ");"
-    //     }).then(values => {
-    //       var 
-    //         if (values && values.length && values[0]) {
-    //           this.toast("Native navStatus: " + values[0]);
-    //           this.webNav = null;
-
-    //           return this.browser.executeScript({
-    //             code: "window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'webNavStatus', value: 'nav by native app happened: ' + this.getDateString()}) + ");"
-    //           });
-    //         }
-    //       });
-    //     });
-    //   } else {
-    //     return Promise.resolve(null);
-    //   }
-    // }
+    browserSetNav() {
+      this.toast('browserSetNav');
+      if (this.browser && this.webNav) {
+        return this.browser.executeScript({
+          code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicWebNavFunc && window.my.activateAppMode.publicWebNavFunc(" + JSON.stringify(this.webNav) + ");"
+        }).then(values => {
+          this.toast("native app mode activated");
+          this.webNav = null;
+        }).catch(error => {
+          this.errors.push(error);
+          // this.toast(error);
+          return null;
+        });
+      } else {
+        return Promise.resolve(null);
+      }
+    }
 
     logUserOutOfBrowser() {
       if (this.browser) {
