@@ -71,7 +71,7 @@ export class HomePage {
       this.platform.ready().then(() => {
         // this.toast('platform is ready');
 
-        this.webNav = {postKey: 'postKey', groupKey: 'groupKey', networkKey: 'networkKey', data: {'action': 'liked'}};
+        this.webNav = {navType: 'post', postKey: 'postKey', groupKey: 'groupKey', networkKey: '-moo', data: {'action': 'liked'}};
 
         if (this.platform.is('cordova')) {
           this.setupPush();
