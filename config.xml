@@ -95,4 +95,10 @@
     <plugin name="cordova-plugin-inappbrowser" spec="^2.0.2" />
     <engine name="android" spec="~6.4.0" />
     <engine name="ios" spec="~4.5.4" />
+    <edit-config target="NSCameraUsageDescription" file="*-Info.plist" mode="merge">
+        <string>Need camera access to take pictures</string>
+    </edit-config>
+    <edit-config target="NSPhotoLibraryUsageDescription" file="*-Info.plist" mode="merge">
+        <string>Need photo library access to get pictures from there</string>
+    </edit-config>
 </widget>
