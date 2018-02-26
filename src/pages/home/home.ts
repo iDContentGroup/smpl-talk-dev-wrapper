@@ -184,6 +184,7 @@ export class HomePage {
           });
 
           this.browser.on("loadstart").subscribe(event => {
+            this.splashScreen.hide();
             // this.ngZone.run(() => {
             //   // this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
             //   // this.browser.executeScript({code: 'window.my.activateAppMode.publicActivateAppModeFunc();'});
