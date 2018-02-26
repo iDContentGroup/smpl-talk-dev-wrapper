@@ -6,7 +6,7 @@ import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import 'rxjs/add/operator/map';
 
 import { NavController, Platform, ToastController } from 'ionic-angular';
-
+import { SplashScreen } from '@ionic-native/splash-screen';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 // import { Camera, CameraOptions } from '@ionic-native/camera';
 // import { ImagePicker } from '@ionic-native/image-picker';
@@ -54,7 +54,7 @@ export class HomePage {
     fbUpdates: any[];
 
     constructor(public platform: Platform, public navCtrl: NavController, public iab: InAppBrowser, private ref: ChangeDetectorRef, 
-      private http: Http, private ngZone: NgZone, public push: Push, public toastCtrl: ToastController) {
+      private http: Http, private ngZone: NgZone, public push: Push, public toastCtrl: ToastController, public splashScreen: SplashScreen) {
       this.JSON = JSON;
       this.http = http;
 
