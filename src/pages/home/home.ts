@@ -539,7 +539,7 @@ export class HomePage {
       const options: any = {
          android: {
            //senderID: XXXX
-           icon: 'true'
+           // icon: 'true'
            //iconColor: ?
            vibrate: 'true',
            //clearBadge: 'true',
