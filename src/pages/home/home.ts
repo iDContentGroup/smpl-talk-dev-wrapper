@@ -194,7 +194,7 @@ export class HomePage {
             //   // this.loadstopEvents.push(event);
             //   if (!this.browserLoopIsActive) {
             //     this.browserLoopIsActive = true;
-            //     this.browserLoopFunction(6000);
+            //     this.browserLoopFunction(100);
             //   }
             // });
           });
@@ -210,7 +210,7 @@ export class HomePage {
               // this.loadstopEvents.push(event);
               if (!this.browserLoopIsActive) {
                 this.browserLoopIsActive = true;
-                this.browserLoopFunction(6000);
+                this.browserLoopFunction(100);
               }
             });
             // this.browser.executeScript({
@@ -575,7 +575,9 @@ export class HomePage {
           if (notification.additionalData.foreground) {
             
           } else {
-            
+            this.browser && this.browser.executeScript({
+              code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'notification', value: notification}) + ");"
+            });
           }
 
           //collapse_key  string  (optional)
