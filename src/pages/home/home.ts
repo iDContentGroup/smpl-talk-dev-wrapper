@@ -539,7 +539,7 @@ export class HomePage {
       const options: any = {
          android: {
            //senderID: XXXX
-           //icon: ?
+           icon: 'true'
            //iconColor: ?
            vibrate: 'true',
            //clearBadge: 'true',
@@ -575,7 +575,14 @@ export class HomePage {
           if (notification.additionalData.foreground) {
             
           } else {
-            this.browser && this.browser.executeScript({
+            var navType = notification.additionalData.navType;
+            var postKey = notification.additionalData.postKey;
+            var groupKey = notification.additionalData.groupKey;
+            var networkKey = notification.additionalData.networkKey;
+
+            this.webNav = {navType: navType, postKey: postKey, groupKey: groupKey, networkKey: networkKey};
+            
+            this.doDebug && this.browser && this.browser.executeScript({
               code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'notification', value: notification}) + ");"
             });
           }
