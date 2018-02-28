@@ -539,10 +539,10 @@ export class HomePage {
       const options: any = {
          android: {
            //senderID: XXXX
-           // icon: 'true'
+           icon: 'ic_android_generated',
            //iconColor: ?
            vibrate: 'true',
-           //clearBadge: 'true',
+           clearBadge: true,
            //clearNotifications: 'true',
            //forceShow: 'true',
            //messageKey: '',
@@ -554,8 +554,8 @@ export class HomePage {
          ios: {
              alert: 'true',
              badge: true,
-             sound: 'true'
-             //clearBadge: 'true'
+             sound: 'true',
+             clearBadge: true
          },
          windows: {},
          browser: {
