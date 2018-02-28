@@ -540,7 +540,7 @@ export class HomePage {
          android: {
            //senderID: XXXX
            icon: 'ic_android_generated',
-           //iconColor: ?
+           iconColor: '#1DAED9',
            vibrate: 'true',
            clearBadge: true,
            //clearNotifications: 'true',
