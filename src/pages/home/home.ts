@@ -544,13 +544,13 @@ export class HomePage {
            icon: 'ic_android_generated',
            iconColor: '#1DAED9',
            vibrate: 'true',
-           clearBadge: true,
+           // clearBadge: 'true',
            //clearNotifications: 'true',
            //forceShow: 'true',
            //messageKey: '',
            //titleKey: '',
            alert: 'true',
-           badge: true,
+           // badge: true,
            sound: 'true'
          },
          ios: {
