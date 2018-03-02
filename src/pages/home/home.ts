@@ -568,7 +568,7 @@ export class HomePage {
 
       pushObject.on('notification').subscribe((notification: any) => {
         this.ngZone.run(() => {
-          this.toast('Received a notification' + JSON.stringify(notification));
+          this.doDebug && this.toast('Received a notification' + JSON.stringify(notification));
           // foreground
 
           // TODO: handle notification
