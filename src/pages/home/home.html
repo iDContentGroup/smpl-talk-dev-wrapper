@@ -25,7 +25,7 @@
     <p>fbUser: {{ fbUser ? (fbUser.email + ' | ' + fbUser.uid) : 'no fbUser found' }}</p>
     <p>users: {{ !users.length ? ' (none)' : users.length}}</p>
     <p *ngFor="let user of users">{{ user.key }} | {{ user.email }}</p>
-    <p *ngIf="device">{{ JSON.stringify(device) }}</p>
+    <p>{{ device && JSON.stringify(device) || "(No device)" }}</p>
 
     <p>errors: {{ !errors.length ? ' (none)' : errors.length}}</p>
     <p *ngFor="let error of errors">{{JSON.stringify(error)}}</p>

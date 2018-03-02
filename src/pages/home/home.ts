@@ -532,6 +532,8 @@ export class HomePage {
         } else {
           this.doDebug && this.toast('We do not have permission to send push notifications');
         }
+      }).catch(error => {
+        this.errors.push(error);
       });
 
       // to initialize push notifications
