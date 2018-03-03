@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="company.smpl.talk" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>SMPL Talk</name>
+    <name>Smpl Talk</name>
     <description>An awesome Ionic/Cordova app for SMPL Talk.</description>
     <author email="support@smpl.company" href="https://smpltalk.com/">SMPL, LLC</author>
     <content src="index.html" />
@@ -94,8 +94,8 @@
         <string>Need photo library access to get pictures from there</string>
     </edit-config>
     <engine name="ios" spec="4.5.4" />
+    <engine name="android" spec="~6.4.0" />
     <plugin name="phonegap-plugin-push" spec="^2.1.3">
         <variable name="FCM_VERSION" value="11.6.2" />
     </plugin>
-    <engine name="android" spec="~6.4.0" />
 </widget>
