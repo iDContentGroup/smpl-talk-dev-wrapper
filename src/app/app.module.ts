@@ -12,8 +12,8 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { InAppBrowser } from '@ionic-native/in-app-browser';
-import { Camera, CameraOptions } from '@ionic-native/camera';
-import { ImagePicker } from '@ionic-native/image-picker';
+// import { Camera, CameraOptions } from '@ionic-native/camera';
+// import { ImagePicker } from '@ionic-native/image-picker';
 
 import { Push, PushObject, PushOptions } from '@ionic-native/push';
 
@@ -56,8 +56,8 @@ firebase.initializeApp(firebaseConfig);
     StatusBar,
     SplashScreen,
     InAppBrowser,
-    Camera,
-    ImagePicker,
+    // Camera,
+    // ImagePicker,
     Push,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
