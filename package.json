@@ -60,14 +60,14 @@
         "PHOTO_LIBRARY_USAGE_DESCRIPTION": "Upload images to Smpl Talk"
       },
       "cordova-plugin-camera": {},
-      "phonegap-plugin-push": {
-        "SENDER_ID": "599715636396"
-      },
       "cordova-plugin-whitelist": {},
       "cordova-plugin-device": {},
       "cordova-plugin-splashscreen": {},
       "cordova-plugin-ionic-webview": {},
-      "cordova-plugin-ionic-keyboard": {}
+      "cordova-plugin-ionic-keyboard": {},
+      "phonegap-plugin-push": {
+        "FCM_VERSION": "11.6.2"
+      }
     },
     "platforms": [
       "ios"
