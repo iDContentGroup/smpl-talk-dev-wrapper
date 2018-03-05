@@ -184,7 +184,6 @@ export class HomePage {
           });
 
           this.browser.on("loadstart").subscribe(event => {
-            this.splashScreen.hide();
             // this.ngZone.run(() => {
             //   // this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
             //   // this.browser.executeScript({code: 'window.my.activateAppMode.publicActivateAppModeFunc();'});
@@ -202,6 +201,8 @@ export class HomePage {
           this.browser.on("loadstop").subscribe(event => {
             this.toast("loadstop worked", "bottom");
             this.ngZone.run(() => {
+              this.splashScreen.hide();
+              this.browser.show();
               // this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
               // this.browser.executeScript({code: 'window.my.activateAppMode.publicActivateAppModeFunc();'});
 
