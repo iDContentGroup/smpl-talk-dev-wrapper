@@ -175,12 +175,20 @@ export class HomePage {
           //   this.browser.executeScript({ code: "alert('loadstop');" });
           // });
 
-          // this.browser.on("loaderror").subscribe(event => {
-          //   this.browser.executeScript({ code: "alert('loaderror');" });
-          // });
+          this.browser.on("loaderror").subscribe(event => {
+            this.ngZone.run(() => {
+              this.doDebug = true;
+              this.browser.hide();
+              this.errors.push(event);
+              // this.browser.executeScript({ code: "alert('loaderror');" });
+            });
+          });
 
           this.browser.on("exit").subscribe(event => {
-            this.browser = null;
+            this.ngZone.run(() => {
+              this.errors.push(event);
+              this.browser = null;
+            });
           });
 
           this.browser.on("loadstart").subscribe(event => {
