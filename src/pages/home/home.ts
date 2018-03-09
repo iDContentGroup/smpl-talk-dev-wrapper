@@ -62,10 +62,14 @@ export class HomePage {
       this.loadstopEvents = [];
   	}
 
-    focusTest() {
+    focusTest(event) {
+
       setTimeout(() => {
         document.getElementById('focusme').focus();
-      }, 500)
+      }, 500);
+
+      event.stopPropagation();
+      event.preventDefault();
     }
 
     ngOnInit() {
