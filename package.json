@@ -29,6 +29,7 @@
     "@ionic/storage": "2.1.3",
     "cordova-android": "6.4.0",
     "cordova-ios": "4.5.4",
+    "cordova-keyboard-without-action": "0.0.3",
     "cordova-plugin-device": "^2.0.1",
     "cordova-plugin-inappbrowser-wkwebview": "^1.0.7",
     "cordova-plugin-ionic-keyboard": "^2.0.5",
@@ -58,7 +59,8 @@
       "phonegap-plugin-push": {
         "FCM_VERSION": "11.6.2"
       },
-      "cordova-plugin-inappbrowser-wkwebview": {}
+      "cordova-plugin-inappbrowser-wkwebview": {},
+      "cordova-keyboard-without-action": {}
     },
     "platforms": [
       "ios",
