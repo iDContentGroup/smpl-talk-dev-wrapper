@@ -52,6 +52,8 @@ export class HomePage {
 
     fbUpdates: any[];
 
+    browserLoopCount: number;
+
     constructor(public platform: Platform, public navCtrl: NavController, public iab: InAppBrowser, private ref: ChangeDetectorRef, 
       private http: Http, private ngZone: NgZone, public push: Push, public toastCtrl: ToastController, public splashScreen: SplashScreen) {
       this.JSON = JSON;
