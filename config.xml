@@ -98,4 +98,5 @@
         <variable name="FCM_VERSION" value="11.6.2" />
     </plugin>
     <plugin name="cordova-plugin-ionic-webview" spec="^1.1.16" />
+    <plugin name="cordova-plugin-inappbrowser-wkwebview" spec="^1.0.7" />
 </widget>
