@@ -70,12 +70,7 @@ export class HomePage {
       this.users = [];
       this.loginCount = 0;
 
-      // this.toast('ngOnInit');
       this.platform.ready().then(() => {
-        // this.toast('platform is ready');
-
-        // this.webNav = {navType: 'post', postKey: 'postKey', groupKey: 'groupKey', networkKey: '-moo', data: {'action': 'liked'}};
-
         if (this.platform.is('cordova')) {
           this.setupPush();
 
@@ -99,7 +94,7 @@ export class HomePage {
               this.users = [];
 
               this.fbUser = user;
-              this.toast('native logged in: ' + this.fbUser.uid + " | " + this.fbUser.email);
+              this.doDebug && this.toast('native logged in: ' + this.fbUser.uid + " | " + this.fbUser.email);
               firebase.database().ref("UsersRef/").orderByChild('email').equalTo(this.fbUser.email).once('value').then(usersRef => {
                 this.users = [];
 
@@ -110,13 +105,13 @@ export class HomePage {
                   this.users.push(user);
                 })
               }).then(() => {
-                this.toast(this.users);
+                this.doDebug && this.toast(this.users);
 
                 this.setDeviceUserPairing();
               });
               // TODO: do some stuff with push notifications
             } else {
-              this.toast("native logged out");
+              this.doDebug && this.toast("native logged out");
               this.fbUser = null;
               this.users = [];
 
@@ -134,7 +129,6 @@ export class HomePage {
     }
 
   	startBrowser() {
-      // this.toast("startBrowser");
       if (!this.browser) {
         const url = 'https://smpl-talk-develop.firebaseapp.com/#/';
         const target = '_blank';
@@ -206,7 +200,7 @@ export class HomePage {
           });
 
           this.browser.on("loadstop").subscribe(event => {
-            this.toast("loadstop worked", "bottom");
+            this.doDebug && this.toast("loadstop worked", "bottom");
             this.ngZone.run(() => {
               // this.splashScreen.hide();
               // this.browser.show();
@@ -239,12 +233,10 @@ export class HomePage {
     }
 
     browserLoopFunction(delay?: number) {
-      // this.toast("toast worked");
       this.ngZone.run(() => {
-        this.toast('browserLoopFunction');
+        this.doDebug && this.toast('browserLoopFunction');
 
         this.browserLoopCount = (this.browserLoopCount || 0) + 1;
-        // this.browserLoopCount += 1;
 
         this.nativeTimestamp = this.getDateString();
         return this.browserActivateNativeAppMode().then(values => {
@@ -270,23 +262,20 @@ export class HomePage {
             }
           });
         }).then(() => {
-          // this.toast("got to the last then");
           if (delay) {
             this.browserLoopSetTimeout = setTimeout(() => {
               this.ngZone.run(() => {
-                // this.toast("should start browser loop");
                 this.browserLoopFunction(delay);
               });
             }, delay);
           }
         }).catch(error => {
-          this.toast('Unexpected error during browser loop');
+          this.doDebug && this.toast('Unexpected error during browser loop');
           this.errors.push(error);
 
           if (delay) {
             this.browserLoopSetTimeout = setTimeout(() => {
               this.ngZone.run(() => {
-                // this.toast("should start browser loop");
                 this.browserLoopFunction(delay);
               });
             }, delay);
@@ -303,7 +292,6 @@ export class HomePage {
     }
 
     browserTest() {
-      // this.toast('started browserTest');
       if (this.doDebug && this.browser) {
         return this.browser.executeScript({
           code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test', value: this.getDateString() + ' test'}) + ");"
@@ -312,11 +300,9 @@ export class HomePage {
           return values;
         }).catch(error => {
           this.errors.push(error);
-          // this.toast(error);
           return null;
         });
       } else {
-        // alert('no browser');
         return Promise.resolve(null);
       }
     }
@@ -331,7 +317,6 @@ export class HomePage {
           this.nativeAppModeActivated = true;
         }).catch(error => {
           this.errors.push(error);
-          // this.toast(error);
           return null;
         });
       } else {
@@ -366,7 +351,6 @@ export class HomePage {
           }
         }).catch(error => {
           this.errors.push(error);
-          // this.toast(error);
           return null;
         });
       } else {
@@ -393,7 +377,6 @@ export class HomePage {
             } else {
               // Parse the ID token.
               const payload = JSON.parse(b64DecodeUnicode(firebase_id_token.split('.')[1]));
-              // this.toast(payload);
 
               if (this.fbUser && this.fbUser.email && this.fbUser.email === payload.email) {
                 // The current user is the same user that just logged in, so no need to reauth
@@ -407,7 +390,7 @@ export class HomePage {
                   });
                 }, error => {
                   this.ngZone.run(() => {
-                    this.toast("Error occurred when attempting to exchange firebase ID token for custom auth token.");
+                    this.doDebug && this.toast("Error occurred when attempting to exchange firebase ID token for custom auth token.");
                     exchangeIDTokenForCustTokenSubscription.unsubscribe();
                     this.loggingIn = false;
                   });
@@ -433,7 +416,6 @@ export class HomePage {
           }
         }).catch(error => {
           this.errors.push(error);
-          // this.toast(error);
           return null;
         });
       } else {
@@ -451,7 +433,6 @@ export class HomePage {
           this.webNav = null;
         }).catch(error => {
           this.errors.push(error);
-          // this.toast(error);
           return null;
         });
       } else {
@@ -473,7 +454,6 @@ export class HomePage {
           }
         }).catch(error => {
           this.errors.push(error);
-          // this.toast(error);
           return null;
         });
       } else {
@@ -519,10 +499,7 @@ export class HomePage {
 
     firebaseSignOut() {
       return firebase.auth().signOut().then(() => {
-        // this.fbUser = null;
       }, error => {
-        // console.log(error);
-        // this.toast(error);
         this.errors.push(error);
       });
     }
@@ -572,7 +549,6 @@ export class HomePage {
       };
       
       const pushObject: PushObject = this.push.init(options);
-      // this.toast(JSON.stringify(pushObject));
 
       pushObject.on('notification').subscribe((notification: any) => {
         this.ngZone.run(() => {
@@ -667,10 +643,10 @@ export class HomePage {
 
         return firebase.database().ref('PushNotifications/').update(updates, error => {
           if (error) {
-            this.toast(error);
+            this.doDebug && this.toast(error);
             this.errors.push(error);
           } else {
-            this.toast("updated pushNotifications in database");
+            this.doDebug && this.toast("updated pushNotifications in database");
           }
         });
       }).then(() => {
@@ -683,12 +659,12 @@ export class HomePage {
         }
       }).catch(error => {
         this.errors.push(error);
-        // this.toast(error);
         return null;
       });
     }
 
     toast(message: any, position?: string) {
+      return;
       message = JSON.stringify(message);
 
       let toast = this.toastCtrl.create({
@@ -723,74 +699,4 @@ export class HomePage {
         ':' + ('0' + u.getUTCSeconds()).slice(-2) +
         '.' + (u.getUTCMilliseconds() / 1000).toFixed(3).slice(2, 5);
     }
-
-    // this.showCamera = false;
-
-    // // Execute JavaScript to check for the existence of a showCamera in the
-    // // child browser's localStorage.
-    // this.browser.executeScript({
-    //   code: "localStorage.getItem( 'showCamera' )"
-    // }, values => {
-    //   var showCamera = values[ 0 ];
-
-    //   // If a showCamera was set, clear the interval and close the InAppBrowser.
-    //   if ( showCamera ) {
-    //       // clearInterval( loop );
-    //       // TODO: i can't edit the image because onClick expects another upload :3
-    //       // oops
-    //       this.browser.executeScript({ code: "localStorage.setItem( 'showCamera', '' );" });
-
-    //       this.browser.hide();
-    //       this.showCamera = true;
-    //       this.ref.detectChanges();
-    //   }
-    // });
-
-    // getImageFromCamera() {
-    //   const options: CameraOptions = {
-    //     quality: 50,//50 is default
-    //     destinationType: this.camera.DestinationType.DATA_URL,
-    //     // destinationType: this.camera.DestinationType.FILE_URI,
-    //     encodingType: this.camera.EncodingType.JPEG,
-    //     sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
-    //     allowEdit: true
-    //   }
-
-    //   this.camera.getPicture(options).then(imageData => {
-    //    // imageData is either a base64 encoded string or a file URI
-    //    // If it's base64:
-    //    let base64Image = 'data:image/jpeg;base64,' + imageData;
-    //    // let base64Image = imageData;
-    //    this.img = base64Image;
-    //    if (this.browser) {
-    //      this.browser.show();
-    //      this.browser.executeScript({code: 'window.my.namespace.publicFunc("' + this.img + '");'});
-    //    }
-    //   }, (err) => {
-    //    // Handle error
-    //    this.imgError = err;
-    //   });
-    // }
-
-    // getImageFromGallery(): void {
-    //   let options = {
-    //     maximumImagesCount: 1,
-    //     quality: 100,
-    //     width: 500,
-    //     height: 500,
-    //     outputType: 1
-    //   }
-
-    //   this.imagePicker.getPictures(options).then(file_uris => {
-    //     // Gettin base64
-    //     // source: https://forum.ionicframework.com/t/image-picker-give-base64-of-image-or-not/93571/8
-    //     this.img = 'data:image/jpeg;base64,' + file_uris[0];
-
-    //     // for (var i = 0; i < file_uris.length; i++) {
-    //     //     // console.log('Image URI: ' + file_uris[i]);
-    //     // }
-    //   }, err => {
-    //     this.imgError = err;
-    //   });
-    // }
 }
