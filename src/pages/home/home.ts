@@ -139,7 +139,7 @@ export class HomePage {
 
         optionAry.push("disallowoverscroll=yes");//(iOS) Turns on/off the UIWebViewBounce property.
         optionAry.push("keyboardDisplayRequiresUserAction=no");// (iOS) Should take care of ios not allowing focus on inputs
-        optionAry.push("hidden=yes");
+        // optionAry.push("hidden=yes");
         
         if (this.doDebug) {
           // optionAry.push("toolbar=yes");// (iOS) Should be testing only
