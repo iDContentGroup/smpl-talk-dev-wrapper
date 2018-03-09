@@ -62,8 +62,12 @@ export class HomePage {
       this.loadstopEvents = [];
   	}
 
-    focusTest(event) {
+    handleClickFunc(event, func) {
+      func(event);
+      event.preventDefault();
+    }
 
+    focusTest(event) {
       setTimeout(() => {
         document.getElementById('focusme').focus();
       }, 500);
