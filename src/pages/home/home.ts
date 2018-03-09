@@ -63,7 +63,7 @@ export class HomePage {
   	}
 
     ngOnInit() {
-      this.doDebug = true;
+      // this.doDebug = true;
 
       this.errors = [];
       this.fbUpdates = [];
