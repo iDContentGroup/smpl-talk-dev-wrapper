@@ -16,7 +16,10 @@
     <p>test: 51 debug device test ukwevview to debug 2/3 min iOS crash</p>
     <p>{{ options }}</p>
 
-    <div style="background:red" (click)="focusTest($event)">
+    <div style="position: relative">
+        <div style="background:red; opacity: .5; position: absolute; width:100%; height:100%" (click)="focusTest($event)">
+
+        </div>
         <input id="focusme">
     </div>
 
