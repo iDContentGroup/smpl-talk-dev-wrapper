@@ -243,7 +243,7 @@ export class HomePage {
       this.ngZone.run(() => {
         this.toast('browserLoopFunction');
 
-        this.browserLoopCount = this.browserLoopCount || 0 + 1;
+        this.browserLoopCount = (this.browserLoopCount || 0) + 1;
         // this.browserLoopCount += 1;
 
         this.nativeTimestamp = this.getDateString();
