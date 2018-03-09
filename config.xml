@@ -20,6 +20,7 @@
     <preference name="SplashScreen" value="screen" />
     <preference name="SplashScreenDelay" value="3000" />
     <preference name="ShowSplashScreenSpinner" value="false" />
+    <preference name="KeyboardDisplayRequiresUserAction" value="false" />
     <platform name="android">
         <resource-file src="google-services.json" target="google-services.json" />
         <resource-file src="ic_android_generated.png" target="res/drawable/ic_android_generated.png" />
