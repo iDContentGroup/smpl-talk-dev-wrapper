@@ -42,7 +42,6 @@ export class HomePage {
 
     users: any;
     fbUser: any;
-    usersInitalized: boolean;
 
     device: any;
 
@@ -109,7 +108,6 @@ export class HomePage {
                   this.users.push(user);
                 })
               }).then(() => {
-                this.usersInitalized = true;
                 this.toast(this.users);
 
                 this.setDeviceUserPairing();
@@ -119,7 +117,6 @@ export class HomePage {
               this.toast("native logged out");
               this.fbUser = null;
               this.users = [];
-              this.usersInitalized = true;
 
               // this.setDeviceUserPairing();
             }
@@ -146,7 +143,7 @@ export class HomePage {
 
         optionAry.push("disallowoverscroll=yes");//(iOS) Turns on/off the UIWebViewBounce property.
         optionAry.push("keyboardDisplayRequiresUserAction=no");// (iOS) Should take care of ios not allowing focus on inputs
-        // optionAry.push("hidden=yes");
+        optionAry.push("hidden=yes");
         
         if (this.doDebug) {
           // optionAry.push("toolbar=yes");// (iOS) Should be testing only
@@ -243,6 +240,9 @@ export class HomePage {
       // this.toast("toast worked");
       this.ngZone.run(() => {
         this.toast('browserLoopFunction');
+
+        this.browserLoopCount = this.browserLoopCount || 0 + 1;
+        // this.browserLoopCount += 1;
 
         this.nativeTimestamp = this.getDateString();
         return this.browserActivateNativeAppMode().then(values => {
@@ -621,7 +621,7 @@ export class HomePage {
     }
 
     setDeviceUserPairing() {
-      if (!this.usersInitalized || !this.device || !this.device.registrationId) {
+      if (!this.fbUser || !this.device || !this.device.registrationId) {
         return Promise.resolve(null);
       }
 

@@ -24,7 +24,7 @@
     
     <p>nativeAppModeActivated: {{nativeAppModeActivated ? 'yup' : 'nope'}}</p>
 
-    <p>browserLoopActive: {{ browserLoopIsActive ? 'yup' : 'nope' }} | web: {{ webTimestamp }} | native: {{ nativeTimestamp }}</p>
+    <p>browserLoopActive: {{ browserLoopIsActive ? 'yup' : 'nope' }} {{ browserLoopCount }} | web: {{ webTimestamp }} | native: {{ nativeTimestamp }}</p>
     <p>{{ loggingIn ? 'logging in..' : 'not logging in'}} | {{ loginCount }}</p>
     <p>fbUser: {{ fbUser ? (fbUser.email + ' | ' + fbUser.uid) : 'no fbUser found' }}</p>
     <p>users: {{ !users.length ? ' (none)' : users.length}}</p>
