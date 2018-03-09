@@ -21,6 +21,8 @@
     <preference name="SplashScreenDelay" value="3000" />
     <preference name="ShowSplashScreenSpinner" value="false" />
     <preference name="KeyboardDisplayRequiresUserAction" value="false" />
+    <preference name="DisallowOverscroll" value="true" />
+    <preference name="Orientation" value="portrait" />
     <platform name="android">
         <resource-file src="google-services.json" target="google-services.json" />
         <resource-file src="ic_android_generated.png" target="res/drawable/ic_android_generated.png" />
@@ -99,5 +101,4 @@
     </plugin>
     <plugin name="cordova-plugin-ionic-webview" spec="^1.1.16" />
     <plugin name="cordova-plugin-inappbrowser-wkwebview" spec="^1.0.7" />
-    <plugin name="cordova-keyboard-without-action" spec="0.0.3" />
 </widget>

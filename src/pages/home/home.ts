@@ -65,7 +65,7 @@ export class HomePage {
     focusTest() {
       setTimeout(() => {
         document.getElementById('focusme').focus();
-      }, 3000)
+      }, 500)
     }
 
     ngOnInit() {
