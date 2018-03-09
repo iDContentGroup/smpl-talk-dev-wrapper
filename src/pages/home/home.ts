@@ -62,8 +62,14 @@ export class HomePage {
       this.loadstopEvents = [];
   	}
 
+    focusTest() {
+      setTimeout(() => {
+        document.getElementById('focusme').focus();
+      }, 3000)
+    }
+
     ngOnInit() {
-      // this.doDebug = true;
+      this.doDebug = true;
 
       this.errors = [];
       this.fbUpdates = [];
