@@ -665,19 +665,19 @@ export class HomePage {
 
     toast(message: any, position?: string) {
       return;
-      message = JSON.stringify(message);
+      // message = JSON.stringify(message);
 
-      let toast = this.toastCtrl.create({
-        message: message,
-        duration: 3000,
-        position: position || 'top'
-      });
-
-      // toast.onDidDismiss(() => {
-      //   console.log('Dismissed toast');
+      // let toast = this.toastCtrl.create({
+      //   message: message,
+      //   duration: 3000,
+      //   position: position || 'top'
       // });
 
-      toast.present();
+      // // toast.onDidDismiss(() => {
+      // //   console.log('Dismissed toast');
+      // // });
+
+      // toast.present();
     }
 
     getDateString(timestamp?: number) {
