@@ -62,22 +62,8 @@ export class HomePage {
       this.loadstopEvents = [];
   	}
 
-    handleClickFunc(event, func) {
-      func(event);
-      event.preventDefault();
-    }
-
-    focusTest(event) {
-      setTimeout(() => {
-        document.getElementById('focusme').focus();
-      }, 500);
-
-      event.stopPropagation();
-      event.preventDefault();
-    }
-
     ngOnInit() {
-      this.doDebug = true;
+      // this.doDebug = true;
 
       this.errors = [];
       this.fbUpdates = [];
