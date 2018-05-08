@@ -56,11 +56,12 @@
       "cordova-plugin-splashscreen": {},
       "cordova-plugin-ionic-webview": {},
       "cordova-plugin-ionic-keyboard": {},
-      "phonegap-plugin-push": {
-        "FCM_VERSION": "11.6.2"
-      },
       "cordova-plugin-inappbrowser-wkwebview": {},
-      "cordova-keyboard-without-action": {}
+      "cordova-keyboard-without-action": {},
+      "phonegap-plugin-push": {
+        "SENDER_ID": "59971563696",
+        "FCM_VERSION": "11.6.2"
+      }
     },
     "platforms": [
       "ios",

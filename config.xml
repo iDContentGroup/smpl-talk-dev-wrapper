@@ -94,12 +94,13 @@
     <edit-config file="*-Info.plist" mode="merge" target="NSPhotoLibraryUsageDescription">
         <string>Need photo library access to get pictures from there</string>
     </edit-config>
-    <engine name="android" spec="~6.4.0" />
     <plugin name="cordova-plugin-ionic-webview" spec="^1.1.16" />
     <plugin name="cordova-plugin-inappbrowser-wkwebview" spec="^1.0.7" />
     <plugin name="cordova-keyboard-without-action" spec="0.0.3" />
     <engine name="ios" spec="~4.5.4" />
+    <engine name="android" spec="~6.4.0" />
     <plugin name="phonegap-plugin-push" spec="^2.1.3">
+        <variable name="SENDER_ID" value="59971563696" />
         <variable name="FCM_VERSION" value="11.6.2" />
     </plugin>
 </widget>
