@@ -125,6 +125,10 @@ span, a {
     color:rgba(80,172,211,1);
 }
 
+button > span, a {
+    color: white;
+}
+
 .more-details {
     width: 100%;
 }
@@ -168,8 +172,8 @@ arrow {
     left: 0;
 }
 
-.error-container {
-    white-space: pre-wrap;
+.dev-details-container {
+    // white-space: pre-wrap;
     padding: 10px 10px 10px 10px;
     background-color: rgba(250, 250, 250, 0.5);
     width: 90vw;

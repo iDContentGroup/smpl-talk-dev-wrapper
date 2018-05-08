@@ -54,10 +54,10 @@
         <p class="keep-white-space" *ngFor="let fbUpdate of fbUpdates">{{JSON.stringify(fbUpdate)}}</p>
 
         <!-- <button ion-button (click)="browserTest()">browserTest</button> -->
-        <button ion-button (click)="browserLoopFunction()">Force Browser Loop instant / once</button>
-        <button ion-button (click)="browserLoopFunction(6000)">Force Browser Loop 6000ms</button>
+        <button ion-button (click)="browserLoopFunction()">Browser Loop 0ms</button>
+        <button ion-button (click)="browserLoopFunction(6000)">Browser Loop 6000ms</button>
       </ng-container>
-      
+
       <p>errors: {{ !errors.length ? ' (none)' : errors.length}}</p>
       <p *ngFor="let error of errors">{{JSON.stringify(error)}}</p>
   </div>
