@@ -1,26 +1,23 @@
 import { Component, ChangeDetectorRef, NgZone } from '@angular/core';
-// import { Component, Input, Output, EventEmitter, ElementRef, ViewChild,  } from '@angular/core';
-import { Http, Response, Headers, RequestOptions } from '@angular/http';
+import { Http, Response, Headers } from '@angular/http';//RequestOptions
 
-// import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
 import { NavController, Platform, ToastController } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
-// import { Camera, CameraOptions } from '@ionic-native/camera';
-// import { ImagePicker } from '@ionic-native/image-picker';
 
-import { Push, PushObject, PushOptions } from '@ionic-native/push';
+import { Push, PushObject } from '@ionic-native/push';
+// import { Push } from '@ionic-native/push';
 
 
 import firebase from 'firebase';
 
 @Component({
-  selector: 'page-home',
-  templateUrl: 'home.html'
+  selector: 'page-smpl-talk',
+  templateUrl: './smplTalk.html'
 })
-export class HomePage {
+export class SmplTalkPage {
     options: string;
 
     loadstopEvents: any;
@@ -54,6 +51,14 @@ export class HomePage {
 
     browserLoopCount: number;
 
+    showDropdown: boolean;
+    arrowDirection: string;
+    errorTitle: string;
+    errorDescription: string;
+    devDetails: string;
+
+    browserUrl: string;
+
     constructor(public platform: Platform, public navCtrl: NavController, public iab: InAppBrowser, private ref: ChangeDetectorRef, 
       private http: Http, private ngZone: NgZone, public push: Push, public toastCtrl: ToastController, public splashScreen: SplashScreen) {
       this.JSON = JSON;
@@ -62,7 +67,20 @@ export class HomePage {
       this.loadstopEvents = [];
   	}
 
+    toggleDropdown(){
+      if (this.showDropdown) {
+        this.showDropdown = false;
+      }
+      else if (!this.showDropdown) {
+        this.showDropdown = true;
+      }
+    }
+
     ngOnInit() {
+      this.showDropdown = false;
+      this.errorTitle = 'Error -1200';
+      this.errorDescription = "Please check your internet connection";
+      this.devDetails = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu pulvinar lorem. Sed mi elit, bibendum vel ullamcorper in, bibendum eget sem. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu pulvinar lorem. Sed mi elit, bibendum vel ullamcorper in, bibendum eget sem.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu pulvinar lorem. Sed mi elit, bibendum vel ullamcorper in, bibendum eget sem.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu pulvinar lorem. Sed mi elit, bibendum vel ullamcorper in, bibendum eget sem. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu pulvinar lorem. Sed mi elit, bibendum vel ullamcorper in, bibendum eget sem.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu pulvinar lorem. Sed mi elit, bibendum vel ullamcorper in, bibendum eget sem.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu pulvinar lorem. Sed mi elit, bibendum vel ullamcorper in, bibendum eget sem. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu pulvinar lorem. Sed mi elit, bibendum vel ullamcorper in, bibendum eget sem.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu pulvinar lorem. Sed mi elit, bibendum vel ullamcorper in, bibendum eget sem.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu pulvinar lorem. Sed mi elit, bibendum vel ullamcorper in, bibendum eget sem. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu pulvinar lorem. Sed mi elit, bibendum vel ullamcorper in, bibendum eget sem.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu pulvinar lorem. Sed mi elit, bibendum vel ullamcorper in, bibendum eget sem."
       // this.doDebug = true;
 
       this.errors = [];
@@ -73,18 +91,6 @@ export class HomePage {
       this.platform.ready().then(() => {
         if (this.platform.is('cordova')) {
           this.setupPush();
-
-          // this.platform.resume.subscribe(event => {
-          //   this.ngZone.run(() => {
-          //     this.toast("resumed: " + this.getDateString());
-          //   });
-          // });
-
-          // this.platform.pause.subscribe(event => {
-          //   this.ngZone.run(() => {
-          //     this.toast("paused:" + this.getDateString());
-          //   });
-          // });
         }
 
         this.unsubscribeOnAuthStateChanged = firebase.auth().onAuthStateChanged(user => {
@@ -114,8 +120,6 @@ export class HomePage {
               this.doDebug && this.toast("native logged out");
               this.fbUser = null;
               this.users = [];
-
-              // this.setDeviceUserPairing();
             }
             
             this.startBrowser();
@@ -130,7 +134,7 @@ export class HomePage {
 
   	startBrowser() {
       if (!this.browser) {
-        const url = 'https://smpl-talk-develop.firebaseapp.com/#/';
+        this.browserUrl = 'https://smpltalk.com/#/';
         const target = '_blank';
 
         this.options = '';
@@ -158,7 +162,7 @@ export class HomePage {
           }
         }
         if (this.platform.is('cordova')) {
-          this.browser = this.browser || this.iab.create(url, target, this.options);
+          this.browser = this.browser || this.iab.create(this.browserUrl, target, this.options);
 
           // this.browser.on("loadstart").subscribe(event => {
           //   this.browser.executeScript({ code: "alert('loadstart');" });
@@ -383,7 +387,7 @@ export class HomePage {
                 this.doDebug && this.toast("user was already logged in native");
               } else {
                 this.loggingIn = true;
-
+                // TODO: rewrite subscriptions to promises instead
                 var exchangeIDTokenForCustTokenSubscription = this.exchangeIDTokenForCustToken(firebase_id_token).subscribe(data => {
                   this.ngZone.run(() => {
                     this.signInWithCustomToken(data);
@@ -396,7 +400,6 @@ export class HomePage {
                   });
                 }, () => {
                   this.ngZone.run(() => {
-                    // console.log("Token exchange completed.");
                     exchangeIDTokenForCustTokenSubscription.unsubscribe();
                     this.loggingIn = false;
                   });
@@ -429,6 +432,13 @@ export class HomePage {
         return this.browser.executeScript({
           code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicWebNavFunc && window.my.activateAppMode.publicWebNavFunc(" + JSON.stringify(this.webNav) + ");"
         }).then(values => {
+          if (this.webNav.navTye === 'post') {
+            if (this.webNav.postKey && this.webNav.groupKey) {
+              this.browserUrl = 'https://smpltalk.com/#/content/post/' + this.webNav.groupkey + '/' + this.webNav.postKey;
+            } else {
+              this.browserUrl = 'https://smpltalk.com/';
+            }
+          }
           this.doDebug && this.toast("native app mode activated");
           this.webNav = null;
         }).catch(error => {

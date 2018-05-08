@@ -4,23 +4,18 @@ import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 
 import { MyApp } from './app.component';
-import { HomePage } from '../pages/home/home';
-import { ListPage } from '../pages/list/list';
-import { FirebaseTestPage } from '../pages/firebaseTest/firebaseTest';
+import { SmplTalkPage } from '../pages/smplTalk/smplTalk';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { InAppBrowser } from '@ionic-native/in-app-browser';
-// import { Camera, CameraOptions } from '@ionic-native/camera';
-// import { ImagePicker } from '@ionic-native/image-picker';
 
-import { Push, PushObject, PushOptions } from '@ionic-native/push';
+// import { Push, PushObject, PushOptions } from '@ionic-native/push';
+import { Push } from '@ionic-native/push';
 
 import firebase from 'firebase';
-
-// Initialize Firebase Server
-// import { firebaseConfig } from './firebaseConfig.ts';
+// import * as firebase from 'firebase';
 
 const firebaseConfig = {
     apiKey: "AIzaSyDF1rX-QzDFUTYDvOp7Q-ZJMlY58eRCAPs",
@@ -36,9 +31,7 @@ firebase.initializeApp(firebaseConfig);
 @NgModule({
   declarations: [
     MyApp,
-    HomePage,
-    ListPage,
-    FirebaseTestPage
+    SmplTalkPage
   ],
   imports: [
     BrowserModule,
@@ -48,16 +41,12 @@ firebase.initializeApp(firebaseConfig);
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    HomePage,
-    ListPage,
-    FirebaseTestPage
+    SmplTalkPage
   ],
   providers: [
     StatusBar,
     SplashScreen,
     InAppBrowser,
-    // Camera,
-    // ImagePicker,
     Push,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]

@@ -1,19 +1,41 @@
-<!-- <ion-header>
-  <ion-navbar>
-    <button ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </button>
-    <ion-title>Home</ion-title>
-  </ion-navbar>
-</ion-header>
- -->
-<ion-content padding>
+<div class="container">
+  <svg class="svg-icon block-icon">
+    <use xlink:href="#block"></use>
+  </svg>
+  <div class="logo">
+    <img src="https://firebasestorage.googleapis.com/v0/b/ourg-2c585.appspot.com/o/Networks%2FSMPL%2FOrgs%2FSMPL%20Headquarters%2Fcropped%2F-L83sRJBxYDYc-3YIQ_U%2F180118_smpl_talk_app_bannerlogo_black.png?alt=media&token=c11b7068-1dfc-4b08-a982-dd160420da3a">
+  </div>
+  <div class="error-content">
+    <p class="error-description">{{errorDescription}}</p>
+    <p class="error-type">{{errorTitle}}</p>
+    <div class="more-details">
+      <p class="error-options">Still having trouble?</p>
+      <ul>
+        <li><span>+</span> Clear your cache</li>
+        <li><span>+</span> Close and reopen the app</li>
+        <li><span>+</span> Click <a [href]="browserUrl || 'https://smpltalk.com/'" target="_blank">here</a> to use the browser version</li>
+      </ul>
+    </div>
+  </div>
+  <div class="error-dropdown" (click)='toggleDropdown()'>
+    <p>View Advanced Diagnostics</p>
+    <svg class="svg-icon normal large arrow">
+      <use xlink:href="#arrow_drop_up"></use>
+    </svg>
+  </div>
+  <div *ngIf="this.showDropdown" class="dev-details">
+    <svg class="svg-icon large escape" (click)='toggleDropdown()'>
+      <use xlink:href="#cancel"></use>
+    </svg>
+    <pre>{{devDetails}}</pre>
+  </div>
+</div>
+
+<!-- <ion-content padding> -->
+<div>
   <ng-container *ngIf="doDebug">
-    <p></p>
-    <p></p>
-    <p></p>
-    <p></p>
-    <p>test: 51 debug device test ukwevview to debug 2/3 min iOS crash</p>
+
+    <p>test: 52 debug device test ukwevview to debug 2/3 min iOS crash</p>
     <p>{{ options }}</p>
 
     <button ion-button (click)="focusTest($event)">Focus Test</button>
@@ -44,4 +66,4 @@
     <button ion-button (click)="browserLoopFunction()">browserLoopFunction once</button>
     <button ion-button (click)="browserLoopFunction(6000)">browserLoopFunction 6000</button>
   </ng-container>
-</ion-content>
+</div>
