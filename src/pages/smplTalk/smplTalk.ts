@@ -177,14 +177,16 @@ export class SmplTalkPage {
             this.ngZone.run(() => {
               this.doDebug = true;
               this.browser.hide();
-              this.errors.push(event);
-              // this.browser.executeScript({ code: "alert('loaderror');" });
+              // this.errors.push(event);
+              this.errors.push({key: 'browser loaderror event', error: event});
             });
           });
 
           this.browser.on("exit").subscribe(event => {
             this.ngZone.run(() => {
-              this.errors.push(event);
+              // this.errors.push(event);
+              this.errors.push({key: 'browser exit event', error: event});
+
               this.browser = null;
             });
           });
@@ -276,7 +278,8 @@ export class SmplTalkPage {
           }
         }).catch(error => {
           this.doDebug && this.toast('Unexpected error during browser loop');
-          this.errors.push(error);
+          // this.errors.push(error);
+          this.errors.push({key: 'browser loop error', error: error});
 
           if (delay) {
             this.browserLoopSetTimeout = setTimeout(() => {
@@ -304,7 +307,8 @@ export class SmplTalkPage {
           this.webTimestamp = this.getDateString();
           return values;
         }).catch(error => {
-          this.errors.push(error);
+          // this.errors.push(error);
+          this.errors.push({key: 'browser test', error: error});
           return null;
         });
       } else {
@@ -321,7 +325,9 @@ export class SmplTalkPage {
           this.doDebug && this.toast("native app mode activated");
           this.nativeAppModeActivated = true;
         }).catch(error => {
-          this.errors.push(error);
+          // this.errors.push(error);
+          this.errors.push({key: 'browser active native app mode', error: error});
+
           return null;
         });
       } else {
@@ -355,7 +361,9 @@ export class SmplTalkPage {
             });
           }
         }).catch(error => {
-          this.errors.push(error);
+          // this.errors.push(error);
+          this.errors.push({key: 'browser log out', error: error});
+
           return null;
         });
       } else {
@@ -419,7 +427,9 @@ export class SmplTalkPage {
             }
           }
         }).catch(error => {
-          this.errors.push(error);
+          // this.errors.push(error);
+          this.errors.push({key: 'get firebase id token', error: error});
+
           return null;
         });
       } else {
@@ -443,7 +453,9 @@ export class SmplTalkPage {
           this.doDebug && this.toast("native app mode activated");
           this.webNav = null;
         }).catch(error => {
-          this.errors.push(error);
+          // this.errors.push(error);
+          this.errors.push({key: 'browser set nav', error: error});
+
           return null;
         });
       } else {
@@ -464,7 +476,9 @@ export class SmplTalkPage {
             return null;
           }
         }).catch(error => {
-          this.errors.push(error);
+          // this.errors.push(error);
+          this.errors.push({key: 'log user out of browser', error: error});
+
           return null;
         });
       } else {
@@ -502,7 +516,9 @@ export class SmplTalkPage {
         this.loggingIn = false;
         this.doDebug && this.toast(errorMessage);
 
-        this.errors.push(error);
+        // this.errors.push(error);
+          this.errors.push({key: 'use custom token', error: error});
+
 
         return this.logUserOutOfBrowser();
       });
@@ -511,7 +527,8 @@ export class SmplTalkPage {
     firebaseSignOut() {
       return firebase.auth().signOut().then(() => {
       }, error => {
-        this.errors.push(error);
+        // this.errors.push(error);
+          this.errors.push({key: 'firebase sign out', error: error});
       });
     }
 
@@ -527,7 +544,7 @@ export class SmplTalkPage {
           this.doDebug && this.toast('We do not have permission to send push notifications');
         }
       }).catch(error => {
-        this.errors.push(error);
+        this.errors.push({key: 'setupPush', error: error});
       });
 
       // to initialize push notifications
@@ -604,7 +621,7 @@ export class SmplTalkPage {
         this.ngZone.run(() => {
           this.doDebug && this.toast('Error with Push plugin' + JSON.stringify(error));
           // TODO: log error
-          this.errors.push(error);
+          this.errors.push({key: 'push subscribe', error: error});
         });
       });
     }
@@ -652,15 +669,12 @@ export class SmplTalkPage {
         this.doDebug && this.toast(JSON.stringify(updates));
         this.fbUpdates.push(updates);
 
-        return firebase.database().ref('PushNotifications/').update(updates, error => {
-          if (error) {
-            this.doDebug && this.toast(error);
-            this.errors.push(error);
-          } else {
-            this.doDebug && this.toast("updated pushNotifications in database");
-          }
-        });
-      }).then(() => {
+        return firebase.database().ref('PushNotifications/').update(updates).then(() => {
+          this.doDebug && this.toast("updated pushNotifications in database");
+        }).catch(error => {
+          this.doDebug && this.toast(error);
+          this.errors.push({key: 'fb notifications update', error: error});
+        }).then(() => {
         if (this.doDebug) {
           return this.browser.executeScript({
             code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'setDeviceUserPairing', value: this.getDateString() + ' device user pairing'}) + ");"
@@ -669,12 +683,14 @@ export class SmplTalkPage {
           return null;
         }
       }).catch(error => {
-        this.errors.push(error);
+        this.doDebug && this.toast(error);
+        this.errors.push({key: 'push devices update', error: error});
         return null;
       });
     }
 
     toast(message: any, position?: string) {
+      // TODO: add messages to an array?
       return;
       // message = JSON.stringify(message);
 
