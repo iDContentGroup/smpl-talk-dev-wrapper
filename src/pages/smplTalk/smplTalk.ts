@@ -102,15 +102,23 @@ export class SmplTalkPage {
 
               this.fbUser = user;
               this.doDebug && this.toast('native logged in: ' + this.fbUser.uid + " | " + this.fbUser.email);
-              firebase.database().ref("UsersRef/").orderByChild('email').equalTo(this.fbUser.email).once('value').then(usersRef => {
+              // firebase.database().ref("UsersRef/").orderByChild('email').equalTo(this.fbUser.email).once('value').then(usersRef => {
+              firebase.database().ref("EmailsRef/" + this.encodeKey(this.fbUser.email)).once('value').then(emailsRef => {
                 this.users = [];
+                if (emailsRef.exists() && emailsRef.val().Networks) {
+                  for (var key in emailsRef.val().Networks) {
+                      if (emailsRef.val().Networks.hasOwnProperty(key)) {
+                          // do stuff
+                          this.users.push({key: emailsRef.val().Networks[key], networkKey: key});
+                      }
+                  }
+                }
+                // usersRef.forEach(userRef => {
+                //   var user = userRef.val();
+                //   user.key = userRef.key;
 
-                usersRef.forEach(userRef => {
-                  var user = userRef.val();
-                  user['key'] = userRef.key;
-
-                  this.users.push(user);
-                })
+                //   this.users.push(user);
+                // })
               }).then(() => {
                 this.doDebug && this.toast(this.users);
 
@@ -727,4 +735,20 @@ export class SmplTalkPage {
         ':' + ('0' + u.getUTCSeconds()).slice(-2) +
         '.' + (u.getUTCMilliseconds() / 1000).toFixed(3).slice(2, 5);
     }
+
+    // encodeKey(str: string) {
+  //  return str.replace(/\_/g, '_U').replace(/\./g, '_P').replace(/\$/g, '_D').replace(/\[/g, '_O').replace(/\]/g, '_C').replace(/\#/g, '_H').replace(/\//g, '_S');
+  // }
+
+  // decodeKey(str: string) {
+  //  return str.replace(/\_P/g, '.').replace(/\_D/g, '$').replace(/\_O/g, '[').replace(/\_C/g, ']').replace(/\_H/g, '#').replace(/\_S/g, '/').replace(/\_\U/g, '_');
+  // }
+
+  encodeKey(str: string) {
+    return str.replace(/\%/g, '%25').replace(/\./g, '%2E').replace(/\$/g, '%24').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/\#/g, '%23').replace(/\//g, '%2F');
+  }
+
+  decodeKey(str: string) {
+    return str.replace(/\%2E/g, '.').replace(/\%24/g, '$').replace(/\%5B/g, '[').replace(/\%5D/g, ']').replace(/\%23/g, '#').replace(/\%2F/g, '/').replace(/\%25/g, '%');
+  }
 }
