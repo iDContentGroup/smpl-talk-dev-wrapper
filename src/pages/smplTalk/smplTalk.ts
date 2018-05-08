@@ -675,13 +675,14 @@ export class SmplTalkPage {
           this.doDebug && this.toast(error);
           this.errors.push({key: 'fb notifications update', error: error});
         }).then(() => {
-        if (this.doDebug) {
-          return this.browser.executeScript({
-            code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'setDeviceUserPairing', value: this.getDateString() + ' device user pairing'}) + ");"
-          });
-        } else {
-          return null;
-        }
+          if (this.doDebug) {
+            return this.browser.executeScript({
+              code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'setDeviceUserPairing', value: this.getDateString() + ' device user pairing'}) + ");"
+            });
+          } else {
+            return null;
+          }
+        });
       }).catch(error => {
         this.doDebug && this.toast(error);
         this.errors.push({key: 'push devices update', error: error});
