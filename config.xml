@@ -48,7 +48,7 @@
         <splash density="port-xxxhdpi" src="resources/android/splash/drawable-port-xxxhdpi-screen.png" />
     </platform>
     <platform name="ios">
-        <hook src="scripts/run_pods.sh" type="after_platform_add" />
+        <hook src="run_pods.sh" type="after_platform_add" />
         <resource-file src="GoogleService-Info.plist" target="GoogleService-Info.plist" />
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
