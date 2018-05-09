@@ -55,7 +55,6 @@
     "plugins": {
       "cordova-plugin-device": {},
       "cordova-plugin-inappbrowser-wkwebview": {},
-      "cordova-plugin-wkwebview-engine": {},
       "cordova-plugin-ionic-keyboard": {},
       "cordova-plugin-ionic-webview": {},
       "cordova-plugin-splashscreen": {},
@@ -63,7 +62,8 @@
       "cordova-keyboard-without-action": {},
       "phonegap-plugin-push": {
         "FCM_VERSION": "11.6.2"
-      }
+      },
+      "cordova-plugin-wkwebview-engine": {}
     },
     "platforms": [
       "ios",
