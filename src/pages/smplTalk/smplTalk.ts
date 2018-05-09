@@ -55,7 +55,6 @@ export class SmplTalkPage {
     arrowDirection: string;
     errorTitle: string;
     errorDescription: string;
-    devDetails: string;
 
     browserUrl: string;
 
@@ -78,10 +77,9 @@ export class SmplTalkPage {
 
     ngOnInit() {
       this.showDropdown = false;
-      this.errorTitle = 'Error -1200';
+      this.errorTitle = 'Unexpected error';
       this.errorDescription = "Please check your internet connection";
-      this.devDetails = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu pulvinar lorem. Sed mi elit, bibendum vel ullamcorper in, bibendum eget sem. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu pulvinar lorem. Sed mi elit, bibendum vel ullamcorper in, bibendum eget sem.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu pulvinar lorem. Sed mi elit, bibendum vel ullamcorper in, bibendum eget sem.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu pulvinar lorem. Sed mi elit, bibendum vel ullamcorper in, bibendum eget sem. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu pulvinar lorem. Sed mi elit, bibendum vel ullamcorper in, bibendum eget sem.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu pulvinar lorem. Sed mi elit, bibendum vel ullamcorper in, bibendum eget sem.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu pulvinar lorem. Sed mi elit, bibendum vel ullamcorper in, bibendum eget sem. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu pulvinar lorem. Sed mi elit, bibendum vel ullamcorper in, bibendum eget sem.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu pulvinar lorem. Sed mi elit, bibendum vel ullamcorper in, bibendum eget sem.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu pulvinar lorem. Sed mi elit, bibendum vel ullamcorper in, bibendum eget sem. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu pulvinar lorem. Sed mi elit, bibendum vel ullamcorper in, bibendum eget sem.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu pulvinar lorem. Sed mi elit, bibendum vel ullamcorper in, bibendum eget sem."
-      
+
       this.doDebug = true;
 
       this.errors = [];
@@ -751,5 +749,12 @@ export class SmplTalkPage {
 
   decodeKey(str: string) {
     return str.replace(/\%2E/g, '.').replace(/\%24/g, '$').replace(/\%5B/g, '[').replace(/\%5D/g, ']').replace(/\%23/g, '#').replace(/\%2F/g, '/').replace(/\%25/g, '%');
+  }
+
+  pushError(error) {
+    if (error === -1200 || (error && error.code === -1200) || (error && error.error && error.error.code === -1200)) {
+      this.errorTitle = 'Error -1200';
+    }
+    this.errors.push(error);
   }
 }
