@@ -12,7 +12,7 @@
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
     <preference name="ScrollEnabled" value="false" />
-    <preference name="android-minSdkVersion" value="16" />
+    <preference name="android-minSdkVersion" value="19" />
     <preference name="BackupWebStorage" value="none" />
     <preference name="SplashMaintainAspectRatio" value="true" />
     <preference name="FadeSplashScreenDuration" value="300" />
@@ -24,12 +24,15 @@
     <preference name="DisallowOverscroll" value="true" />
     <preference name="Orientation" value="portrait" />
     <platform name="android">
+        <!-- scripts/patch-android-studio-check.js required for android v7.1.0 due to not being able to find AndroidStudio for anything -->
         <hook src="scripts/patch-android-studio-check.js" type="before_plugin_install" />
         <hook src="scripts/patch-android-studio-check.js" type="before_plugin_add" />
         <hook src="scripts/patch-android-studio-check.js" type="before_build" />
         <hook src="scripts/patch-android-studio-check.js" type="before_run" />
         <hook src="scripts/patch-android-studio-check.js" type="before_plugin_rm" />
+        <!-- target="google-services.json" for android < =6.* -->
         <resource-file src="google-services.json" target="google-services.json" />
+        <!-- target="app/google-services.json" for android >= 7.* -->
         <resource-file src="google-services.json" target="app/google-services.json" />
         <resource-file src="ic_android_generated.png" target="res/drawable/ic_android_generated.png" />
         <allow-intent href="market:*" />
