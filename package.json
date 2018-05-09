@@ -61,13 +61,14 @@
       "cordova-plugin-whitelist": {},
       "cordova-keyboard-without-action": {},
       "phonegap-plugin-push": {
-        "FCM_VERSION": "11.6.2"
+        "FCM_VERSION": "11.6.2",
+        "SENDER_ID": "599715636396"
       },
       "cordova-plugin-wkwebview-engine": {}
     },
     "platforms": [
-      "ios",
-      "android"
+      "android",
+      "ios"
     ]
   }
 }
