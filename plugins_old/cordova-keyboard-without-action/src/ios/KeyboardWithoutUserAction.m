@@ -1,0 +1,38 @@
+// Copyright 2017 Americademy, Inc
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#import "KeyboardWithoutUserAction.h"
+#import <Cordova/CDVPlugin.h>
+#import <objc/runtime.h>
+
+@implementation KeyboardWithoutUserAction
+
+// Swizzles a private method
+- (void) keyboardDisplayDoesNotRequireUserAction {
+  SEL sel = sel_getUid("_startAssistingNode:userIsInteracting:blurPreviousNode:userObject:");
+  Class WKContentView = NSClassFromString(@"WKContentView");
+  Method method = class_getInstanceMethod(WKContentView, sel);
+  IMP originalImp = method_getImplementation(method);
+  IMP imp = imp_implementationWithBlock(^void(id me, void* arg0, BOOL arg1, BOOL arg2, id arg3) {
+    ((void (*)(id, SEL, void*, BOOL, BOOL, id))originalImp)(me, sel, arg0, TRUE, arg2, arg3);
+  });
+  method_setImplementation(method, imp);
+}
+
+- (void) pluginInitialize
+{
+    [self keyboardDisplayDoesNotRequireUserAction];
+}
+
+@end

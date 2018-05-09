@@ -1,0 +1,50 @@
+{
+  "prepare_queue": {
+    "installed": [],
+    "uninstalled": []
+  },
+  "config_munge": {
+    "files": {
+      "*-Info.plist": {
+        "parents": {
+          "NSCameraUsageDescription": [
+            {
+              "xml": "<string>Need camera access to take pictures</string>",
+              "count": 1,
+              "mode": "merge",
+              "id": "config.xml"
+            }
+          ],
+          "NSPhotoLibraryUsageDescription": [
+            {
+              "xml": "<string>Need photo library access to get pictures from there</string>",
+              "count": 1,
+              "mode": "merge",
+              "id": "config.xml"
+            }
+          ],
+          "UIBackgroundModes": []
+        }
+      },
+      "config.xml": {
+        "parents": {
+          "/*": []
+        }
+      },
+      "*-Debug.plist": {
+        "parents": {
+          "aps-environment": []
+        }
+      },
+      "*-Release.plist": {
+        "parents": {
+          "aps-environment": []
+        }
+      }
+    }
+  },
+  "installed_plugins": {},
+  "dependent_plugins": {},
+  "modules": [],
+  "plugin_metadata": {}
+}
