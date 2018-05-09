@@ -30,6 +30,7 @@
         <hook src="scripts/patch-android-studio-check.js" type="before_run" />
         <hook src="scripts/patch-android-studio-check.js" type="before_plugin_rm" />
         <resource-file src="google-services.json" target="google-services.json" />
+        <resource-file src="google-services.json" target="app/google-services.json" />
         <resource-file src="ic_android_generated.png" target="res/drawable/ic_android_generated.png" />
         <allow-intent href="market:*" />
         <icon density="ldpi" src="resources/android/icon/drawable-ldpi-icon.png" />
