@@ -24,11 +24,11 @@
     <preference name="DisallowOverscroll" value="true" />
     <preference name="Orientation" value="portrait" />
     <platform name="android">
-        <hook src="hooks/patch-android-studio-check.js" type="before_plugin_install" />
-        <hook src="hooks/patch-android-studio-check.js" type="before_plugin_add" />
-        <hook src="hooks/patch-android-studio-check.js" type="before_build" />
-        <hook src="hooks/patch-android-studio-check.js" type="before_run" />
-        <hook src="hooks/patch-android-studio-check.js" type="before_plugin_rm" />
+        <hook src="scripts/patch-android-studio-check.js" type="before_plugin_install" />
+        <hook src="scripts/patch-android-studio-check.js" type="before_plugin_add" />
+        <hook src="scripts/patch-android-studio-check.js" type="before_build" />
+        <hook src="scripts/patch-android-studio-check.js" type="before_run" />
+        <hook src="scripts/patch-android-studio-check.js" type="before_plugin_rm" />
         <resource-file src="google-services.json" target="google-services.json" />
         <resource-file src="ic_android_generated.png" target="res/drawable/ic_android_generated.png" />
         <allow-intent href="market:*" />
@@ -52,7 +52,7 @@
         <splash density="port-xxxhdpi" src="resources/android/splash/drawable-port-xxxhdpi-screen.png" />
     </platform>
     <platform name="ios">
-        <hook src="hooks/run_pods.sh" type="after_platform_add" />
+        <hook src="scripts/run_pods.sh" type="after_platform_add" />
         <resource-file src="GoogleService-Info.plist" target="GoogleService-Info.plist" />
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
