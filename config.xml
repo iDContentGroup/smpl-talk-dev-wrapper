@@ -93,7 +93,7 @@
     </edit-config>
     <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application">
     </edit-config>
-    <engine name="ios" spec="~4.5.4" />
+    <engine name="ios" spec="4.5.4" />
     <plugin name="cordova-plugin-device" spec="^2.0.2" />
     <plugin name="cordova-plugin-inappbrowser-wkwebview" spec="^1.0.7" />
     <plugin name="cordova-plugin-wkwebview-engine" spec="^1.1.4" />
