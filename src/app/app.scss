@@ -125,8 +125,10 @@ span, a {
     color:rgba(80,172,211,1);
 }
 
-button > span, a {
-    color: white;
+button {
+    span, a {
+        color: white;
+    }
 }
 
 .more-details {
