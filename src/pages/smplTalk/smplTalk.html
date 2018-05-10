@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" *ngIf="errors && errors.length">
   <svg class="svg-icon block-icon">
     <use xlink:href="#block"></use>
   </svg>
@@ -33,7 +33,7 @@
     <div class="dev-details-container">
       <!-- Debug mode -->
       <ng-container *ngIf="doDebug">
-        <p>Test 53: Error/debug</p>
+        <p>Debugging 53: Inspection</p>
         <p class="keep-white-space">Options: {{ options }}</p>
 
         <button ion-button secondary (click)="showBrowser()">show browser</button>

@@ -80,7 +80,7 @@ export class SmplTalkPage {
       this.errorTitle = 'Unexpected error';
       this.errorDescription = "Please check your internet connection";
 
-      this.doDebug = true;
+      // this.doDebug = true;
 
       this.errors = [];
       this.fbUpdates = [];
@@ -181,7 +181,7 @@ export class SmplTalkPage {
 
           this.browser.on("loaderror").subscribe(event => {
             this.ngZone.run(() => {
-              this.doDebug = true;
+              // this.doDebug = true;
               this.browser.hide();
               // this.errors.push(event);
               this.errors.push({key: 'browser loaderror event', error: event});
@@ -449,14 +449,14 @@ export class SmplTalkPage {
         return this.browser.executeScript({
           code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicWebNavFunc && window.my.activateAppMode.publicWebNavFunc(" + JSON.stringify(this.webNav) + ");"
         }).then(values => {
-          if (this.webNav.navTye === 'post') {
+          if (this.webNav.navType === 'post') {
             if (this.webNav.postKey && this.webNav.groupKey) {
               this.browserUrl = 'https://smpltalk.com/#/content/post/' + this.webNav.groupkey + '/' + this.webNav.postKey;
             } else {
               this.browserUrl = 'https://smpltalk.com/';
             }
           }
-          this.doDebug && this.toast("native app mode activated");
+          this.doDebug && this.toast("browser set nav");
           this.webNav = null;
         }).catch(error => {
           // this.errors.push(error);
