@@ -80,7 +80,7 @@ export class SmplTalkPage {
       this.errorTitle = 'Unexpected error';
       this.errorDescription = "Please check your internet connection";
 
-      // this.doDebug = true;
+      this.doDebug = true;
 
       this.errors = [];
       this.fbUpdates = [];
