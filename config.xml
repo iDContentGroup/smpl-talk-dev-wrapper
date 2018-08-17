@@ -99,11 +99,11 @@
     <plugin name="cordova-plugin-splashscreen" spec="^5.0.2" />
     <plugin name="cordova-plugin-whitelist" spec="^1.3.3" />
     <plugin name="cordova-keyboard-without-action" spec="0.0.3" />
-    <engine name="android" spec="~6.4.0" />
     <plugin name="phonegap-plugin-push" spec="2.1.3">
         <variable name="FCM_VERSION" value="11.6.2" />
         <variable name="SENDER_ID" value="599715636396" />
     </plugin>
     <plugin name="cordova-plugin-wkwebview-engine" spec="^1.1.4" />
-    <engine name="ios" spec="~4.5.4" />
+    <engine name="android" spec="~6.4.0" />
+    <engine name="ios" spec="~4.5.5" />
 </widget>
