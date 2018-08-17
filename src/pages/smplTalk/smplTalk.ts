@@ -141,7 +141,7 @@ export class SmplTalkPage {
 
   	startBrowser() {
       if (!this.browser) {
-        this.browserUrl = 'https://smpltalk.com/#/';
+        this.browserUrl = 'https://ah.smpltalk.com/#/';
         const target = '_blank';
 
         this.options = '';
