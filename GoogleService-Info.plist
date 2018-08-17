@@ -7,9 +7,9 @@
 	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
 	<string>ca-app-pub-3940256099942544/4411468910</string>
 	<key>CLIENT_ID</key>
-	<string>599715636396-41pa680t5rv61otpr0npt4ct5aqcsa4p.apps.googleusercontent.com</string>
+	<string>599715636396-921m1hpqnorfr5febp21a48i1gegu78u.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.599715636396-41pa680t5rv61otpr0npt4ct5aqcsa4p</string>
+	<string>com.googleusercontent.apps.599715636396-921m1hpqnorfr5febp21a48i1gegu78u</string>
 	<key>API_KEY</key>
 	<string>AIzaSyA2aQlEc-tojcffIDNfH15vmsDx_kIQiJw</string>
 	<key>GCM_SENDER_ID</key>
@@ -17,7 +17,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>org.ah.onechannel</string>
+	<string>com.ah.onechannel</string>
 	<key>PROJECT_ID</key>
 	<string>ourg-2c585</string>
 	<key>STORAGE_BUCKET</key>
@@ -33,7 +33,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:599715636396:ios:415e4e8e14c4f7d4</string>
+	<string>1:599715636396:ios:4981f74d41bb0761</string>
 	<key>DATABASE_URL</key>
 	<string>https://ourg-2c585.firebaseio.com</string>
 </dict>

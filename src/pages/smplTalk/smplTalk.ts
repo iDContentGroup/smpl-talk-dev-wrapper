@@ -169,7 +169,7 @@ export class SmplTalkPage {
           }
         }
         if (this.platform.is('cordova')) {
-          this.browser = this.browser || this.iab.create("https://smpltalk.com/#/", target, this.options);
+          this.browser = this.browser || this.iab.create("https://ah.smpltalk.com/#/", target, this.options);
 
           // this.browser.on("loadstart").subscribe(event => {
           //   this.browser.executeScript({ code: "alert('loadstart');" });
