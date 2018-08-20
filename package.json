@@ -65,8 +65,8 @@
       "cordova-plugin-wkwebview-engine": {}
     },
     "platforms": [
-      "android",
-      "ios"
+      "ios",
+      "android"
     ]
   }
 }
