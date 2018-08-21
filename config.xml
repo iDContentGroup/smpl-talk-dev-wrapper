@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.ah.onechannel" version="0.53.3" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.ah.onechannel" version="1.00.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>ONE Channel</name>
-    <description>Smpl Talk is an easy-to-use enterprise communications application that allows for top-down publishing, social media-style publishing, or anywhere in-between. The Smpl Talk mobile app adds push notifications to the desktop application for registered clients.</description>
-    <author email="support@smpl.company" href="https://smpltalk.com/">SMPL, LLC</author>
+    <description>Getting Adventist Health news just got easier. Introducing the ONE Channel news app. This fun and interactive new platform is a mashup of Corporate Connection and a social media news feed to create a customized experience for getting Adventist Health and facility news. Now, instead of waiting to get your weekly newsletter, ONE Channel gives you real-time news, stories and event information. Just use your Adventist Health login to receive the latest news on your smartphone!</description>
+    <author email="leeat@ah.org" href="https://adventisthealth.org/">Adventist Health System West</author>
     <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
@@ -98,6 +98,5 @@
         <variable name="SENDER_ID" value="599715636396" />
     </plugin>
     <plugin name="cordova-plugin-wkwebview-engine" spec="^1.1.4" />
-    <engine name="ios" spec="4.5.5" />
-    <engine name="android" spec="~6.4.0" />
+    <engine name="ios" spec="~4.5.5" />
 </widget>
