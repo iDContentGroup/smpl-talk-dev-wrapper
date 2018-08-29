@@ -58,6 +58,8 @@ export class SmplTalkPage {
 
     browserUrl: string;
 
+    urls: any[];
+
     constructor(public platform: Platform, public navCtrl: NavController, public iab: InAppBrowser, private ref: ChangeDetectorRef, 
       private http: Http, private ngZone: NgZone, public push: Push, public toastCtrl: ToastController, public splashScreen: SplashScreen) {
       this.JSON = JSON;
@@ -76,11 +78,13 @@ export class SmplTalkPage {
     }
 
     ngOnInit() {
+      this.urls = [];
+      
       this.showDropdown = false;
       this.errorTitle = 'Unexpected error';
       this.errorDescription = "Please check your internet connection";
 
-      // this.doDebug = true;
+      this.doDebug = true;
 
       this.errors = [];
       this.fbUpdates = [];
@@ -198,6 +202,15 @@ export class SmplTalkPage {
           });
 
           this.browser.on("loadstart").subscribe(event => {
+            this.ngZone.run(() => {
+              this.urls.push(event.url);
+              // if (event.url.indexOf('https://saml.ah.org/adfs/ls/') {
+              if (event.url.indexOf('https://saml.ah.org/adfs/ls/') {
+                this.browser.executeScript({
+                  code: `if (document.getElementsByTagName("BODY")[0].innerHTML.indexOf('Error')!==-1)window.location = 'https://ah.smpltalk.com/#/login?auto_sso=true';`
+                });
+              }
+            });
             // this.ngZone.run(() => {
             //   // this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
             //   // this.browser.executeScript({code: 'window.my.activateAppMode.publicActivateAppModeFunc();'});

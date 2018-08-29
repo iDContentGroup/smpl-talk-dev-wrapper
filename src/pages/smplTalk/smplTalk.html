@@ -39,6 +39,8 @@
         <button ion-button secondary (click)="showBrowser()">show browser</button>
         <button ion-button secondary (click)="toggleDebug()">toggleDebug status: {{!doDebug ? 'On' : 'Off'}}</button>
 
+        <p class="keep-white-space" *ngFor="let url of urls">{{JSON.stringify(urls)}}</p>
+
         <p class="keep-white-space" *ngIf="browser" [style.background]="'grey'">{{ JSON.stringify(browser) }}</p>
         
         <p class="keep-white-space">nativeAppModeActivated: {{nativeAppModeActivated ? 'yup' : 'nope'}}</p>
