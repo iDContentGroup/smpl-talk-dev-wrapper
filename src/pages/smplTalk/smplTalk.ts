@@ -203,13 +203,14 @@ export class SmplTalkPage {
 
           this.browser.on("loadstart").subscribe(event => {
             this.ngZone.run(() => {
-              this.urls.push(event.url);
+              // this.urls.push(event.url);
               // if (event.url.indexOf('https://saml.ah.org/adfs/ls/') {
               if (event.url === 'https://saml.ah.org/adfs/ls/') {
-                this.browser.executeScript({
-                  code: `window.location = 'https://ah.smpltalk.com/#/login?auto_sso=true';`
-                  // code: `if (document.getElementsByTagName("BODY")[0].innerHTML.indexOf('Error')!==-1)window.location = 'https://ah.smpltalk.com/#/login?auto_sso=true';`
-                });
+                // this.browser.executeScript({
+                //   code: `window.location = 'https://ah.smpltalk.com/#/login?auto_sso=true';`
+                //   // code: `if (document.getElementsByTagName("BODY")[0].innerHTML.indexOf('Error')!==-1)window.location = 'https://ah.smpltalk.com/#/login?auto_sso=true';`
+                // });
+                this.browser.open('https://ah.smpltalk.com/#/login?auto_sso=true', target);
               }
             });
             // this.ngZone.run(() => {
