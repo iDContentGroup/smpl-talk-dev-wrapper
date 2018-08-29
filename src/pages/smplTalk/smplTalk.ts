@@ -79,7 +79,7 @@ export class SmplTalkPage {
 
     ngOnInit() {
       this.urls = [];
-      
+
       this.showDropdown = false;
       this.errorTitle = 'Unexpected error';
       this.errorDescription = "Please check your internet connection";
@@ -205,9 +205,10 @@ export class SmplTalkPage {
             this.ngZone.run(() => {
               this.urls.push(event.url);
               // if (event.url.indexOf('https://saml.ah.org/adfs/ls/') {
-              if (event.url.indexOf('https://saml.ah.org/adfs/ls/') {
+              if (event.url === 'https://saml.ah.org/adfs/ls/') {
                 this.browser.executeScript({
-                  code: `if (document.getElementsByTagName("BODY")[0].innerHTML.indexOf('Error')!==-1)window.location = 'https://ah.smpltalk.com/#/login?auto_sso=true';`
+                  code: `window.location = 'https://ah.smpltalk.com/#/login?auto_sso=true';`
+                  // code: `if (document.getElementsByTagName("BODY")[0].innerHTML.indexOf('Error')!==-1)window.location = 'https://ah.smpltalk.com/#/login?auto_sso=true';`
                 });
               }
             });
