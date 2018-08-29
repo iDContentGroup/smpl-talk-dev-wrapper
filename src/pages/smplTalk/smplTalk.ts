@@ -57,9 +57,6 @@ export class SmplTalkPage {
     errorDescription: string;
 
     browserUrl: string;
-
-    urls: any[];
-
     constructor(public platform: Platform, public navCtrl: NavController, public iab: InAppBrowser, private ref: ChangeDetectorRef, 
       private http: Http, private ngZone: NgZone, public push: Push, public toastCtrl: ToastController, public splashScreen: SplashScreen) {
       this.JSON = JSON;
@@ -78,13 +75,11 @@ export class SmplTalkPage {
     }
 
     ngOnInit() {
-      this.urls = [];
-
       this.showDropdown = false;
       this.errorTitle = 'Unexpected error';
       this.errorDescription = "Please check your internet connection";
 
-      this.doDebug = true;
+      // this.doDebug = true;
 
       this.errors = [];
       this.fbUpdates = [];
@@ -186,8 +181,11 @@ export class SmplTalkPage {
           this.browser.on("loaderror").subscribe(event => {
             this.ngZone.run(() => {
               // this.doDebug = true;
-              this.browser.hide();
-              // this.errors.push(event);
+              if (event.code !== -999) {
+                this.browser.hide();
+                // this.errors.push(event);
+              }
+
               this.errors.push({key: 'browser loaderror event', error: event});
             });
           });
