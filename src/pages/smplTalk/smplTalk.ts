@@ -181,7 +181,7 @@ export class SmplTalkPage {
           this.browser.on("loaderror").subscribe(event => {
             this.ngZone.run(() => {
               // this.doDebug = true;
-              if (event.code !== -999) {
+              if (event && event.code !== -999) {
                 this.browser.hide();
                 // this.errors.push(event);
               }
@@ -208,6 +208,11 @@ export class SmplTalkPage {
                   code: `window.location = 'https://ah.smpltalk.com/#/login?auto_sso=true';`
                   // code: `if (document.getElementsByTagName("BODY")[0].innerHTML.indexOf('Error')!==-1)window.location = 'https://ah.smpltalk.com/#/login?auto_sso=true';`
                 });
+                setTimeout(() => {
+                  this.browser.executeScript({
+                    code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test2', value: this.getDateString() + ' test2' }) + ");"
+                  });
+                }, 300);
               }
             });
             // this.ngZone.run(() => {
