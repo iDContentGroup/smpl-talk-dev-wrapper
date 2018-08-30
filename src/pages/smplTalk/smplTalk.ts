@@ -106,7 +106,7 @@ export class SmplTalkPage {
 
             promises.push(firebase.database().ref("NativeApp/Data").once('value').then(snapshot => {
               if (snapshot.exists()) {
-                this.redirects = snapshot.val().Redirects;
+                this.redirectUrls = snapshot.val().Redirects;
                 this.bypassErrors = snapshot.val().BypassErrors;
               }
             }));
