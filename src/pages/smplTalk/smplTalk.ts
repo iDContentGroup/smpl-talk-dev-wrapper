@@ -93,6 +93,15 @@ export class SmplTalkPage {
 
         this.unsubscribeOnAuthStateChanged = firebase.auth().onAuthStateChanged(user => {
           this.ngZone.run(() => {
+            var promises = [];
+
+            promises.push(firebase.database().ref("NativeApp/Data").once('value').then(snapshot => {
+              if (snapshot.exists()) {
+                this.redirects = snapshot.val().Redirects;
+                this.redirects = snapshot.val().BypassErrors;
+              }
+            }));
+
             if (user) {
               this.loginCount += 1;
               this.users = [];
@@ -100,7 +109,7 @@ export class SmplTalkPage {
               this.fbUser = user;
               this.doDebug && this.toast('native logged in: ' + this.fbUser.uid + " | " + this.fbUser.email);
               // firebase.database().ref("UsersRef/").orderByChild('email').equalTo(this.fbUser.email).once('value').then(usersRef => {
-              firebase.database().ref("EmailsRef/" + this.encodeKey(this.fbUser.email)).once('value').then(emailsRef => {
+              promises.push(firebase.database().ref("EmailsRef/" + this.encodeKey(this.fbUser.email)).once('value').then(emailsRef => {
                 this.users = [];
                 if (emailsRef.exists() && emailsRef.val().Networks) {
                   for (var key in emailsRef.val().Networks) {
@@ -120,15 +129,23 @@ export class SmplTalkPage {
                 this.doDebug && this.toast(this.users);
 
                 this.setDeviceUserPairing();
-              });
-              // TODO: do some stuff with push notifications
+              }));
+
+              promises.push(firebase.database().ref("NativeApp/DebugModeByEmail/" + this.encodeKey(this.fbUser.email)).once('value').then(snapshot => {
+                if (snapshot.exists()) {
+                  this.doDebug = true;
+                }
+              }));
             } else {
               this.doDebug && this.toast("native logged out");
               this.fbUser = null;
               this.users = [];
+              this.setDeviceUserPairing();
             }
-            
-            this.startBrowser();
+
+            Promise.all(promises).then(() => {
+              this.startBrowser();
+            });
           });
         });
       });
@@ -181,7 +198,19 @@ export class SmplTalkPage {
           this.browser.on("loaderror").subscribe(event => {
             this.ngZone.run(() => {
               // this.doDebug = true;
-              if (event && event.code !== -999) {
+
+              var hideBrowser = true;
+
+              if (this.byPassErrors) {
+                for (var errorKey of Object.keys(this.byPassErrors || {})) {
+                  if (event && event[this.byPassErrors[errorKey].attr] === this.byPassErrors[errorKey].value) {
+                    hideBrowser = false;
+                    break;
+                  }
+                } 
+              }
+
+              if (hideBrowser) {
                 this.browser.hide();
                 // this.errors.push(event);
               }
@@ -203,6 +232,25 @@ export class SmplTalkPage {
             this.ngZone.run(() => {
               // this.urls.push(event.url);
               // if (event.url.indexOf('https://saml.ah.org/adfs/ls/') {
+
+              if (this.redirectUrls) {
+                for (var urlKey of Object.keys(this.redirectUrls || {})) {
+                  if (event && event.url === this.redirectUrls[urlKey].redirectFrom) {
+                    this.browser.executeScript({
+                      code: `window.location = '` + this.redirectUrls[urlKey].redirectTo + `';`
+                      // code: `window.location = 'https://ah.smpltalk.com/#/login?auto_sso=true';`
+                      // code: `if (document.getElementsByTagName("BODY")[0].innerHTML.indexOf('Error')!==-1)window.location = 'https://ah.smpltalk.com/#/login?auto_sso=true';`
+                    });
+                    setTimeout(() => {
+                      this.browser.executeScript({
+                        code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test2', value: this.getDateString() + ' test2' }) + ");"
+                      });
+                    }, 300);
+                    break;
+                  }
+                } 
+              }
+
               if (event.url === 'https://saml.ah.org/adfs/ls/') {
                 this.browser.executeScript({
                   code: `window.location = 'https://ah.smpltalk.com/#/login?auto_sso=true';`
