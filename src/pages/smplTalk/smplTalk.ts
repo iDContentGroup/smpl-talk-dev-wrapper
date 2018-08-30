@@ -3,6 +3,8 @@ import { Http, Response, Headers } from '@angular/http';//RequestOptions
 
 import 'rxjs/add/operator/map';
 
+import { Device } from '@ionic-native/device';
+
 import { NavController, Platform, ToastController } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
@@ -58,7 +60,8 @@ export class SmplTalkPage {
 
     browserUrl: string;
     constructor(public platform: Platform, public navCtrl: NavController, public iab: InAppBrowser, private ref: ChangeDetectorRef, 
-      private http: Http, private ngZone: NgZone, public push: Push, public toastCtrl: ToastController, public splashScreen: SplashScreen) {
+      private http: Http, private ngZone: NgZone, public push: Push, public toastCtrl: ToastController, public splashScreen: SplashScreen, 
+      private ionicDevice: Device) {
       this.JSON = JSON;
       this.http = http;
 
@@ -234,10 +237,10 @@ export class SmplTalkPage {
               // if (event.url.indexOf('https://saml.ah.org/adfs/ls/') {
 
               if (this.redirectUrls) {
-                for (var urlKey of Object.keys(this.redirectUrls || {})) {
-                  if (event && event.url === this.redirectUrls[urlKey].redirectFrom) {
+                for (var redirectKey of Object.keys(this.redirectUrls || {})) {
+                  if (event && event.url === this.redirectUrls[redirectKey].redirectFrom) {
                     this.browser.executeScript({
-                      code: `window.location = '` + this.redirectUrls[urlKey].redirectTo + `';`
+                      code: `window.location = '` + this.redirectUrls[redirectKey].redirectTo + `';`
                       // code: `window.location = 'https://ah.smpltalk.com/#/login?auto_sso=true';`
                       // code: `if (document.getElementsByTagName("BODY")[0].innerHTML.indexOf('Error')!==-1)window.location = 'https://ah.smpltalk.com/#/login?auto_sso=true';`
                     });
@@ -251,17 +254,17 @@ export class SmplTalkPage {
                 } 
               }
 
-              if (event.url === 'https://saml.ah.org/adfs/ls/') {
-                this.browser.executeScript({
-                  code: `window.location = 'https://ah.smpltalk.com/#/login?auto_sso=true';`
-                  // code: `if (document.getElementsByTagName("BODY")[0].innerHTML.indexOf('Error')!==-1)window.location = 'https://ah.smpltalk.com/#/login?auto_sso=true';`
-                });
-                setTimeout(() => {
-                  this.browser.executeScript({
-                    code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test2', value: this.getDateString() + ' test2' }) + ");"
-                  });
-                }, 300);
-              }
+              // if (event.url === 'https://saml.ah.org/adfs/ls/') {
+              //   this.browser.executeScript({
+              //     code: `window.location = 'https://ah.smpltalk.com/#/login?auto_sso=true';`
+              //     // code: `if (document.getElementsByTagName("BODY")[0].innerHTML.indexOf('Error')!==-1)window.location = 'https://ah.smpltalk.com/#/login?auto_sso=true';`
+              //   });
+              //   setTimeout(() => {
+              //     this.browser.executeScript({
+              //       code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test2', value: this.getDateString() + ' test2' }) + ");"
+              //     });
+              //   }, 300);
+              // }
             });
             // this.ngZone.run(() => {
             //   // this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
@@ -710,6 +713,9 @@ export class SmplTalkPage {
       var pushUserPath = 'Users';
       var pushDevicePath = 'Devices';
 
+      var ionicDeviceUserPath = 'IonicDevices/Users';
+      var ionicDeviceDevicePath = 'IonicDevices/Devices';
+
       return firebase.database().ref('PushNotifications/Devices/' + this.device.registrationId + '/Users').once('value').then(userSnapshots => {
         userSnapshots.forEach(userSnapshot => {
           var match = false;
@@ -727,6 +733,9 @@ export class SmplTalkPage {
             // removeUserKeys.push(userSnapshot.key);
             updates[pushUserPath + '/' + userSnapshot.key + '/Devices/' + this.device.registrationId] = null;
             updates[pushDevicePath + '/' + this.device.registrationId + '/Users/' + userSnapshot.key] = null;
+            
+            updates[ionicDeviceUserPath + '/' + user.key + '/Devices/' + this.device.registrationId] = null;
+            updates[ionicDeviceDevicePath + '/' + this.device.registrationId + '/Users/' + user.key] = null;
           }
         })
       }).then(() => {
@@ -736,6 +745,9 @@ export class SmplTalkPage {
 
           updates[pushUserPath + '/' + user.key + '/Devices/' + this.device.registrationId] = now;
           updates[pushDevicePath + '/' + this.device.registrationId + '/Users/' + user.key] = now;
+
+          updates[ionicDeviceUserPath + '/' + user.key + '/Devices/' + this.device.registrationId] = this.ionicDevice || null;
+          updates[ionicDeviceDevicePath + '/' + this.device.registrationId + '/Users/' + user.key] = this.ionicDevice || null;
         }
 
         this.doDebug && this.toast(JSON.stringify(updates));
