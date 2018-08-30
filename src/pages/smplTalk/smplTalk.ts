@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { Http, Response, Headers } from '@angular/http';//RequestOptions
 
 import 'rxjs/add/operator/map';
@@ -62,7 +62,10 @@ export class SmplTalkPage {
 
     redirectUrls: any;
     bypassErrors: any;
-    constructor(public platform: Platform, public navCtrl: NavController, public iab: InAppBrowser, private ref: ChangeDetectorRef, 
+    // constructor(public platform: Platform, public navCtrl: NavController, public iab: InAppBrowser, private ref: ChangeDetectorRef, 
+      // private http: Http, private ngZone: NgZone, public push: Push, public toastCtrl: ToastController, public splashScreen: SplashScreen, 
+      // private ionicDevice: Device) {
+    constructor(public platform: Platform, public navCtrl: NavController, public iab: InAppBrowser, 
       private http: Http, private ngZone: NgZone, public push: Push, public toastCtrl: ToastController, public splashScreen: SplashScreen, 
       private ionicDevice: Device) {
       this.JSON = JSON;
@@ -752,8 +755,22 @@ export class SmplTalkPage {
           updates[pushUserPath + '/' + user.key + '/Devices/' + this.device.registrationId] = now;
           updates[pushDevicePath + '/' + this.device.registrationId + '/Users/' + user.key] = now;
 
-          updates[ionicDeviceUserPath + '/' + user.key + '/Devices/' + this.device.registrationId] = this.ionicDevice || null;
-          updates[ionicDeviceDevicePath + '/' + this.device.registrationId + '/Users/' + user.key] = this.ionicDevice || null;
+          if (this.ionicDevice) {
+            ionicDeviceNormalized = {
+              modal: this.ionicDevice.model || null,
+              platform: this.ionicDevice.platform || null,
+              uuid: this.ionicDevice.uuid || null,
+              version: this.ionicDevice.version || null,
+              manufacturer: this.ionicDevice.manufacturer || null,
+              isVirtual: this.ionicDevice.isVirtual || null,
+              serial: this.ionicDevice.serial || null
+            };
+            updates[ionicDeviceUserPath + '/' + user.key + '/Devices/' + this.device.registrationId] = ionicDeviceNormalized || null;
+          updates[ionicDeviceDevicePath + '/' + this.device.registrationId + '/Users/' + user.key] = ionicDeviceNormalized || null;
+            device.cordova
+
+          }
+          
         }
 
         this.doDebug && this.toast(JSON.stringify(updates));

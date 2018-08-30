@@ -5,7 +5,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { SmplTalkPage } from '../pages/smplTalk/smplTalk';
 
-import firebase from 'firebase';
+// import firebase from 'firebase';
 
 @Component({
   templateUrl: 'app.html'
