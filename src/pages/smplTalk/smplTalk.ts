@@ -764,11 +764,16 @@ export class SmplTalkPage {
               manufacturer: this.ionicDevice.manufacturer || null,
               isVirtual: this.ionicDevice.isVirtual || null,
               serial: this.ionicDevice.serial || null
+              platforms: {};
             };
-            updates[ionicDeviceUserPath + '/' + user.key + '/Devices/' + this.device.registrationId] = ionicDeviceNormalized || null;
-          updates[ionicDeviceDevicePath + '/' + this.device.registrationId + '/Users/' + user.key] = ionicDeviceNormalized || null;
-            device.cordova
 
+            var platforms = this.platform.platforms() || [];
+            for (var j = 0; j < platforms.length; i++) {
+              this.ionicDevice.platforms[platforms[i]] = true;
+            }
+
+            updates[ionicDeviceUserPath + '/' + user.key + '/Devices/' + this.device.registrationId] = ionicDeviceNormalized || null;
+            updates[ionicDeviceDevicePath + '/' + this.device.registrationId + '/Users/' + user.key] = ionicDeviceNormalized || null;
           }
           
         }
