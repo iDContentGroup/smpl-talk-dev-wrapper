@@ -59,6 +59,9 @@ export class SmplTalkPage {
     errorDescription: string;
 
     browserUrl: string;
+
+    redirectUrls: any;
+    bypassErrors: any;
     constructor(public platform: Platform, public navCtrl: NavController, public iab: InAppBrowser, private ref: ChangeDetectorRef, 
       private http: Http, private ngZone: NgZone, public push: Push, public toastCtrl: ToastController, public splashScreen: SplashScreen, 
       private ionicDevice: Device) {
@@ -78,6 +81,9 @@ export class SmplTalkPage {
     }
 
     ngOnInit() {
+      this.redirectUrls = {};
+
+
       this.showDropdown = false;
       this.errorTitle = 'Unexpected error';
       this.errorDescription = "Please check your internet connection";
@@ -101,7 +107,7 @@ export class SmplTalkPage {
             promises.push(firebase.database().ref("NativeApp/Data").once('value').then(snapshot => {
               if (snapshot.exists()) {
                 this.redirects = snapshot.val().Redirects;
-                this.redirects = snapshot.val().BypassErrors;
+                this.bypassErrors = snapshot.val().BypassErrors;
               }
             }));
 
@@ -204,9 +210,9 @@ export class SmplTalkPage {
 
               var hideBrowser = true;
 
-              if (this.byPassErrors) {
-                for (var errorKey of Object.keys(this.byPassErrors || {})) {
-                  if (event && event[this.byPassErrors[errorKey].attr] === this.byPassErrors[errorKey].value) {
+              if (this.bypassErrors) {
+                for (var errorKey of Object.keys(this.bypassErrors || {})) {
+                  if (event && event[this.bypassErrors[errorKey].attr] === this.bypassErrors[errorKey].value) {
                     hideBrowser = false;
                     break;
                   }
@@ -733,9 +739,9 @@ export class SmplTalkPage {
             // removeUserKeys.push(userSnapshot.key);
             updates[pushUserPath + '/' + userSnapshot.key + '/Devices/' + this.device.registrationId] = null;
             updates[pushDevicePath + '/' + this.device.registrationId + '/Users/' + userSnapshot.key] = null;
-            
-            updates[ionicDeviceUserPath + '/' + user.key + '/Devices/' + this.device.registrationId] = null;
-            updates[ionicDeviceDevicePath + '/' + this.device.registrationId + '/Users/' + user.key] = null;
+
+            updates[ionicDeviceUserPath + '/' + userSnapshot.key + '/Devices/' + this.device.registrationId] = null;
+            updates[ionicDeviceDevicePath + '/' + this.device.registrationId + '/Users/' + userSnapshot.key] = null;
           }
         })
       }).then(() => {

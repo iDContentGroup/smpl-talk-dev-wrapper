@@ -14,6 +14,8 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
 // import { Push, PushObject, PushOptions } from '@ionic-native/push';
 import { Push } from '@ionic-native/push';
 
+import { Device } from '@ionic-native/device';
+
 import firebase from 'firebase';
 // import * as firebase from 'firebase';
 
@@ -48,6 +50,7 @@ firebase.initializeApp(firebaseConfig);
     SplashScreen,
     InAppBrowser,
     Push,
+    Device,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
