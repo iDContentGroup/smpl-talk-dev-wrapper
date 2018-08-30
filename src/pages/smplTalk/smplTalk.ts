@@ -769,7 +769,7 @@ export class SmplTalkPage {
 
             var platforms = this.platform.platforms() || [];
             for (var j = 0; j < platforms.length; j++) {
-              this.ionicDevice.platforms[platforms[j]] = true;
+              ionicDeviceNormalized.platforms[platforms[j]] = true;
             }
 
             updates[ionicDeviceUserPath + '/' + user.key + '/Devices/' + this.device.registrationId] = ionicDeviceNormalized || null;
