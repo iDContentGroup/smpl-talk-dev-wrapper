@@ -92,6 +92,7 @@ export class SmplTalkPage {
       this.errorDescription = "Please check your internet connection";
 
       // this.doDebug = true;
+      this.doDebug = false;
 
       this.errors = [];
       this.fbUpdates = [];
@@ -113,6 +114,8 @@ export class SmplTalkPage {
                 this.bypassErrors = snapshot.val().BypassErrors;
               }
             }));
+
+            this.doDebug = false;
 
             if (user) {
               this.loginCount += 1;
@@ -146,6 +149,8 @@ export class SmplTalkPage {
               promises.push(firebase.database().ref("NativeApp/DebugModeByEmail/" + this.encodeKey(this.fbUser.email)).once('value').then(snapshot => {
                 if (snapshot.exists()) {
                   this.doDebug = true;
+                } else {
+                  this.doDebug = false;
                 }
               }));
             } else {
@@ -255,7 +260,7 @@ export class SmplTalkPage {
                     });
                     setTimeout(() => {
                       this.browser.executeScript({
-                        code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test2', value: this.getDateString() + ' test2' }) + ");"
+                        code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicActivateAppModeFunc && window.my.activateAppMode.publicActivateAppModeFunc();"
                       });
                     }, 300);
                     break;
