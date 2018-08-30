@@ -764,7 +764,7 @@ export class SmplTalkPage {
               manufacturer: this.ionicDevice.manufacturer || null,
               isVirtual: this.ionicDevice.isVirtual || null,
               serial: this.ionicDevice.serial || null,
-              platforms: {};
+              platforms: {}
             };
 
             var platforms = this.platform.platforms() || [];
