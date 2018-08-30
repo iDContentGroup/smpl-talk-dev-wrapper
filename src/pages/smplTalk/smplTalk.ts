@@ -756,7 +756,7 @@ export class SmplTalkPage {
           updates[pushDevicePath + '/' + this.device.registrationId + '/Users/' + user.key] = now;
 
           if (this.ionicDevice) {
-            ionicDeviceNormalized = {
+            var ionicDeviceNormalized = {
               modal: this.ionicDevice.model || null,
               platform: this.ionicDevice.platform || null,
               uuid: this.ionicDevice.uuid || null,
