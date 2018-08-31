@@ -80,10 +80,10 @@
         <splash height="2732" src="resources/ios/splash/Default@2x~universal~anyany.png" width="2732" />
     </platform>
     <edit-config file="*-Info.plist" mode="merge" target="NSCameraUsageDescription">
-        <string>Need camera access to take pictures</string>
+        <string>This will allow you to take pictures and upload photos to the platform</string>
     </edit-config>
     <edit-config file="*-Info.plist" mode="merge" target="NSPhotoLibraryUsageDescription">
-        <string>Need photo library access to get pictures from there</string>
+        <string>This allow you to upload photos from your photo library to the platform</string>
     </edit-config>
     <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application">
     </edit-config>
