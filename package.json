@@ -1,8 +1,8 @@
 {
-  "name": "smpl-talk-dev",
-  "version": "0.0.1",
-  "author": "Ionic Framework",
-  "homepage": "http://ionicframework.com/",
+  "name": "one-channel",
+  "version": "1.0.3",
+  "author": "Adventist Health System West",
+  "homepage": "https://adventisthealth.org/",
   "private": true,
   "scripts": {
     "clean": "ionic-app-scripts clean",
