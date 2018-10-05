@@ -12,14 +12,13 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { Push, PushObject } from '@ionic-native/push';
 // import { Push } from '@ionic-native/push';
 
-
 import firebase from 'firebase';
 
 @Component({
-  selector: 'page-smpl-talk',
-  templateUrl: './smplTalk.html'
+  selector: 'page-home',
+  templateUrl: './home.template.html'
 })
-export class SmplTalkPage {
+export class HomePage {
     options: string;
 
     loadstopEvents: any;
