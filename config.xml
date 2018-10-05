@@ -47,7 +47,6 @@
         <splash density="port-xxxhdpi" src="resources/android/splash/drawable-port-xxxhdpi-screen.png" />
     </platform>
     <platform name="ios">
-        <hook src="update_pods.sh" type="before_platform_add" />
         <hook src="run_pods.sh" type="after_platform_add" />
         <resource-file src="GoogleService-Info.plist" target="GoogleService-Info.plist" />
         <allow-intent href="itms:*" />
@@ -98,6 +97,8 @@
     <plugin name="cordova-plugin-ionic-keyboard" spec="^2.0.5" />
     <plugin name="cordova-plugin-device" spec="^2.0.2" />
     <plugin name="cordova-plugin-inappbrowser" spec="https://github.com/dpa99c/cordova-plugin-inappbrowser#CB-7179" />
-    <plugin name="cordova-plugin-wkwebview-engine" spec="^1.1.4" />
     <plugin name="phonegap-plugin-push" spec="^2.1.3" />
+    <plugin name="cordova-plugin-wkwebview-engine" spec="^1.1.4" />
+    <engine name="ios" spec="~4.5.5" />
+    <engine name="android" spec="~7.0.0" />
 </widget>
