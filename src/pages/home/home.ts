@@ -22,6 +22,8 @@ export class HomePage {
 
 	browser: any;
 
+  platform: Platform;
+
   constructor(public navCtrl: NavController, public platform: Platform, public iab: InAppBrowser) {
     this.platform = platform;
   }
