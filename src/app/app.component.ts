@@ -11,12 +11,19 @@ export class MyApp {
   rootPage:any = HomePage;
 
   constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
-    platform.ready().then(() => {
-      alert("app");
+  }
+
+  ngOnInit() {
+    this.initalizeApp();
+  }
+
+  initalizeApp() {
+    this.platform.ready().then(() => {
+      console.log(this.platform);
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
-      statusBar.styleDefault();
-      splashScreen.hide();
+      this.statusBar.styleDefault();
+      this.splashScreen.hide();
     });
   }
 }
