@@ -12,12 +12,12 @@ import { Push } from '@ionic-native/push';
 import { Device } from '@ionic-native/device';
 
 import { MyApp } from './app.component';
-import { HomePage } from '../pages/home/home';
+import { SmplTalk } from '../pages/smplTalk/smplTalk';
 
 @NgModule({
   declarations: [
     MyApp,
-    HomePage
+    SmplTalk
   ],
   imports: [
     BrowserModule,
@@ -26,7 +26,7 @@ import { HomePage } from '../pages/home/home';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    HomePage
+    SmplTalk
   ],
   providers: [
     StatusBar,
