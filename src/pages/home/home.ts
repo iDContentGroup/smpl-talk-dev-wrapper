@@ -23,11 +23,12 @@ export class HomePage {
 	browser: any;
 
   constructor(public navCtrl: NavController, public platform: Platform, public iab: InAppBrowser) {
-    alert("home");
+    this.platform = platform;
   }
 
   ngOnInit() {
     this.platform.ready().then(() => {
+      console.log(this.platform);
       this.startBrowser();
     });
   }

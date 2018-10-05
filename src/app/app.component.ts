@@ -10,20 +10,29 @@ import { HomePage } from '../pages/home/home';
 export class MyApp {
   rootPage:any = HomePage;
 
+
   constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
-  }
-
-  ngOnInit() {
-    this.initalizeApp();
-  }
-
-  initalizeApp() {
+    this.platform = platform;
     this.platform.ready().then(() => {
       console.log(this.platform);
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
-      this.statusBar.styleDefault();
-      this.splashScreen.hide();
+      statusBar.styleDefault();
+      splashScreen.hide();
     });
   }
+
+  // ngOnInit() {
+  //   this.initalizeApp();
+  // }
+
+  // initalizeApp() {
+  //   this.platform.ready().then(() => {
+  //     console.log(this.platform);
+  //     // Okay, so the platform is ready and our plugins are available.
+  //     // Here you can do any higher level native things you might need.
+  //     this.statusBar.styleDefault();
+  //     this.splashScreen.hide();
+  //   });
+  // }
 }
