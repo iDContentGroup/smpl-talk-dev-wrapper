@@ -50,7 +50,6 @@
   "description": "An Ionic project",
   "cordova": {
     "plugins": {
-      "phonegap-plugin-push": {},
       "cordova-plugin-device": {},
       "cordova-plugin-inappbrowser": {},
       "cordova-plugin-wkwebview-engine": {},
@@ -58,7 +57,8 @@
       "cordova-plugin-statusbar": {},
       "cordova-plugin-splashscreen": {},
       "cordova-plugin-ionic-webview": {},
-      "cordova-plugin-ionic-keyboard": {}
+      "cordova-plugin-ionic-keyboard": {},
+      "phonegap-plugin-push": {}
     },
     "platforms": []
   }
