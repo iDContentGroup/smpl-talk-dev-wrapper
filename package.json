@@ -33,7 +33,6 @@
     "cordova-plugin-device": "^2.0.2",
     "cordova-plugin-inappbrowser": "git+https://github.com/dpa99c/cordova-plugin-inappbrowser.git#CB-7179",
     "cordova-plugin-ionic-keyboard": "^2.1.3",
-    "cordova-plugin-ionic-webview": "^2.2.0",
     "cordova-plugin-splashscreen": "^5.0.2",
     "cordova-plugin-statusbar": "^2.4.2",
     "cordova-plugin-whitelist": "^1.3.3",
@@ -57,7 +56,6 @@
       "cordova-plugin-whitelist": {},
       "cordova-plugin-statusbar": {},
       "cordova-plugin-splashscreen": {},
-      "cordova-plugin-ionic-webview": {},
       "cordova-plugin-ionic-keyboard": {},
       "phonegap-plugin-push": {},
       "cordova-plugin-wkwebview-engine": {}
