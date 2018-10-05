@@ -1,8 +1,8 @@
 {
-  "name": "smpl-talk",
+  "name": "one-channel",
   "integrations": {
     "cordova": {}
   },
   "type": "ionic-angular",
-  "pro_id": "a3fe7dec"
+  "pro_id": "494d0aff"
 }
