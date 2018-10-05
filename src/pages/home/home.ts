@@ -24,8 +24,9 @@ export class HomePage {
 
   constructor(public navCtrl: NavController, public platform: Platform, public iab: InAppBrowser) {
     alert("home");
+    this.platform = platform;
 
-    platform.ready().then(() => {
+    this.platform.ready().then(() => {
       this.startBrowser();
     });
   }
