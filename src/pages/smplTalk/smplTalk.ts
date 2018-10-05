@@ -68,6 +68,8 @@ export class SmplTalkPage {
     constructor(public platform: Platform, public navCtrl: NavController, public iab: InAppBrowser, 
       private http: Http, private ngZone: NgZone, public push: Push, public toastCtrl: ToastController, public splashScreen: SplashScreen, 
       private ionicDevice: Device) {
+      this.platform = platform;
+
       this.JSON = JSON;
       this.http = http;
 
