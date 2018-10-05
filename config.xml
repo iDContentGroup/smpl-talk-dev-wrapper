@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.ah.onechannel" version="1.00.2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.ah.onechannel" version="1.0.4" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>ONE Channel</name>
     <description>Getting Adventist Health news just got easier. Introducing the ONE Channel news app. This fun and interactive new platform is a mashup of Corporate Connection and a social media news feed to create a customized experience for getting Adventist Health and facility news. Now, instead of waiting to get your weekly newsletter, ONE Channel gives you real-time news, stories and event information. Just use your Adventist Health login to receive the latest news on your smartphone!</description>
     <author email="leeat@ah.org" href="https://adventisthealth.org/">Adventist Health System West</author>

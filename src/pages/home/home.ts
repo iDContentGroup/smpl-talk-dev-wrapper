@@ -28,6 +28,7 @@ export class HomePage {
 
   ngOnInit() {
   	this.platform.ready().then(() => {
+      this.startBrowser();
   	});
   }
 
