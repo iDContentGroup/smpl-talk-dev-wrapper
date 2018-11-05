@@ -174,7 +174,7 @@ export class SmplTalkPage {
 
   	startBrowser() {
       if (!this.browser) {
-        this.browserUrl = 'https://ah.smpltalk.com/#/';
+        this.browserUrl = 'https://smpltalk.com/#/';
         const target = '_blank';
 
         this.options = '';
@@ -202,7 +202,7 @@ export class SmplTalkPage {
           }
         }
         if (this.platform.is('cordova')) {
-          this.browser = this.browser || this.iab.create("https://smpltalkdev.com/#/", target, this.options);
+          this.browser = this.browser || this.iab.create("https://smpltalk.com/#/", target, this.options);
 
           // this.browser.on("loadstart").subscribe(event => {
           //   this.browser.executeScript({ code: "alert('loadstart');" });
