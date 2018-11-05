@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.ah.onechannel" version="1.0.3" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>ONE Channel</name>
-    <description>Getting Adventist Health news just got easier. Introducing the ONE Channel news app. This fun and interactive new platform is a mashup of Corporate Connection and a social media news feed to create a customized experience for getting Adventist Health and facility news. Now, instead of waiting to get your weekly newsletter, ONE Channel gives you real-time news, stories and event information. Just use your Adventist Health login to receive the latest news on your smartphone!</description>
-    <author email="leeat@ah.org" href="https://adventisthealth.org/">Adventist Health System West</author>
+<widget id="company.smpl.talk" version="0.1.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>Smpl Talk</name>
+    <description>An awesome Ionic/Cordova app for SMPL Talk.</description>
+    <author email="support@smpl.company" href="https://smpltalk.com/">SMPL, LLC</author>
     <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
@@ -95,9 +95,9 @@
         <variable name="FCM_VERSION" value="11.6.2" />
         <variable name="SENDER_ID" value="599715636396" />
     </plugin>
-    <engine name="ios" spec="~4.5.5" />
-    <engine name="android" spec="~6.4.0" />
     <plugin name="cordova-plugin-device" spec="^2.0.2" />
     <plugin name="cordova-plugin-wkwebview-engine" spec="^1.1.4" />
     <plugin name="cordova-plugin-inappbrowser" spec="https://github.com/dpa99c/cordova-plugin-inappbrowser#CB-7179" />
+    <engine name="android" spec="~6.4.0" />
+    <engine name="ios" spec="~4.5.5" />
 </widget>
