@@ -80,7 +80,7 @@ export class HomePage {
         this.errorTitle = 'Unexpected error';
         this.errorDescription = "Please check your internet connection";
 
-        this.doDebug = true;
+        // this.doDebug = true;
 
         this.errors = [];
         this.fbUpdates = [];
@@ -164,7 +164,7 @@ export class HomePage {
             }
 
             if (this.platform.is('cordova')) {
-                this.browser = this.browser || this.iab.create("https://smpltalk.com/#/", '_blank', this.options);
+                this.browser = this.browser || this.iab.create("https://ah.smpltalk.com/#/", '_blank', this.options);
 
                 // this.browser.on("loadstart").subscribe(event => {
                 //   this.browser.executeScript({ code: "alert('loadstart');" });
