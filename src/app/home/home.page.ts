@@ -11,8 +11,13 @@ export class HomePage {
     constructor(private iab: InAppBrowser) {
     }
 
-    test() {
+    systemTest() {
         // const browser = this.iab.create('https://ionicframework.com/');
-        var ref = this.iab.create('https://google.com', 'system', 'location=yes');
+        var ref = this.iab.create('https://google.com', '_system', 'location=yes');
+    }
+
+    blankTest() {
+        // const browser = this.iab.create('https://ionicframework.com/');
+        var ref = this.iab.create('https://google.com', '_blank', 'location=yes');
     }
 }
