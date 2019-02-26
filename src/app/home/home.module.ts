@@ -13,8 +13,8 @@ import { HomePage } from './home.page';
         IonicModule,
         RouterModule.forChild([
             {
-            path: '',
-            component: HomePage
+                path: '',
+                component: HomePage
             }
         ])
     ],
