@@ -80,7 +80,7 @@ export class HomePage {
         this.errorTitle = 'Unexpected error';
         this.errorDescription = "Please check your internet connection";
 
-        // this.doDebug = true;
+        this.doDebug = true;
 
         this.errors = [];
         this.fbUpdates = [];
@@ -142,6 +142,7 @@ export class HomePage {
 
             optionAry.push("disallowoverscroll=yes");//(iOS) Turns on/off the UIWebViewBounce property.
             optionAry.push("keyboardDisplayRequiresUserAction=no");// (iOS) Should take care of ios not allowing focus on inputs
+            optionAry.push("usewkwebview=yes");// (iOS) Should take care of ios not allowing focus on inputs
             // optionAry.push("hidden=yes");
 
             if (this.doDebug) {
