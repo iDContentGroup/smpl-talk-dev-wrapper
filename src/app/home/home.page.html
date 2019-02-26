@@ -1,6 +1,9 @@
 <ion-content padding>
 	The world is your oyster.
 	<p>If you get lost, the <a target="_blank" rel="noopener" href="https://ionicframework.com/docs/">docs</a> will be your guide.</p>
-	<p><a (click)="testSystem()">System url test</a></p>
-	<p><a (click)="testBlank()">Blank url test</a></p>
+	<p><a (click)="systemTest('https://google.com')">Google System url test</a></p>
+	<p><a (click)="blankTest('https://google.com')">Google Blank url test</a></p>
+
+	<p><a (click)="systemTest('https://smpltalkdev.com')">Smpl talk dev System url test</a></p>
+	<p><a (click)="blankTest('https://smpltalkdev.com')">Smpl talk dev Blank url test</a></p>
 </ion-content>

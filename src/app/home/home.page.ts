@@ -11,13 +11,21 @@ export class HomePage {
     constructor(private iab: InAppBrowser) {
     }
 
-    systemTest() {
+    systemTest(url: string) {
+        if (!url) {
+            console.error("Unexpected missing url");
+            return;
+        }
         // const browser = this.iab.create('https://ionicframework.com/');
-        var ref = this.iab.create('https://google.com', '_system', 'location=yes');
+        var ref = this.iab.create(url, '_system', 'location=yes');
     }
 
-    blankTest() {
+    blankTest(url: string) {
+        if (!url) {
+            console.error("Unexpected missing url");
+            return;
+        }
         // const browser = this.iab.create('https://ionicframework.com/');
-        var ref = this.iab.create('https://google.com', '_blank', 'location=yes');
+        var ref = this.iab.create(url, '_blank', 'location=yes');
     }
 }
