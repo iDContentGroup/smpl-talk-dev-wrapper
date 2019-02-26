@@ -130,7 +130,7 @@ export class HomePage {
 
     startBrowser() {
         if (!this.browser) {
-            this.browserUrl = 'https://smpltalk.com/#/';
+            this.browserUrl = 'https://smpltalkdev.com/#/';
 
             this.options = '';
 
@@ -138,7 +138,7 @@ export class HomePage {
 
             optionAry.push("disallowoverscroll=yes");//(iOS) Turns on/off the UIWebViewBounce property.
             optionAry.push("keyboardDisplayRequiresUserAction=no");// (iOS) Should take care of ios not allowing focus on inputs
-            optionAry.push("usewkwebview=yes");// (iOS) Should take care of ios not allowing focus on inputs
+            optionAry.push("usewkwebview=yes");// (iOS) Should attempt to use wkwebview (the better of the two)
             // optionAry.push("hidden=yes");
 
             if (this.doDebug) {
@@ -160,7 +160,7 @@ export class HomePage {
             }
 
             if (this.platform.is('cordova')) {
-                this.browser = this.browser || this.iab.create("https://ah.smpltalk.com/#/", '_blank', this.options);
+                this.browser = this.browser || this.iab.create(this.browserUrl, '_blank', this.options);
 
                 // this.browser.on("loadstart").subscribe(event => {
                 //   this.browser.executeScript({ code: "alert('loadstart');" });
@@ -227,6 +227,8 @@ export class HomePage {
                 return this.browserGetFirebaseIdToken();
             }).then(() => {
                 return this.browserSetNav();
+            }).then(() => {
+                return this.handleHref();
             }).then(() => {
                 return this.browserTest().then(values => {
                     if (values && values.length && values[0]) {
@@ -378,11 +380,26 @@ export class HomePage {
         });
     }
 
+    handleHref() {
+        if (!this.browser) {
+            return Promise.resolve(null);
+        }
+
+        return this.browser.executeScript({
+            code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicHandleHref && window.my.activateAppMode.publicHandleHref();"
+        }).then(values => {
+            var href = values && values.length && values[0];
+
+            this.iab.create(href, '_system', "location=yes");
+        }).catch(error => {
+            this.pushError({key: 'handle href', error: error});
+        });
+    }
+
     browserSetNav() {
         if (!this.browser || !this.webNav) {
             return Promise.resolve(null);
         }
-
 
         return this.browser.executeScript({
             code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicWebNavFunc && window.my.activateAppMode.publicWebNavFunc(" + JSON.stringify(this.webNav) + ");"
@@ -397,10 +414,8 @@ export class HomePage {
 
             this.webNav = null;
         }).catch(error => {
-              this.pushError({key: 'browser set nav', error: error});
-              this.webNav = null;
-
-              return null;
+            this.pushError({key: 'browser set nav', error: error});
+            this.webNav = null;
         });
     }
 
