@@ -38,6 +38,7 @@
 
 
         <div class="buttons-container">
+          <ion-button *ngIf="!browser" (click)="startBrowser()">Start browser</ion-button>
           <ion-button *ngIf="browser" (click)="showBrowser()">Show browser</ion-button>
           <ion-button (click)="toggleDebug()">Toggle Debug | status: {{doDebug ? 'On' : 'Off'}}</ion-button>
         </div>

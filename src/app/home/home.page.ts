@@ -587,12 +587,30 @@ export class HomePage {
                 if (notification.additionalData.foreground) {
                     this.storeDebugLog('setupPush', 'foreground', 1);
                 } else {
-                    var navType = notification.additionalData.navType;
-                    var postKey = notification.additionalData.postKey;
-                    var groupKey = notification.additionalData.groupKey;
-                    var networkKey = notification.additionalData.networkKey;
+                    if (notification && notification.additionalData && notification.additionalData.navType) {
+                        this.storeDebugLog('setupPush', 'webNav' + notification.additionalData.navType, 2);
 
-                    this.webNav = {navType: navType, postKey: postKey, groupKey: groupKey, networkKey: networkKey};
+                        if (notification.additionalData.navType === 'post') {
+                            var navType = notification.additionalData.navType;
+                            var postKey = notification.additionalData.postKey;
+                            var groupKey = notification.additionalData.groupKey;
+                            var networkKey = notification.additionalData.networkKey;
+
+                            this.webNav = {navType: navType, postKey: postKey, groupKey: groupKey, networkKey: networkKey};
+                        } else if (notification.additionalData.navType === 'surveyResult') {
+                            var navType = notification.additionalData.navType;
+                            var surveyResultKey = notification.additionalData.surveyResultKey;
+                            var surveyKey = notification.additionalData.surveyKey;
+                            var groupKey = notification.additionalData.groupKey;
+                            var networkKey = notification.additionalData.networkKey;
+
+                            this.webNav = {navType: navType, surveyResultKey: surveyResultKey, surveyKey: surveyKey, groupKey: groupKey, networkKey: networkKey};
+                        } else {
+                            this.webNav = null;
+                        }
+                    } else {
+                        this.webNav = null;
+                    }
 
                     this.storeDebugLog('setupPush', 'background', 1);
 
