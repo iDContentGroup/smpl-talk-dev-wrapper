@@ -1,0 +1,73 @@
+{
+  "project_info": {
+    "project_number": "599715636396",
+    "firebase_url": "https://ourg-2c585.firebaseio.com",
+    "project_id": "ourg-2c585",
+    "storage_bucket": "ourg-2c585.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:599715636396:android:764d2cb7da3280eb",
+        "android_client_info": {
+          "package_name": "io.ionic.starter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "599715636396-o7ujodth9t3hf9v2qo3avv82g7j0arbm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDH2jTxp3PEx83liNVJIQn0c6kdRSaTM5Y"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:599715636396:android:5885a66b57a3d8d6",
+        "android_client_info": {
+          "package_name": "company.smpl.talk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "599715636396-o7ujodth9t3hf9v2qo3avv82g7j0arbm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDH2jTxp3PEx83liNVJIQn0c6kdRSaTM5Y"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

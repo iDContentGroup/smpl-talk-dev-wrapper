@@ -48,3 +48,10 @@ Setup push metadata in config.xml:
     <variable name="FCM_VERSION" value="11.6.2" />
     <variable name="SENDER_ID" value="599715636396" />
 </plugin>
+
+Add extra preferences to config.xml:
+
+<preference name="ShowSplashScreenSpinner" value="false" />
+<preference name="KeyboardDisplayRequiresUserAction" value="false" />
+<preference name="DisallowOverscroll" value="true" />
+<preference name="Orientation" value="portrait" />
