@@ -49,7 +49,7 @@
         <p class="keep-white-space">browserLoopActive: {{ browserLoopIsActive ? 'Yes' : 'No' }} | {{ browserLoopCount || 0 }} | Timestamp: {{ browserLoopTimestamp || "None" }}</p>
 
 
-        
+
 
         <div [style.background]="'grey'">
           <p>Browser loop log: {{ browserLoopLog ? 'On' : 'Off' }}</p>
@@ -63,11 +63,11 @@
                 </ng-container>
 
                 <ng-container *ngIf="browserLoopLog[browserLoopName][1]">
-                  <p>[!] {{ browserLoopLog[browserLoopName][1]['timestamp'] }} | {{ browserLoopLog[browserLoopName][1]['message'] }}</p>
+                  <p>[.] {{ browserLoopLog[browserLoopName][1]['timestamp'] }} | {{ browserLoopLog[browserLoopName][1]['message'] }}</p>
                 </ng-container>
 
                 <ng-container *ngIf="browserLoopLog[browserLoopName][0]">
-                  <p>[!] {{ browserLoopLog[browserLoopName][0]['timestamp'] }} | {{ browserLoopLog[browserLoopName][0]['message'] }}</p>
+                  <p>[ ] {{ browserLoopLog[browserLoopName][0]['timestamp'] }} | {{ browserLoopLog[browserLoopName][0]['message'] }}</p>
                 </ng-container>
               </ng-container>
             </ng-container>

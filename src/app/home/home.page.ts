@@ -260,7 +260,7 @@ export class HomePage {
 
     browserTestCommunication() {
         if (!this.browser || !this.doDebug) {
-            this.storeBrowserLoopLog('browserTestCommunication', 'Exit early', 0);
+            this.storeDebugLog('browserTestCommunication', 'Exit early', 0);
             return Promise.resolve(null);
         }
 
@@ -268,25 +268,25 @@ export class HomePage {
             code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test_send', value: this.getDateString() + ' send'}) + ");"
         }).then(values => {
             if (values && values.length && values[0]) {
-                this.storeBrowserLoopLog('browserTestCommunication', 'SENT AND RECIEVED', 2);
+                this.storeDebugLog('browserTestCommunication', 'SENT AND RECIEVED', 2);
 
                 return this.browser.executeScript({
                     code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test_recieved', value: this.getDateString() + ' recieved' }) + ");"
                 });
             } else {
-                this.storeBrowserLoopLog('browserTestCommunication', 'SENT ONLY', 1);
+                this.storeDebugLog('browserTestCommunication', 'SENT ONLY', 1);
             }
 
             return values;
         }).catch(error => {
-            this.storeBrowserLoopLog('browserTestCommunication', 'Error', 2);
+            this.storeDebugLog('browserTestCommunication', 'Error', 2);
             this.pushError({key: 'browserTestCommunication', error: error});
         });
     }
 
     browserActivateNativeAppMode() {
         if (!this.browser || this.nativeAppModeActivated) {
-            this.storeBrowserLoopLog('browserActivateNativeAppMode', 'Exit early', 0);
+            this.storeDebugLog('browserActivateNativeAppMode', 'Exit early', 0);
 
             return Promise.resolve(null);
         }
@@ -296,22 +296,22 @@ export class HomePage {
         }).then(values => {
             if (values && values.length && values[0]) {
                 this.nativeAppModeActivated = true;
-                this.storeBrowserLoopLog('browserActivateNativeAppMode', 'Report: GOOD', 2);
+                this.storeDebugLog('browserActivateNativeAppMode', 'Report: GOOD', 2);
             } else {
                 // this.pushError({key: 'browserActivateNativeAppMode', error: {message: 'no truthy response from browser'}});
-                this.storeBrowserLoopLog('browserActivateNativeAppMode', 'Report: BAD', 1);
+                this.storeDebugLog('browserActivateNativeAppMode', 'Report: BAD', 1);
             }
 
             return values;
         }).catch(error => {
-            this.storeBrowserLoopLog('browserActivateNativeAppMode', 'Error', 2);
+            this.storeDebugLog('browserActivateNativeAppMode', 'Error', 2);
             this.pushError({key: 'browserActivateNativeAppMode', error: error});
         });
     }
 
     browserLogoutOfNativeApp() {
         if (!this.browser || !this.nativeAppModeActivated) {
-            this.storeBrowserLoopLog('browserLogoutOfNativeApp', 'Exit early', 0);
+            this.storeDebugLog('browserLogoutOfNativeApp', 'Exit early', 0);
             return Promise.resolve(null);
         }
 
@@ -319,7 +319,7 @@ export class HomePage {
             code: "localStorage.getItem('logoutOfNativeApp')"
         }).then(values => {
             if (values && values.length && values[0]) {
-                this.storeBrowserLoopLog('browserLogoutOfNativeApp', 'Should log out: YES', 2);
+                this.storeDebugLog('browserLogoutOfNativeApp', 'Should log out: YES', 2);
 
                 return this.browser.executeScript({ code: "localStorage.setItem('logoutOfNativeApp', '');" }).then(() => {
                     this.users = [];
@@ -335,19 +335,19 @@ export class HomePage {
                     }
                 });
             } else {
-                this.storeBrowserLoopLog('browserLogoutOfNativeApp', 'Should log out: NO', 1);
+                this.storeDebugLog('browserLogoutOfNativeApp', 'Should log out: NO', 1);
             }
 
             return values;
         }).catch(error => {
-            this.storeBrowserLoopLog('browserLogoutOfNativeApp', 'Error', 2);
+            this.storeDebugLog('browserLogoutOfNativeApp', 'Error', 2);
             this.pushError({key: 'browserLogoutOfNativeApp', error: error});
         });
     }
 
     browserGetFirebaseIdToken() {
         if (!this.browser || !this.nativeAppModeActivated) {
-            this.storeBrowserLoopLog('browserGetFirebaseIdToken', 'Exit early', 0);
+            this.storeDebugLog('browserGetFirebaseIdToken', 'Exit early', 0);
             return Promise.resolve(null);
         }
 
@@ -365,12 +365,12 @@ export class HomePage {
 
             if (firebase_id_token) {
                 if (this.loggingIn) {
-                    this.storeBrowserLoopLog('browserGetFirebaseIdToken', 'IdToken: YES (already loggingIn)', 2);
+                    this.storeDebugLog('browserGetFirebaseIdToken', 'IdToken: YES (already loggingIn)', 2);
 
                     // First log current user out and on the next browser loop, the user should be signed in since we don't clear firebase_id_token_output from localStorage
                     return this.logUserOutOfBrowser();
                 } else {
-                    this.storeBrowserLoopLog('browserGetFirebaseIdToken', 'IdToken: YES', 2);
+                    this.storeDebugLog('browserGetFirebaseIdToken', 'IdToken: YES', 2);
 
                     // Parse the ID token.
                     const payload = JSON.parse(b64DecodeUnicode(firebase_id_token.split('.')[1]));
@@ -400,17 +400,17 @@ export class HomePage {
                     });
                 }
             } else {
-                this.storeBrowserLoopLog('browserGetFirebaseIdToken', 'IdToken: NO', 1);
+                this.storeDebugLog('browserGetFirebaseIdToken', 'IdToken: NO', 1);
             }
         }).catch(error => {
-            this.storeBrowserLoopLog('browserGetFirebaseIdToken', 'Error', 2);
+            this.storeDebugLog('browserGetFirebaseIdToken', 'Error', 2);
             this.pushError({key: 'browserGetFirebaseIdToken', error: error});
         });
     }
 
     browserSetNav() {
         if (!this.browser || !this.webNav) {
-            this.storeBrowserLoopLog('browserSetNav', 'Exit early', 0);
+            this.storeDebugLog('browserSetNav', 'Exit early', 0);
             return Promise.resolve(null);
         }
 
@@ -418,9 +418,9 @@ export class HomePage {
             code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicWebNavFunc && window.my.activateAppMode.publicWebNavFunc(" + JSON.stringify(this.webNav) + ");"
         }).then(values => {
             if (values && values.length && values[0]) {
-                this.storeBrowserLoopLog('browserSetNav', 'Can Web Nav: YES', 2);
+                this.storeDebugLog('browserSetNav', 'Can Web Nav: YES', 2);
             } else {
-                this.storeBrowserLoopLog('browserSetNav', 'Can Web Nav: NO', 1);
+                this.storeDebugLog('browserSetNav', 'Can Web Nav: NO', 1);
                 // TODO: throw error?
             }
 
@@ -434,7 +434,7 @@ export class HomePage {
                 }
             }
         }).catch(error => {
-            this.storeBrowserLoopLog('browserSetNav', 'Error', 2);
+            this.storeDebugLog('browserSetNav', 'Error', 2);
             this.pushError({key: 'browserSetNav', error: error});
         }).then(() => {
             this.webNav = null;
@@ -443,7 +443,7 @@ export class HomePage {
 
     browserHandleHref() {
         if (!this.browser) {
-            this.storeBrowserLoopLog('browserHandleHref', 'Exit early', 0);
+            this.storeDebugLog('browserHandleHref', 'Exit early', 0);
             return Promise.resolve(null);
         }
 
@@ -452,13 +452,13 @@ export class HomePage {
         }).then(values => {
             var href = values && values.length && values[0];
             if (href) {
-                this.storeBrowserLoopLog('browserHandleHref', href, 2);
+                this.storeDebugLog('browserHandleHref', href, 2);
                 this.iab.create(href, '_system', "location=yes");
             } else {
-                this.storeBrowserLoopLog('browserHandleHref', 'No href', 1);
+                this.storeDebugLog('browserHandleHref', 'No href', 1);
             }
         }).catch(error => {
-            this.storeBrowserLoopLog('browserHandleHref', 'Error', 2);
+            this.storeDebugLog('browserHandleHref', 'Error', 2);
             this.pushError({key: 'browserHandleHref', error: error});
         });
     }
@@ -486,8 +486,8 @@ export class HomePage {
         var headers = new HttpHeaders();
 
         headers = headers.append('Authorization', 'Bearer ' + iDToken);
-
-        return this.http.get(url, {responseType: 'text'}).toPromise().then(res => {
+        
+        return this.http.get(url, {headers: headers}).toPromise().then(res => {
             var data = res as any;
             return data;
         }).catch(error => {
@@ -523,12 +523,13 @@ export class HomePage {
 
         // to check if we have permission
         this.push.hasPermission().then((res: any) => {
-            // if (res.isEnabled) {
-            //     this.doDebug && this.toast('We have permission to send push notifications');
-            // } else {
-            //     this.doDebug && this.toast('We do not have permission to send push notifications');
-            // }
+            if (res.isEnabled) {
+                this.storeDebugLog('setupPush', 'Permission: YES', 2);
+            } else {
+                this.storeDebugLog('setupPush', 'Permission: NO', 2);
+            }
         }).catch(error => {
+            this.storeDebugLog('setupPush', 'Error (0)', 2);
             this.pushError({key: 'setupPush', error: error});
         });
 
@@ -569,7 +570,7 @@ export class HomePage {
                 // foreground
                 // TODO: handle foreground notification
                 if (notification.additionalData.foreground) {
-
+                    this.storeDebugLog('setupPush', 'foreground', 1);
                 } else {
                     var navType = notification.additionalData.navType;
                     var postKey = notification.additionalData.postKey;
@@ -577,6 +578,8 @@ export class HomePage {
                     var networkKey = notification.additionalData.networkKey;
 
                     this.webNav = {navType: navType, postKey: postKey, groupKey: groupKey, networkKey: networkKey};
+
+                    this.storeDebugLog('setupPush', 'background', 1);
 
                     this.doDebug && this.browser && this.browser.executeScript({
                         code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'notification', value: notification}) + ");"
@@ -592,6 +595,7 @@ export class HomePage {
 
         pushObject.on('registration').subscribe((registration: any) => {
             this.ngZone.run(() => {
+                this.storeDebugLog('setupPush', 'registeration', 1);
                 this.device = registration;
                 this.setDeviceUserPairing();
             });
@@ -599,6 +603,7 @@ export class HomePage {
 
         pushObject.on('error').subscribe(error => {
             this.ngZone.run(() => {
+                this.storeDebugLog('setupPush', 'Error (1)', 2);
                 this.pushError({key: 'push subscribe', error: error});
             });
         });
@@ -702,14 +707,14 @@ export class HomePage {
         this.errors.push(error);
     }
 
-    storeBrowserLoopLog(browserLoopName, message, importance) {
+    storeDebugLog(key, message, importance) {
         if (!this.doDebug) {
             // skip anything logs if we are not in debug mode
             return;
         }
 
-        if (!browserLoopName) {
-            this.pushError({key: 'storeBrowserLoopLog', error: {message: "Unexpected missing browserLoopName"}});
+        if (!key) {
+            this.pushError({key: 'storeDebugLog', error: {message: "Unexpected missing key"}});
             return;
         }
 
@@ -718,35 +723,37 @@ export class HomePage {
         if (!this.browserLoopLog) {
             this.browserLoopLog = {};
 
-            // Set all expected browserLoopNames
+            // Set all expected keys
             var expectedBrowserLoopNames = [
                 'browserActivateNativeAppMode',
                 'browserLogoutOfNativeApp',
                 'browserGetFirebaseIdToken',
                 'browserSetNav',
                 'browserHandleHref',
-                'browserTestCommunication'
+                'browserTestCommunication',
+
+                'setupPush'
             ];
 
             this.browserLoopLogNames = this.browserLoopLogNames || [];
 
             for (var i = 0; i < expectedBrowserLoopNames.length; i++) {
                 var expectedBrowserLoopName = expectedBrowserLoopNames[i];
-                
+
                 this.browserLoopLog[expectedBrowserLoopName] = null;
                 this.browserLoopLogNames.push(expectedBrowserLoopName);
             }
         }
 
-        if (!this.browserLoopLog[browserLoopName] && this.browserLoopLogNames.indexOf(browserLoopName) === -1) {
+        if (!this.browserLoopLog[key] && this.browserLoopLogNames.indexOf(key) === -1) {
             this.browserLoopLogNames = this.browserLoopLogNames || [];
-            this.browserLoopLogNames.push(browserLoopName);
+            this.browserLoopLogNames.push(key);
         }
 
-        this.browserLoopLog[browserLoopName] = this.browserLoopLog[browserLoopName] || {};
+        this.browserLoopLog[key] = this.browserLoopLog[key] || {};
 
         for (var i = 0; i < importance + 1; i++) {
-            this.browserLoopLog[browserLoopName][i] = {
+            this.browserLoopLog[key][i] = {
                 message: message,
                 timestamp: now
             }
