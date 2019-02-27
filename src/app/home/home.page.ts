@@ -389,8 +389,9 @@ export class HomePage {
             code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicHandleHref && window.my.activateAppMode.publicHandleHref();"
         }).then(values => {
             var href = values && values.length && values[0];
-
-            this.iab.create(href, '_system', "location=yes");
+            if (href) {
+                this.iab.create(href, '_system', "location=yes");
+            }
         }).catch(error => {
             this.pushError({key: 'handle href', error: error});
         });
