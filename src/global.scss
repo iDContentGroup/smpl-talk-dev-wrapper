@@ -10,6 +10,13 @@
 @import '~@ionic/angular/css/text-transformation.css';
 @import '~@ionic/angular/css/flex-utils.css';
 
+.buttons-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
 .svg-icon {
   display: inline-block;
   /*fill: rgba(0,0,0,0.87);
@@ -44,6 +51,11 @@ app-home {
 
 .keep-white-space {
 	white-space: pre-wrap;
+}
+
+.json { 
+    white-space: pre-wrap;
+    text-align: left;
 }
 
 .container {

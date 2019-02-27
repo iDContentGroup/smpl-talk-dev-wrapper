@@ -63,6 +63,8 @@ export class HomePage {
 
     browserUrl: string;
 
+    browserLoopLog: any;
+
     constructor(public platform: Platform, private iab: InAppBrowser, private ref: ChangeDetectorRef, 
         private http: HttpClient, private ngZone: NgZone, public push: Push) {
         this.JSON = JSON;
@@ -88,9 +90,9 @@ export class HomePage {
         this.loginCount = 0;
 
         this.platform.ready().then(() => {
-            if (this.platform.is('cordova')) {
+            // if (this.platform.is('cordova')) {
                 this.setupPush();
-            }
+            // }
 
             this.unsubscribeOnAuthStateChanged = firebase.auth().onAuthStateChanged(user => {
                 this.ngZone.run(() => {
@@ -138,6 +140,8 @@ export class HomePage {
 
             optionAry.push("disallowoverscroll=yes");//(iOS) Turns on/off the UIWebViewBounce property.
             optionAry.push("keyboardDisplayRequiresUserAction=no");// (iOS) Should take care of ios not allowing focus on inputs
+            optionAry.push("hidespinner=yes");// (iOS) Hide the loader (it shows up at the beginning when starting the app)
+
             optionAry.push("usewkwebview=yes");// (iOS) Should attempt to use wkwebview (the better of the two)
             // optionAry.push("hidden=yes");
 
@@ -146,6 +150,7 @@ export class HomePage {
                 optionAry.push("location=yes"); // Should be testing only
                 optionAry.push("clearcache=yes");// Should be testing only
                 optionAry.push("clearsessioncache=yes");// Should be testing only
+                optionAry.push("cleardata=yes");// Should be testing only
             } else {
                 optionAry.push("toolbar=no");// (iOS) Should be testing only
                 optionAry.push("location=no"); // Should be testing only
@@ -217,9 +222,11 @@ export class HomePage {
 
     browserLoopFunction(delay?: number) {
         this.ngZone.run(() => {
-            this.browserLoopCount = (this.browserLoopCount || 0) + 1;
 
-            this.nativeTimestamp = this.getDateString();
+            if (this.doDebug) {
+                this.browserLoopCount = (this.browserLoopCount || 0) + 1;
+                this.nativeTimestamp = this.getDateString();
+            }
 
             return this.browserActivateNativeAppMode().then(() => {
                 return this.browserLogoutOfNativeApp();
@@ -237,17 +244,9 @@ export class HomePage {
                         });
                     }
                 });
-            }).then(() => {
-                if (delay) {
-                    this.browserLoopSetTimeout = setTimeout(() => {
-                        this.ngZone.run(() => {
-                            this.browserLoopFunction(delay);
-                        });
-                    }, delay);
-                }
             }).catch(error => {
-                this.pushError({key: 'browser loop error', error: error});
-
+                this.pushError({key: 'browserLoopFunction', error: error});
+            }).then(() => {
                 if (delay) {
                     this.browserLoopSetTimeout = setTimeout(() => {
                         this.ngZone.run(() => {
@@ -274,24 +273,36 @@ export class HomePage {
         return this.browser.executeScript({
             code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test', value: this.getDateString() + ' test'}) + ");"
         }).then(values => {
-            this.webTimestamp = this.getDateString();
+            if (this.doDebug) {
+                this.webTimestamp = this.getDateString();
+            }
             return values;
         }).catch(error => {
-          this.pushError({key: 'browser test', error: error});
+          this.pushError({key: 'browserTest', error: error});
         });
     }
 
     browserActivateNativeAppMode() {
         if (!this.browser || this.nativeAppModeActivated) {
+            this.storeBrowserLoopLog('browserActivateNativeAppMode', 'Exit early', false);
+
             return Promise.resolve(null);
         }
 
         return this.browser.executeScript({
             code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicActivateAppModeFunc && window.my.activateAppMode.publicActivateAppModeFunc();"
         }).then(values => {
-            this.nativeAppModeActivated = true;
+            if (values && values.length && values[0]) {
+                this.nativeAppModeActivated = true;
+                this.storeBrowserLoopLog('browserActivateNativeAppMode', 'Report: GOOD', true);
+            } else {
+                // this.pushError({key: 'browserActivateNativeAppMode', error: {message: 'no truthy response from browser'}});
+                this.storeBrowserLoopLog('browserActivateNativeAppMode', 'Report: BAD', true);
+            }
+
+            return values;
         }).catch(error => {
-            this.pushError({key: 'browser active native app mode', error: error});
+            this.pushError({key: 'browserActivateNativeAppMode', error: error});
         });
     }
 
@@ -318,8 +329,10 @@ export class HomePage {
                     }
                 });
             }
+
+            return values;
         }).catch(error => {
-            this.pushError({key: 'browser log out', error: error});
+            this.pushError({key: 'browserLogoutOfNativeApp', error: error});
         });
     }
 
@@ -342,41 +355,39 @@ export class HomePage {
 
             if (firebase_id_token) {
                 if (this.loggingIn) {
+                    // First log current user out and on the next browser loop, the user should be signed in since we don't clear firebase_id_token_output from localStorage
                     return this.logUserOutOfBrowser();
                 } else {
                     // Parse the ID token.
                     const payload = JSON.parse(b64DecodeUnicode(firebase_id_token.split('.')[1]));
+
+                    var promises = [];
 
                     if (this.fbUser && this.fbUser.email && this.fbUser.email === payload.email) {
                         // The current user is the same user that just logged in, so no need to reauth
                     } else {
                         this.loggingIn = true;
 
-                        this.exchangeIDTokenForCustToken(firebase_id_token).then(data => {
-                            return this.ngZone.run(() => {
-                                return this.signInWithCustomToken(data).then(() => {
-                                    this.loggingIn = false;
-                                });
+                        promises.push(this.exchangeIDTokenForCustToken(firebase_id_token).then(data => {
+                            return this.signInWithCustomToken(data).then(() => {
+                                this.loggingIn = false;
                             });
-                        }).catch(error => {
-                            this.loggingIn = false;
-                        });
+                        }));
                     }
 
-                    return this.browser.executeScript({ code: "localStorage.setItem('firebase_id_token_output', '');" }).then(() => {
-                        if (this.doDebug) {
-                            return this.browser.executeScript({
-                                code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'nativeAuthIn', value: this.getDateString() + ' native signed in at'}) + ");"
-                            });
-                        }
+                    return Promise.all(promises).then(() => {
+                        return this.browser.executeScript({ code: "localStorage.setItem('firebase_id_token_output', '');" }).then(() => {
+                            if (this.doDebug) {
+                                return this.browser.executeScript({
+                                    code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'nativeAuthIn', value: this.getDateString() + ' native signed in at'}) + ");"
+                                });
+                            }
+                        });
                     });
                 }
             }
         }).catch(error => {
-            // this.pushError(error);
-            this.pushError({key: 'get firebase id token', error: error});
-
-            return null;
+            this.pushError({key: 'browserGetFirebaseIdToken', error: error});
         });
     }
 
@@ -393,7 +404,7 @@ export class HomePage {
                 this.iab.create(href, '_system', "location=yes");
             }
         }).catch(error => {
-            this.pushError({key: 'handle href', error: error});
+            this.pushError({key: 'handleHref', error: error});
         });
     }
 
@@ -415,7 +426,7 @@ export class HomePage {
 
             this.webNav = null;
         }).catch(error => {
-            this.pushError({key: 'browser set nav', error: error});
+            this.pushError({key: 'browserSetNav', error: error});
             this.webNav = null;
         });
     }
@@ -434,7 +445,7 @@ export class HomePage {
                 });
             }
         }).catch(error => {
-            this.pushError({key: 'log user out of browser', error: error});
+            this.pushError({key: 'logUserOutOfBrowser', error: error});
         });
     }
 
@@ -454,34 +465,24 @@ export class HomePage {
     }
 
     signInWithCustomToken(token: any) {
+        this.loggingIn = true;
+
         return firebase.auth().signInWithCustomToken(token).then(user => {
             // console.log("User with user id: " + user.uid + " created/logged in.");
         }).catch(error => {
-            // Handle Errors here.
-            var errorMessage: string;
-
-            if (error && error.code) {
-                if (error.code === 'auth/custom-token-mismatch') {
-                    errorMessage = "Token is for a different App";
-                } else if (error.code === 'auth/invalid-custom-token') {
-                    errorMessage = "Token format is incorrect";
-                }
-            }
-
-            errorMessage = errorMessage || error.message || error;
-
-            this.loggingIn = false;
-
-            this.pushError({key: 'use custom token', error: error});
+            this.pushError({key: 'signInWithCustomToken', error: error});
 
             return this.logUserOutOfBrowser();
+        }).then(() => {
+            this.loggingIn = false;
         });
     }
 
     firebaseSignOut() {
         return firebase.auth().signOut().then(() => {
-        }, error => {
-            this.pushError({key: 'firebase sign out', error: error});
+            // pass
+        }).catch(error => {
+            this.pushError({key: 'firebaseSignOut', error: error});
         });
     }
 
@@ -665,5 +666,33 @@ export class HomePage {
         console.error(error);
 
         this.errors.push(error);
+    }
+
+    storeBrowserLoopLog(loopName, message, important) {
+        if (!this.doDebug) {
+            // skip anything logs if we are not in debug mode
+            return;
+        }
+
+        if (!loopName) {
+            this.pushError({key: 'storeBrowserLoopLog', error: {message: "Unexpected missing loopName"}});
+            return;
+        }
+
+        var now = Date.now();
+
+        this.browserLoopLog = this.browserLoopLog || {};
+        this.browserLoopLog[loopName] = this.browserLoopLog[loopName] || {};
+        this.browserLoopLog[loopName]['now'] = {
+            message: message,
+            timestamp: now
+        }
+
+        if (important) {
+            this.browserLoopLog[loopName]['important'] = {
+                message: message,
+                timestamp: now
+            }
+        }
     }
 }

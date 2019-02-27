@@ -33,33 +33,55 @@
     <div class="dev-details-container">
       <!-- Debug mode -->
       <ng-container *ngIf="doDebug">
-        <p>Debugging 53: Inspection</p>
-        <p class="keep-white-space">Options: {{ options }}</p>
+        <p>Debugger v0.54</p>
 
-        <button ion-button secondary (click)="showBrowser()">show browser</button>
-        <button ion-button secondary (click)="toggleDebug()">toggleDebug status: {{!doDebug ? 'On' : 'Off'}}</button>
+        <div class="buttons-container">
+          <ion-button *ngIf="browser" (click)="showBrowser()">Show browser</ion-button>
+          <ion-button (click)="toggleDebug()">Toggle Debug | status: {{doDebug ? 'On' : 'Off'}}</ion-button>
+        </div>
 
-        <p class="keep-white-space" *ngIf="browser" [style.background]="'grey'">{{ JSON.stringify(browser) }}</p>
+        <p class="keep-white-space">Browser options: {{ options }}</p>
+
+        <p class="keep-white-space json" [style.background]="'grey'">Browser: {{ browser ? JSON.stringify(browser, null, 4) : 'None' }}</p>
         
-        <p class="keep-white-space">nativeAppModeActivated: {{nativeAppModeActivated ? 'yup' : 'nope'}}</p>
+        <p class="keep-white-space">Native App Mode: {{nativeAppModeActivated ? 'Activated' : 'Not activated'}}</p>
 
-        <p class="keep-white-space">browserLoopActive: {{ browserLoopIsActive ? 'yup' : 'nope' }} {{ browserLoopCount }} | web: {{ webTimestamp }} | native: {{ nativeTimestamp }}</p>
-        <p class="keep-white-space">{{ loggingIn ? 'logging in..' : 'not logging in'}} | {{ loginCount }}</p>
-        <p class="keep-white-space">fbUser: {{ fbUser ? (fbUser.email + ' | ' + fbUser.uid) : 'no fbUser found' }}</p>
-        <p class="keep-white-space">users: {{ !users.length ? ' (none)' : users.length}}</p>
-        <p class="keep-white-space" *ngFor="let user of users">{{ user.key }} | {{ user.email }}</p>
-        <p class="keep-white-space">device: {{ device ? JSON.stringify(device) : "(No device)" }}</p>
+        <p class="keep-white-space">browserLoopActive: {{ browserLoopIsActive ? 'Yes' : 'No' }} | {{ browserLoopCount || 0 }} | Web: {{ webTimestamp || "None" }} | Native: {{ nativeTimestamp || "None" }}</p>
 
-        <p class="keep-white-space">fbUpdates: {{ !fbUpdates.length ? ' (none)' : fbUpdates.length}}</p>
-        <p class="keep-white-space" *ngFor="let fbUpdate of fbUpdates">{{JSON.stringify(fbUpdate)}}</p>
+        <div [style.background]="'grey'">
+          <p>Browser loop log: {{ browserLoopLog ? 'On' : 'Off' }}</p>
+          <ng-container *ngIf="browserLoopLog">
+            <p>browserActivateNativeAppMode: {{ browserLoopLog['browserActivateNativeAppMode'] ? 'On' : 'Off' }}</p>
 
-        <!-- <button ion-button (click)="browserTest()">browserTest</button> -->
-        <button ion-button (click)="browserLoopFunction()">Browser Loop 0ms</button>
-        <button ion-button (click)="browserLoopFunction(6000)">Browser Loop 6000ms</button>
+            <ng-container *ngIf="browserLoopLog['browserActivateNativeAppMode']['important']">
+              <p>[!] - {{ browserLoopLog['browserActivateNativeAppMode']['important']['message'] }} | {{ browserLoopLog['browserActivateNativeAppMode']['important']['timestamp'] }}</p>
+            </ng-container>
+
+            <ng-container *ngIf="browserLoopLog['browserActivateNativeAppMode']['now']">
+              <p>[.] - {{ browserLoopLog['browserActivateNativeAppMode']['now']['message'] }} | {{ browserLoopLog['browserActivateNativeAppMode']['now']['timestamp'] }}</p>
+            </ng-container>
+          </ng-container>
+        </div>
+        
+        
+
+        <p class="keep-white-space">{{ loggingIn ? 'Logging in...' : 'Not logging in'}} | count: {{ loginCount || 0 }}</p>
+        <p class="keep-white-space">fbUser: {{ fbUser ? (fbUser.email + ' | ' + fbUser.uid) : 'None' }}</p>
+        <p class="keep-white-space">users: {{ !users.length ? ' None' : users.length}}</p>
+        <p class="keep-white-space json" *ngFor="let user of users">{{ user.key }} | {{ user.email }}</p>
+        <p class="keep-white-space json">Device: {{ device ? JSON.stringify(device, null, 4) : "None" }}</p>
+
+        <p class="keep-white-space">fbUpdates: {{ !fbUpdates.length ? 'None' : fbUpdates.length}}</p>
+        <p class="keep-white-space json" *ngFor="let fbUpdate of fbUpdates">{{JSON.stringify(fbUpdate, null, 4)}}</p>
+
+        <div class="buttons-container">
+          <ion-button ion-button (click)="browserLoopFunction()">Browser Loop 0ms</ion-button>
+          <ion-button ion-button (click)="browserLoopFunction(6000)">Browser Loop 6000ms</ion-button>
+        </div>
       </ng-container>
 
-      <p>errors: {{ !errors.length ? ' (none)' : errors.length}}</p>
-      <p *ngFor="let error of errors">{{JSON.stringify(error)}}</p>
+      <p>errors: {{ !errors.length ? 'None' : errors.length}}</p>
+      <p *ngFor="let error of errors" class="json">{{JSON.stringify(error, null, 4)}}</p>
   </div>
   
   </div>

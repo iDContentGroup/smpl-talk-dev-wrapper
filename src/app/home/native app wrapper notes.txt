@@ -44,7 +44,7 @@ include metadata on how to handle images in config.xml:
 
 Setup push metadata in config.xml:
 
-<plugin name="phonegap-plugin-push" spec="^2.2.3">
+<plugin name="phonegap-plugin-push" spec="^2.1.3">
     <variable name="FCM_VERSION" value="11.6.2" />
     <variable name="SENDER_ID" value="599715636396" />
 </plugin>
@@ -55,3 +55,15 @@ Add extra preferences to config.xml:
 <preference name="KeyboardDisplayRequiresUserAction" value="false" />
 <preference name="DisallowOverscroll" value="true" />
 <preference name="Orientation" value="portrait" />
+
+
+
+// source: https://ionic.zendesk.com/hc/en-us/articles/360010049673-Managing-plugins-using-cocoapods-in-Ionic-Pro
+// Whenever multiple plugins require cocoapods to work, the package build process will break since something goes wrong between each use of cocoapods
+// These scripts help that case
+
+// Your scripts MUST have execute permissions. Without the necessary permissions the scripts will fail with a spawn EACCES error. Permissions can be added using chmod.
+chmod +x your_script.sh
+
+chmod +x update_pods.sh
+chmod +x run_pods.sh
