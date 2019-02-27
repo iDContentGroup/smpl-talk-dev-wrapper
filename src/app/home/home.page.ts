@@ -47,6 +47,8 @@ export class HomePage {
     device: any;
 
     webNav: any;
+    notifications: any[];
+
     nativeAppModeActivated: boolean;
 
     errors: any[];
@@ -62,8 +64,8 @@ export class HomePage {
 
     browserUrl: string;
 
-    browserLoopLog: any;
-    browserLoopLogNames: string[];
+    debugLog: any;
+    debugLogNames: string[];
 
     constructor(public platform: Platform, private iab: InAppBrowser, private ref: ChangeDetectorRef, 
         private http: HttpClient, private ngZone: NgZone, public push: Push) {
@@ -370,8 +372,6 @@ export class HomePage {
                     // First log current user out and on the next browser loop, the user should be signed in since we don't clear firebase_id_token_output from localStorage
                     return this.logUserOutOfBrowser();
                 } else {
-                    this.storeDebugLog('browserGetFirebaseIdToken', 'IdToken: YES', 2);
-
                     // Parse the ID token.
                     const payload = JSON.parse(b64DecodeUnicode(firebase_id_token.split('.')[1]));
 
@@ -379,11 +379,15 @@ export class HomePage {
 
                     if (this.fbUser && this.fbUser.email && this.fbUser.email === payload.email) {
                         // The current user is the same user that just logged in, so no need to reauth
+                        this.storeDebugLog('browserGetFirebaseIdToken', 'IdToken: YES (same user, skip auth)', 2);
+
                     } else {
+                        this.storeDebugLog('browserGetFirebaseIdToken', 'IdToken: YES (start auth)', 2);
+
                         this.loggingIn = true;
 
-                        promises.push(this.exchangeIDTokenForCustToken(firebase_id_token).then(data => {
-                            return this.signInWithCustomToken(data).then(() => {
+                        promises.push(this.exchangeIDTokenForCustToken(firebase_id_token).then(custToken => {
+                            return this.signInWithCustomToken(custToken).then(() => {
                                 this.loggingIn = false;
                             });
                         }));
@@ -486,10 +490,10 @@ export class HomePage {
         var headers = new HttpHeaders();
 
         headers = headers.append('Authorization', 'Bearer ' + iDToken);
-        
-        return this.http.get(url, {headers: headers}).toPromise().then(res => {
-            var data = res as any;
-            return data;
+
+        return this.http.get(url, {headers: headers, responseType: 'text'}).toPromise().then(res => {
+            var custToken = res as any;
+            return custToken;
         }).catch(error => {
             console.error(error);
             throw error;
@@ -511,6 +515,12 @@ export class HomePage {
     }
 
     firebaseSignOut() {
+        if (this.fbUser) {
+            this.storeDebugLog('firebaseSignOut', 'fbUser: ' + this.fbUser.email, 2);
+        } else {
+            this.storeDebugLog('firebaseSignOut', 'fbUser: NONE', 1);
+        }
+
         return firebase.auth().signOut().then(() => {
             // pass
         }).catch(error => {
@@ -567,6 +577,11 @@ export class HomePage {
 
         pushObject.on('notification').subscribe((notification: any) => {
             this.ngZone.run(() => {
+                if (this.doDebug) {
+                    this.notifications = this.notifications || [];
+                    this.notifications.push(notification);
+                }
+
                 // foreground
                 // TODO: handle foreground notification
                 if (notification.additionalData.foreground) {
@@ -720,8 +735,8 @@ export class HomePage {
 
         var now = Date.now();
 
-        if (!this.browserLoopLog) {
-            this.browserLoopLog = {};
+        if (!this.debugLog) {
+            this.debugLog = {};
 
             // Set all expected keys
             var expectedBrowserLoopNames = [
@@ -735,25 +750,25 @@ export class HomePage {
                 'setupPush'
             ];
 
-            this.browserLoopLogNames = this.browserLoopLogNames || [];
+            this.debugLogNames = this.debugLogNames || [];
 
             for (var i = 0; i < expectedBrowserLoopNames.length; i++) {
                 var expectedBrowserLoopName = expectedBrowserLoopNames[i];
 
-                this.browserLoopLog[expectedBrowserLoopName] = null;
-                this.browserLoopLogNames.push(expectedBrowserLoopName);
+                this.debugLog[expectedBrowserLoopName] = null;
+                this.debugLogNames.push(expectedBrowserLoopName);
             }
         }
 
-        if (!this.browserLoopLog[key] && this.browserLoopLogNames.indexOf(key) === -1) {
-            this.browserLoopLogNames = this.browserLoopLogNames || [];
-            this.browserLoopLogNames.push(key);
+        if (!this.debugLog[key] && this.debugLogNames.indexOf(key) === -1) {
+            this.debugLogNames = this.debugLogNames || [];
+            this.debugLogNames.push(key);
         }
 
-        this.browserLoopLog[key] = this.browserLoopLog[key] || {};
+        this.debugLog[key] = this.debugLog[key] || {};
 
         for (var i = 0; i < importance + 1; i++) {
-            this.browserLoopLog[key][i] = {
+            this.debugLog[key][i] = {
                 message: message,
                 timestamp: now
             }
