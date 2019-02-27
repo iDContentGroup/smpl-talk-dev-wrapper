@@ -20,6 +20,9 @@
     <preference name="SplashScreen" value="screen" />
     <preference name="SplashScreenDelay" value="3000" />
     <platform name="android">
+        <resource-file src="google-services.json" target="google-services.json" />
+        <resource-file src="google-services.json" target="app/google-services.json" />
+        <resource-file src="ic_android_generated.png" target="res/drawable/ic_android_generated.png" />
         <allow-intent href="market:*" />
         <icon density="ldpi" src="resources/android/icon/drawable-ldpi-icon.png" />
         <icon density="mdpi" src="resources/android/icon/drawable-mdpi-icon.png" />
@@ -41,6 +44,7 @@
         <splash density="port-xxxhdpi" src="resources/android/splash/drawable-port-xxxhdpi-screen.png" />
     </platform>
     <platform name="ios">
+        <resource-file src="GoogleService-Info.plist" target="GoogleService-Info.plist" />
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
         <icon height="57" src="resources/ios/icon/icon.png" width="57" />
@@ -94,5 +98,6 @@
     <plugin name="phonegap-plugin-push" spec="2.2.3">
         <variable name="ANDROID_SUPPORT_V13_VERSION" value="27.+" />
         <variable name="FCM_VERSION" value="11.6.2" />
+        <variable name="SENDER_ID" value="599715636396" />
     </plugin>
 </widget>
