@@ -53,9 +53,14 @@ app-home {
 	white-space: pre-wrap;
 }
 
-.json { 
+.json {
     white-space: pre-wrap;
     text-align: left;
+
+    p {
+        white-space: pre-wrap;
+        text-align: left;
+    }
 }
 
 .container {

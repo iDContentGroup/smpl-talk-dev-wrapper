@@ -35,8 +35,7 @@ export class HomePage {
     browserLoopSetTimeout: any;
     browserLoopIsActive: boolean;
 
-    webTimestamp: string;//for debug
-    nativeTimestamp: string;//for debug
+    browserLoopTimestamp: string;//for debug
 
     loggingIn: boolean;
     loginCount: number;//for debug
@@ -64,6 +63,7 @@ export class HomePage {
     browserUrl: string;
 
     browserLoopLog: any;
+    browserLoopLogNames: string[];
 
     constructor(public platform: Platform, private iab: InAppBrowser, private ref: ChangeDetectorRef, 
         private http: HttpClient, private ngZone: NgZone, public push: Push) {
@@ -222,10 +222,9 @@ export class HomePage {
 
     browserLoopFunction(delay?: number) {
         this.ngZone.run(() => {
-
             if (this.doDebug) {
                 this.browserLoopCount = (this.browserLoopCount || 0) + 1;
-                this.nativeTimestamp = this.getDateString();
+                this.browserLoopTimestamp = this.getDateString();
             }
 
             return this.browserActivateNativeAppMode().then(() => {
@@ -235,15 +234,9 @@ export class HomePage {
             }).then(() => {
                 return this.browserSetNav();
             }).then(() => {
-                return this.handleHref();
+                return this.browserHandleHref();
             }).then(() => {
-                return this.browserTest().then(values => {
-                    if (values && values.length && values[0]) {
-                        return this.browser.executeScript({
-                            code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test2', value: this.getDateString() + ' test2' }) + ");"
-                        });
-                    }
-                });
+                return this.browserTestCommunication();
             }).catch(error => {
                 this.pushError({key: 'browserLoopFunction', error: error});
             }).then(() => {
@@ -265,26 +258,35 @@ export class HomePage {
         }
     }
 
-    browserTest() {
+    browserTestCommunication() {
         if (!this.browser || !this.doDebug) {
+            this.storeBrowserLoopLog('browserTestCommunication', 'Exit early', 0);
             return Promise.resolve(null);
         }
 
         return this.browser.executeScript({
-            code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test', value: this.getDateString() + ' test'}) + ");"
+            code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test_send', value: this.getDateString() + ' send'}) + ");"
         }).then(values => {
-            if (this.doDebug) {
-                this.webTimestamp = this.getDateString();
+            if (values && values.length && values[0]) {
+                this.storeBrowserLoopLog('browserTestCommunication', 'SENT AND RECIEVED', 2);
+
+                return this.browser.executeScript({
+                    code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test_recieved', value: this.getDateString() + ' recieved' }) + ");"
+                });
+            } else {
+                this.storeBrowserLoopLog('browserTestCommunication', 'SENT ONLY', 1);
             }
+
             return values;
         }).catch(error => {
-          this.pushError({key: 'browserTest', error: error});
+            this.storeBrowserLoopLog('browserTestCommunication', 'Error', 2);
+            this.pushError({key: 'browserTestCommunication', error: error});
         });
     }
 
     browserActivateNativeAppMode() {
         if (!this.browser || this.nativeAppModeActivated) {
-            this.storeBrowserLoopLog('browserActivateNativeAppMode', 'Exit early', false);
+            this.storeBrowserLoopLog('browserActivateNativeAppMode', 'Exit early', 0);
 
             return Promise.resolve(null);
         }
@@ -294,20 +296,22 @@ export class HomePage {
         }).then(values => {
             if (values && values.length && values[0]) {
                 this.nativeAppModeActivated = true;
-                this.storeBrowserLoopLog('browserActivateNativeAppMode', 'Report: GOOD', true);
+                this.storeBrowserLoopLog('browserActivateNativeAppMode', 'Report: GOOD', 2);
             } else {
                 // this.pushError({key: 'browserActivateNativeAppMode', error: {message: 'no truthy response from browser'}});
-                this.storeBrowserLoopLog('browserActivateNativeAppMode', 'Report: BAD', true);
+                this.storeBrowserLoopLog('browserActivateNativeAppMode', 'Report: BAD', 1);
             }
 
             return values;
         }).catch(error => {
+            this.storeBrowserLoopLog('browserActivateNativeAppMode', 'Error', 2);
             this.pushError({key: 'browserActivateNativeAppMode', error: error});
         });
     }
 
     browserLogoutOfNativeApp() {
         if (!this.browser || !this.nativeAppModeActivated) {
+            this.storeBrowserLoopLog('browserLogoutOfNativeApp', 'Exit early', 0);
             return Promise.resolve(null);
         }
 
@@ -315,6 +319,8 @@ export class HomePage {
             code: "localStorage.getItem('logoutOfNativeApp')"
         }).then(values => {
             if (values && values.length && values[0]) {
+                this.storeBrowserLoopLog('browserLogoutOfNativeApp', 'Should log out: YES', 2);
+
                 return this.browser.executeScript({ code: "localStorage.setItem('logoutOfNativeApp', '');" }).then(() => {
                     this.users = [];
 
@@ -328,24 +334,28 @@ export class HomePage {
                         });
                     }
                 });
+            } else {
+                this.storeBrowserLoopLog('browserLogoutOfNativeApp', 'Should log out: NO', 1);
             }
 
             return values;
         }).catch(error => {
+            this.storeBrowserLoopLog('browserLogoutOfNativeApp', 'Error', 2);
             this.pushError({key: 'browserLogoutOfNativeApp', error: error});
         });
     }
 
     browserGetFirebaseIdToken() {
+        if (!this.browser || !this.nativeAppModeActivated) {
+            this.storeBrowserLoopLog('browserGetFirebaseIdToken', 'Exit early', 0);
+            return Promise.resolve(null);
+        }
+
         function b64DecodeUnicode(str) {
             // Going backwards: from bytestream, to percent-encoding, to original string.
             return decodeURIComponent(atob(str).split('').map(function(c) {
             return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
             }).join(''));
-        }
-
-        if (!this.browser || !this.nativeAppModeActivated) {
-            return Promise.resolve(null);
         }
 
         return this.browser.executeScript({
@@ -355,9 +365,13 @@ export class HomePage {
 
             if (firebase_id_token) {
                 if (this.loggingIn) {
+                    this.storeBrowserLoopLog('browserGetFirebaseIdToken', 'IdToken: YES (already loggingIn)', 2);
+
                     // First log current user out and on the next browser loop, the user should be signed in since we don't clear firebase_id_token_output from localStorage
                     return this.logUserOutOfBrowser();
                 } else {
+                    this.storeBrowserLoopLog('browserGetFirebaseIdToken', 'IdToken: YES', 2);
+
                     // Parse the ID token.
                     const payload = JSON.parse(b64DecodeUnicode(firebase_id_token.split('.')[1]));
 
@@ -385,14 +399,51 @@ export class HomePage {
                         });
                     });
                 }
+            } else {
+                this.storeBrowserLoopLog('browserGetFirebaseIdToken', 'IdToken: NO', 1);
             }
         }).catch(error => {
+            this.storeBrowserLoopLog('browserGetFirebaseIdToken', 'Error', 2);
             this.pushError({key: 'browserGetFirebaseIdToken', error: error});
         });
     }
 
-    handleHref() {
+    browserSetNav() {
+        if (!this.browser || !this.webNav) {
+            this.storeBrowserLoopLog('browserSetNav', 'Exit early', 0);
+            return Promise.resolve(null);
+        }
+
+        return this.browser.executeScript({
+            code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicWebNavFunc && window.my.activateAppMode.publicWebNavFunc(" + JSON.stringify(this.webNav) + ");"
+        }).then(values => {
+            if (values && values.length && values[0]) {
+                this.storeBrowserLoopLog('browserSetNav', 'Can Web Nav: YES', 2);
+            } else {
+                this.storeBrowserLoopLog('browserSetNav', 'Can Web Nav: NO', 1);
+                // TODO: throw error?
+            }
+
+            // Update the browserUrl for the error page
+            // TODO: handle subdomains
+            if (this.webNav.navType === 'post') {
+                if (this.webNav.postKey && this.webNav.groupKey) {
+                    this.browserUrl = 'https://smpltalk.com/#/content/post/' + this.webNav.groupkey + '/' + this.webNav.postKey;
+                } else {
+                    this.browserUrl = 'https://smpltalk.com/';
+                }
+            }
+        }).catch(error => {
+            this.storeBrowserLoopLog('browserSetNav', 'Error', 2);
+            this.pushError({key: 'browserSetNav', error: error});
+        }).then(() => {
+            this.webNav = null;
+        });
+    }
+
+    browserHandleHref() {
         if (!this.browser) {
+            this.storeBrowserLoopLog('browserHandleHref', 'Exit early', 0);
             return Promise.resolve(null);
         }
 
@@ -401,33 +452,14 @@ export class HomePage {
         }).then(values => {
             var href = values && values.length && values[0];
             if (href) {
+                this.storeBrowserLoopLog('browserHandleHref', href, 2);
                 this.iab.create(href, '_system', "location=yes");
+            } else {
+                this.storeBrowserLoopLog('browserHandleHref', 'No href', 1);
             }
         }).catch(error => {
-            this.pushError({key: 'handleHref', error: error});
-        });
-    }
-
-    browserSetNav() {
-        if (!this.browser || !this.webNav) {
-            return Promise.resolve(null);
-        }
-
-        return this.browser.executeScript({
-            code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicWebNavFunc && window.my.activateAppMode.publicWebNavFunc(" + JSON.stringify(this.webNav) + ");"
-        }).then(values => {
-            if (this.webNav.navType === 'post') {
-                if (this.webNav.postKey && this.webNav.groupKey) {
-                    this.browserUrl = 'https://smpltalk.com/#/content/post/' + this.webNav.groupkey + '/' + this.webNav.postKey;
-                } else {
-                    this.browserUrl = 'https://smpltalk.com/';
-                }
-            }
-
-            this.webNav = null;
-        }).catch(error => {
-            this.pushError({key: 'browserSetNav', error: error});
-            this.webNav = null;
+            this.storeBrowserLoopLog('browserHandleHref', 'Error', 2);
+            this.pushError({key: 'browserHandleHref', error: error});
         });
     }
 
@@ -610,7 +642,9 @@ export class HomePage {
                 updates[pushDevicePath + '/' + this.device.registrationId + '/Users/' + user.key] = now;
             }
 
-            this.fbUpdates.push(updates);
+            if (this.doDebug) {
+                this.fbUpdates.push(updates);
+            }
 
             return firebase.database().ref('PushNotifications/').update(updates).then(() => {
                 // pass
@@ -624,7 +658,7 @@ export class HomePage {
                 }
             });
         }).catch(error => {
-            this.pushError({key: 'push devices update', error: error});
+            this.pushError({key: 'setDeviceUserPairing', error: error});
         });
     }
 
@@ -668,28 +702,51 @@ export class HomePage {
         this.errors.push(error);
     }
 
-    storeBrowserLoopLog(loopName, message, important) {
+    storeBrowserLoopLog(browserLoopName, message, importance) {
         if (!this.doDebug) {
             // skip anything logs if we are not in debug mode
             return;
         }
 
-        if (!loopName) {
-            this.pushError({key: 'storeBrowserLoopLog', error: {message: "Unexpected missing loopName"}});
+        if (!browserLoopName) {
+            this.pushError({key: 'storeBrowserLoopLog', error: {message: "Unexpected missing browserLoopName"}});
             return;
         }
 
         var now = Date.now();
 
-        this.browserLoopLog = this.browserLoopLog || {};
-        this.browserLoopLog[loopName] = this.browserLoopLog[loopName] || {};
-        this.browserLoopLog[loopName]['now'] = {
-            message: message,
-            timestamp: now
+        if (!this.browserLoopLog) {
+            this.browserLoopLog = {};
+
+            // Set all expected browserLoopNames
+            var expectedBrowserLoopNames = [
+                'browserActivateNativeAppMode',
+                'browserLogoutOfNativeApp',
+                'browserGetFirebaseIdToken',
+                'browserSetNav',
+                'browserHandleHref',
+                'browserTestCommunication'
+            ];
+
+            this.browserLoopLogNames = this.browserLoopLogNames || [];
+
+            for (var i = 0; i < expectedBrowserLoopNames.length; i++) {
+                var expectedBrowserLoopName = expectedBrowserLoopNames[i];
+                
+                this.browserLoopLog[expectedBrowserLoopName] = null;
+                this.browserLoopLogNames.push(expectedBrowserLoopName);
+            }
         }
 
-        if (important) {
-            this.browserLoopLog[loopName]['important'] = {
+        if (!this.browserLoopLog[browserLoopName] && this.browserLoopLogNames.indexOf(browserLoopName) === -1) {
+            this.browserLoopLogNames = this.browserLoopLogNames || [];
+            this.browserLoopLogNames.push(browserLoopName);
+        }
+
+        this.browserLoopLog[browserLoopName] = this.browserLoopLog[browserLoopName] || {};
+
+        for (var i = 0; i < importance + 1; i++) {
+            this.browserLoopLog[browserLoopName][i] = {
                 message: message,
                 timestamp: now
             }

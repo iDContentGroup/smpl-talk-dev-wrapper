@@ -46,21 +46,32 @@
         
         <p class="keep-white-space">Native App Mode: {{nativeAppModeActivated ? 'Activated' : 'Not activated'}}</p>
 
-        <p class="keep-white-space">browserLoopActive: {{ browserLoopIsActive ? 'Yes' : 'No' }} | {{ browserLoopCount || 0 }} | Web: {{ webTimestamp || "None" }} | Native: {{ nativeTimestamp || "None" }}</p>
+        <p class="keep-white-space">browserLoopActive: {{ browserLoopIsActive ? 'Yes' : 'No' }} | {{ browserLoopCount || 0 }} | Timestamp: {{ browserLoopTimestamp || "None" }}</p>
+
+
+        
 
         <div [style.background]="'grey'">
           <p>Browser loop log: {{ browserLoopLog ? 'On' : 'Off' }}</p>
-          <ng-container *ngIf="browserLoopLog">
-            <p>browserActivateNativeAppMode: {{ browserLoopLog['browserActivateNativeAppMode'] ? 'On' : 'Off' }}</p>
 
-            <ng-container *ngIf="browserLoopLog['browserActivateNativeAppMode']['important']">
-              <p>[!] - {{ browserLoopLog['browserActivateNativeAppMode']['important']['message'] }} | {{ browserLoopLog['browserActivateNativeAppMode']['important']['timestamp'] }}</p>
-            </ng-container>
+          <div *ngIf="browserLoopLog" class="json">
+            <ng-container *ngFor="let browserLoopName of browserLoopLogNames">
+              <p>{{ browserLoopName }}: {{ browserLoopLog[browserLoopName] ? 'On' : 'Off' }}</p>
+              <ng-container *ngIf="browserLoopLog[browserLoopName]">
+                <ng-container *ngIf="browserLoopLog[browserLoopName][2]">
+                  <p>[!] {{ browserLoopLog[browserLoopName][2]['timestamp'] }} | {{ browserLoopLog[browserLoopName][2]['message'] }}</p>
+                </ng-container>
 
-            <ng-container *ngIf="browserLoopLog['browserActivateNativeAppMode']['now']">
-              <p>[.] - {{ browserLoopLog['browserActivateNativeAppMode']['now']['message'] }} | {{ browserLoopLog['browserActivateNativeAppMode']['now']['timestamp'] }}</p>
+                <ng-container *ngIf="browserLoopLog[browserLoopName][1]">
+                  <p>[!] {{ browserLoopLog[browserLoopName][1]['timestamp'] }} | {{ browserLoopLog[browserLoopName][1]['message'] }}</p>
+                </ng-container>
+
+                <ng-container *ngIf="browserLoopLog[browserLoopName][0]">
+                  <p>[!] {{ browserLoopLog[browserLoopName][0]['timestamp'] }} | {{ browserLoopLog[browserLoopName][0]['message'] }}</p>
+                </ng-container>
+              </ng-container>
             </ng-container>
-          </ng-container>
+          </div>
         </div>
         
         
