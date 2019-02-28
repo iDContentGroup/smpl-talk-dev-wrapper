@@ -47,6 +47,7 @@ export class HomePage {
     device: any;
 
     webNav: any;
+    webNavSnapshot: any;
     notifications: any[];
 
     nativeAppModeActivated: boolean;
@@ -586,6 +587,10 @@ export class HomePage {
                         //     var networkKey = notification.additionalData.networkKey;
 
                             this.webNav = notification.additionalData;
+
+                            if (this.doDebug) {
+                                this.webNavSnapshot = this.webNav;
+                            }
                         // } else if (notification.additionalData.navType === 'surveyResult') {
                         //     var navType = notification.additionalData.navType;
                         //     var surveyResultKey = notification.additionalData.surveyResultKey;
