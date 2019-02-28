@@ -106,14 +106,14 @@
 
 
         <div class="buttons-container">
-          <ion-button ion-button (click)="browserLoopFunction()">Browser Loop 0ms</ion-button>
-          <ion-button ion-button (click)="browserLoopFunction(6000)">Browser Loop 6000ms</ion-button>
+          <ion-button ion-button (click)="startBrowserLoop(0)">Browser Loop 0ms</ion-button>
+          <ion-button ion-button (click)="startBrowserLoop(1000)">Browser Loop 1000ms</ion-button>
         </div>
       </ng-container>
 
 
 
-      <p>errors: {{ (!errors || !errors.length) ? 'None' : errors.length}}</p>
+      <p>errors: {{ (errors && errors.length) ? errors.length : 'None' }}</p>
 
       <ng-container *ngIf="errors">
         <p *ngFor="let error of errors" class="json">{{JSON.stringify(error, null, 4)}}</p>

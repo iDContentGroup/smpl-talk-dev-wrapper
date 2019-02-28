@@ -194,7 +194,7 @@ export class HomePage {
                 this.browser.on("loadstop").subscribe(event => {
                     this.ngZone.run(() => {
                         if (!this.browserLoopIsActive) {
-                            this.browserLoopFunction(200);
+                            this.startBrowserLoop(200);
                         }
                     });
                 });
@@ -210,6 +210,15 @@ export class HomePage {
 
     showBrowser() {
         this.browser && this.browser.show();
+    }
+
+    startBrowserLoop(delay?: number) {
+        if (this.browserLoopIsActive) {
+            clearTimeout(this.browserLoopSetTimeout);
+            this.browserLoopIsActive = false;
+        }
+
+        this.browserLoopFunction(delay);
     }
 
     browserLoopFunction(delay?: number) {
