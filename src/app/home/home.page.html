@@ -94,11 +94,14 @@
           <p *ngFor="let notification of notifications" class="json">{{JSON.stringify(notification, null, 4)}}</p>
         </div>
 
+        <p class="keep-white-space json">webNav: {{ webNav ? JSON.stringify(webNav, null, 4) : "None" }}</p>
 
 
-        <p class="keep-white-space">fbUpdates: {{ !fbUpdates.length ? 'None' : fbUpdates.length}}</p>
-        <p class="keep-white-space json" *ngFor="let fbUpdate of fbUpdates">{{JSON.stringify(fbUpdate, null, 4)}}</p>
 
+        <div [style.background]="'grey'">
+          <p class="keep-white-space">fbUpdates: {{ !fbUpdates.length ? 'None' : fbUpdates.length}}</p>
+          <p class="keep-white-space json" *ngFor="let fbUpdate of fbUpdates">{{JSON.stringify(fbUpdate, null, 4)}}</p>
+        </div>
 
 
         <div class="buttons-container">
@@ -109,8 +112,11 @@
 
 
 
-      <p>errors: {{ !errors.length ? 'None' : errors.length}}</p>
-      <p *ngFor="let error of errors" class="json">{{JSON.stringify(error, null, 4)}}</p>
+      <p>errors: {{ (!errors || !errors.length) ? 'None' : errors.length}}</p>
+
+      <ng-container *ngIf="errors">
+        <p *ngFor="let error of errors" class="json">{{JSON.stringify(error, null, 4)}}</p>
+      </ng-container>
   </div>
   
   </div>

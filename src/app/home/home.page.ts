@@ -143,19 +143,18 @@ export class HomePage {
             optionAry.push("disallowoverscroll=yes");//(iOS) Turns on/off the UIWebViewBounce property.
             optionAry.push("keyboardDisplayRequiresUserAction=no");// (iOS) Should take care of ios not allowing focus on inputs
             optionAry.push("hidespinner=yes");// (iOS) Hide the loader (it shows up at the beginning when starting the app)
-
             optionAry.push("usewkwebview=yes");// (iOS) Should attempt to use wkwebview (the better of the two)
             // optionAry.push("hidden=yes");
 
             if (this.doDebug) {
-                // optionAry.push("toolbar=yes");// (iOS) Should be testing only
+                optionAry.push("toolbar=yes");// Should be testing only
                 optionAry.push("location=yes"); // Should be testing only
                 optionAry.push("clearcache=yes");// Should be testing only
                 optionAry.push("clearsessioncache=yes");// Should be testing only
                 optionAry.push("cleardata=yes");// Should be testing only
             } else {
-                optionAry.push("toolbar=no");// (iOS) Should be testing only
-                optionAry.push("location=no"); // Should be testing only
+                optionAry.push("toolbar=no");// Don't show the browser navigation stuff
+                optionAry.push("location=no"); // Don't show the url bar
             }
 
             for (var i = 0; i < optionAry.length; i++) {
@@ -191,31 +190,21 @@ export class HomePage {
                     });
                 });
 
-                this.browser.on("loadstart").subscribe(event => {
-                // this.ngZone.run(() => {
-                //   // this.browser.executeScript({ code: "localStorage.setItem('nativeAppMode', 'moo');" });
-                //   // this.browser.executeScript({code: 'window.my.activateAppMode.publicActivateAppModeFunc();'});
-
-                //   // this.clearBrowserLoop();
-
-                //   // this.loadstopEvents.push(event);
-                //   if (!this.browserLoopIsActive) {
-                //     this.browserLoopIsActive = true;
-                //     this.browserLoopFunction(100);
-                //   }
-                // });
-                });
-
                 this.browser.on("loadstop").subscribe(event => {
                     this.ngZone.run(() => {
                         if (!this.browserLoopIsActive) {
-                            this.browserLoopIsActive = true;
-                            this.browserLoopFunction(100);
+                            this.browserLoopFunction(200);
                         }
                     });
                 });
             }
         }
+    }
+
+    closeBrowser() {
+        this.browser = null;
+        // TODO: unsubscribe events
+        // Clean up stuff
     }
 
     showBrowser() {
@@ -224,24 +213,34 @@ export class HomePage {
 
     browserLoopFunction(delay?: number) {
         this.ngZone.run(() => {
+            this.browserLoopIsActive = true;
+
             if (this.doDebug) {
                 this.browserLoopCount = (this.browserLoopCount || 0) + 1;
                 this.browserLoopTimestamp = this.getDateString();
             }
 
+            // Activate making web go into nativeAppMode
             return this.browserActivateNativeAppMode().then(() => {
+                // Handle if user has logged out of web app
                 return this.browserLogoutOfNativeApp();
             }).then(() => {
+                // Handle if browser is passing idToken to native (user has logged in web)
                 return this.browserGetFirebaseIdToken();
             }).then(() => {
+                // Handle setting web app navigation (to the feed, to a post, to a survey result, etc)
                 return this.browserSetNav();
             }).then(() => {
+                // Handle if web is passing native an href (should open in system instead of native app)
                 return this.browserHandleHref();
             }).then(() => {
+                // Test if communication between native -> web (send) and web -> native (recieve)
                 return this.browserTestCommunication();
             }).catch(error => {
+                // Log unexpected errors
                 this.pushError({key: 'browserLoopFunction', error: error});
             }).then(() => {
+                // Loop again if there's delay (set delay to 0 to make the loop work once, use something like 1 to not do this)
                 if (delay) {
                     this.browserLoopSetTimeout = setTimeout(() => {
                         this.ngZone.run(() => {
@@ -255,8 +254,8 @@ export class HomePage {
 
     clearBrowserLoop() {
         if (this.browserLoopIsActive) {
-            this.browserLoopIsActive = false;
             clearTimeout(this.browserLoopSetTimeout);
+            this.browserLoopIsActive = false;
         }
     }
 
