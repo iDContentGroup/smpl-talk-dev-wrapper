@@ -176,6 +176,8 @@ arrow {
 }
 
 .dev-details {
+    -webkit-overflow-scrolling: touch; /* Lets it scroll lazy for ios */
+
     background-color:  rgba(80,172,211,1.0);
     width: 100vw;
     height: 100vh;

@@ -427,16 +427,6 @@ export class HomePage {
                 this.storeDebugLog('browserSetNav', 'Can Web Nav: NO', 1);
                 // TODO: throw error?
             }
-
-            // Update the browserUrl for the error page
-            // TODO: handle subdomains
-            if (this.webNav.navType === 'post') {
-                if (this.webNav.postKey && this.webNav.groupKey) {
-                    this.browserUrl = 'https://smpltalk.com/#/content/post/' + this.webNav.groupkey + '/' + this.webNav.postKey;
-                } else {
-                    this.browserUrl = 'https://smpltalk.com/';
-                }
-            }
         }).catch(error => {
             this.storeDebugLog('browserSetNav', 'Error', 2);
             this.pushError({key: 'browserSetNav', error: error});
@@ -588,7 +578,7 @@ export class HomePage {
                     this.storeDebugLog('setupPush', 'foreground', 1);
                 } else {
                     if (notification && notification.additionalData) {
-                        this.storeDebugLog('setupPush', 'webNav' + notification.additionalData.navType, 2);
+                        this.storeDebugLog('setupPush', 'webNav ' + notification.additionalData.navType, 2);
 
                         // if (notification.additionalData.navType === 'post') {
                         //     var navType = notification.additionalData.navType;
@@ -609,7 +599,18 @@ export class HomePage {
                         //     this.webNav = null;
                         // }
                     } else {
+                        this.storeDebugLog('setupPush', 'webNav None', 2);
                         this.webNav = null;
+                    }
+
+                    // Update the browserUrl for the error page
+                    // TODO: handle subdomains
+                    if (this.webNav.navType === 'post') {
+                        if (this.webNav.postKey && this.webNav.groupKey) {
+                            this.browserUrl = 'https://smpltalk.com/#/content/post/' + this.webNav.groupkey + '/' + this.webNav.postKey;
+                        } else {
+                            this.browserUrl = 'https://smpltalk.com/';
+                        }
                     }
 
                     this.storeDebugLog('setupPush', 'background', 1);
