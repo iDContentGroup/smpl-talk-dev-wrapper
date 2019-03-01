@@ -246,6 +246,7 @@ export class HomePage {
     // This leads to the loop never finishing and there's no way to detect it
     browserLoopFunction(delay?: number) {
         this.ngZone.run(() => {
+            let browserLoopSetTimeout = this.browserLoopSetTimeout;
             this.browserLoopIsActive = true;
 
             if (this.doDebug) {
@@ -274,7 +275,7 @@ export class HomePage {
                 this.pushError({key: 'browserLoopFunction', error: error});
             }).then(() => {
                 // Loop again if there's delay (set delay to 0 to make the loop work once, use something like 1 to not do this)
-                if (delay) {
+                if (delay && browserLoopSetTimeout === this.browserLoopSetTimeout) {
                     this.browserLoopSetTimeout = setTimeout(() => {
                         this.ngZone.run(() => {
                             this.browserLoopFunction(delay);
