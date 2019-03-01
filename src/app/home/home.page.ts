@@ -74,6 +74,9 @@ export class HomePage {
     backupLoopCount: number;
     backupBrowserLoopSetTimeout: any;
 
+    browserLoopFunctionID: number;
+    activeBrowserLoopCount: number;
+
     constructor(public platform: Platform, private iab: InAppBrowser, private ref: ChangeDetectorRef, 
         private http: HttpClient, private ngZone: NgZone, public push: Push) {
         this.JSON = JSON;
@@ -94,12 +97,18 @@ export class HomePage {
         this.currentLoopTime = 0;
         this.maxLoopTime = 0;
         this.backupLoopCount = 0;
+
+        this.browserLoopFunctionID = 0;
+        this.activeBrowserLoopCount = 0;
     }
 
     ngOnInit() {
         this.currentLoopTime = 0;
         this.maxLoopTime = 0;
         this.backupLoopCount = 0;
+
+        this.browserLoopFunctionID = 0;
+        this.activeBrowserLoopCount = 0;
 
         this.showDropdown = false;
         this.errorTitle = 'Unexpected error';
@@ -258,86 +267,147 @@ export class HomePage {
         return this.browserLoopFunction(delay);
     }
 
+    getBrowserLoopFunctionID() {
+        this.browserLoopFunctionID += 1;
+        return  this.browserLoopFunctionID;
+    }
+
+    setBackupBrowserLoop(loopID, delay?: number) {
+        // Because of how inappbrowser errors silently, we don't have a good way to handle if this browserLoop ever stops unexpectedly
+        // The work around is to reset the loop if enough time has past
+        if (delay) {
+            clearTimeout(this.backupBrowserLoopSetTimeout);
+            this.backupBrowserLoopSetTimeout = setTimeout(() => {
+                // Loop again if there's delay (set delay to 0 to make the loop work once, use something like 1 to not do this)
+                if (loopID === this.browserLoopFunctionID) {
+                    this.startBrowserLoop(delay);
+                    this.backupLoopCount += 1;
+                }
+            }, 600);
+        }
+    }
+
     // Note that if there's an error for inappbrowser, it errors silently and its methods that return promises will never get fulfilled or rejected
     // This leads to the loop never finishing and there's no way to detect it
     browserLoopFunction(delay?: number) {
         this.ngZone.run(() => {
-            clearTimeout(this.browserLoopSetTimeout);
+            let loopID = this.getBrowserLoopFunctionID();
 
             let start = Date.now();
 
-            let browserLoopSetTimeout = this.browserLoopSetTimeout;
             this.browserLoopIsActive = true;
 
-            // Because of how inappbrowser errors silently, we don't have a good way to handle if this browserLoop ever stops unexpectedly
-            // The work around is to reset the loop if enough time has past
-            clearTimeout(this.backupBrowserLoopSetTimeout);
-            if (delay) {
-                this.backupBrowserLoopSetTimeout = setTimeout(() => {
-                    // Loop again if there's delay (set delay to 0 to make the loop work once, use something like 1 to not do this)
-                    if (browserLoopSetTimeout === this.browserLoopSetTimeout) {
-                        this.startBrowserLoop(delay);
-                        this.backupLoopCount += 1;
-                    }
-                }, 1000);
-            }
-            
+            this.activeBrowserLoopCount += 1;
+
+            // // Because of how inappbrowser errors silently, we don't have a good way to handle if this browserLoop ever stops unexpectedly
+            // // The work around is to reset the loop if enough time has past
+            // if (delay) {
+            //     clearTimeout(this.backupBrowserLoopSetTimeout);
+            //     this.backupBrowserLoopSetTimeout = setTimeout(() => {
+            //         // Loop again if there's delay (set delay to 0 to make the loop work once, use something like 1 to not do this)
+            //         if (loopID === this.browserLoopFunctionID) {
+            //             this.startBrowserLoop(delay);
+            //             this.backupLoopCount += 1;
+            //         }
+            //     }, 600);
+            // }
 
             if (this.doDebug) {
                 this.browserLoopCount = (this.browserLoopCount || 0) + 1;
                 this.browserLoopTimestamp = this.getDateString();
             }
 
+            var delayPromise = function(t, v) {
+               return new Promise(function(resolve) { 
+                   setTimeout(resolve.bind(null, v), t)
+               });
+            };
+
+            let delayTest = true;
+
             // Activate making web go into nativeAppMode
             return this.browserActivateNativeAppMode().then(() => {
-                // if (browserLoopSetTimeout !== this.browserLoopSetTimeout) {
-                //     throw {message: 'browserLoopSetTimeout overrided (0)'};
-                // }
+                this.test(start);
+                start = Date.now();
+
+                this.setBackupBrowserLoop(loopID, delay);
+
+                if (loopID !== this.browserLoopFunctionID) {
+                    throw {message: 'browserLoopSetTimeout overrided (0)'};
+                }
                 // Handle if user has logged out of web app
-                return this.browserLogoutOfNativeApp();
+                return delayPromise(Math.floor((Math.random() * 601) + 1), null).then(() => {return this.browserLogoutOfNativeApp();});
             }).then(() => {
-                // if (browserLoopSetTimeout !== this.browserLoopSetTimeout) {
-                //     throw {message: 'browserLoopSetTimeout overrided (1)'};
-                // }
+                this.test(start);
+                start = Date.now();
+
+                this.setBackupBrowserLoop(loopID, delay);
+
+                if (loopID !== this.browserLoopFunctionID) {
+                    throw {message: 'browserLoopSetTimeout overrided (1)'};
+                }
                 // Handle if browser is passing idToken to native (user has logged in web)
-                return this.browserGetFirebaseIdToken();
+                return delayPromise(Math.floor((Math.random() * 601) + 1), null).then(() => {return this.browserGetFirebaseIdToken();});
             }).then(() => {
-                // if (browserLoopSetTimeout !== this.browserLoopSetTimeout) {
-                //     throw {message: 'browserLoopSetTimeout overrided (2)'};
-                // }
+                this.test(start);
+                start = Date.now();
+
+                this.setBackupBrowserLoop(loopID, delay);
+
+                if (loopID !== this.browserLoopFunctionID) {
+                    throw {message: 'browserLoopSetTimeout overrided (2)'};
+                }
                 // Handle setting web app navigation (to the feed, to a post, to a survey result, etc)
-                return this.browserSetNav();
+                return delayPromise(Math.floor((Math.random() * 601) + 1), null).then(() => {return this.browserSetNav();});
             }).then(() => {
-                // if (browserLoopSetTimeout !== this.browserLoopSetTimeout) {
-                //     throw {message: 'browserLoopSetTimeout overrided (3)'};
-                // }
+                this.test(start);
+                start = Date.now();
+
+                this.setBackupBrowserLoop(loopID, delay);
+
+                if (loopID !== this.browserLoopFunctionID) {
+                    throw {message: 'browserLoopSetTimeout overrided (3)'};
+                }
                 // Handle if web is passing native an href (should open in system instead of native app)
-                return this.browserHandleHref();
+                return delayPromise(Math.floor((Math.random() * 601) + 1), null).then(() => {return this.browserHandleHref();});
             }).then(() => {
-                // if (browserLoopSetTimeout !== this.browserLoopSetTimeout) {
-                //     throw {message: 'browserLoopSetTimeout overrided (4)'};
-                // }
+                this.test(start);
+                start = Date.now();
+
+                this.setBackupBrowserLoop(loopID, delay);
+
+                if (loopID !== this.browserLoopFunctionID) {
+                    throw {message: 'browserLoopSetTimeout overrided (4)'};
+                }
                 // Test if communication between native -> web (send) and web -> native (recieve)
-                return this.browserTestCommunication();
+                return delayPromise(Math.floor((Math.random() * 601) + 1), null).then(() => {return this.browserTestCommunication();});
             }).catch(error => {
                 // Log unexpected errors
                 this.pushError({key: 'browserLoopFunction', error: error});
             }).then(() => {
-                this.currentLoopTime = Date.now() - start;
-                if (this.currentLoopTime > this.maxLoopTime) {
-                    this.maxLoopTime = this.currentLoopTime;
-                }
+                this.activeBrowserLoopCount -= 1;
+
+                this.test(start);
+
+                clearTimeout(this.backupBrowserLoopSetTimeout);
 
                 // Loop again if there's delay (set delay to 0 to make the loop work once, use something like 1 to not do this)
-                if (delay && browserLoopSetTimeout === this.browserLoopSetTimeout) {
+                if (delay && loopID === this.browserLoopFunctionID) {
                     this.browserLoopSetTimeout = setTimeout(() => {
                         this.ngZone.run(() => {
-                            this.browserLoopFunction(delay);
+                            this.startBrowserLoop(delay);
                         });
                     }, delay);
                 }
             });
         });
+    }
+
+    test(start) {
+        this.currentLoopTime = Date.now() - start;
+        if (this.currentLoopTime > this.maxLoopTime) {
+            this.maxLoopTime = this.currentLoopTime;
+        }
     }
 
     clearBrowserLoop() {

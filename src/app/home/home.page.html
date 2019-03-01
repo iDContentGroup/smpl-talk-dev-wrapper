@@ -53,7 +53,7 @@
         
         <p class="keep-white-space">Native App Mode: {{nativeAppModeActivated ? 'Activated' : 'Not activated'}}</p>
 
-        <p class="keep-white-space">browserLoopActive: {{ browserLoopIsActive ? 'Yes' : 'No' }} | {{ browserLoopCount || 0 }} | Timestamp: {{ browserLoopTimestamp || "None" }} | Current timelapse: {{ currentLoopTime }} | Max timelapse: {{ maxLoopTime }} | Backup loops: {{ backupLoopCount }}</p>
+        <p class="keep-white-space">browserLoopActive: {{ browserLoopIsActive ? 'Yes' : 'No' }} | {{ browserLoopCount || 0 }} | Timestamp: {{ browserLoopTimestamp || "None" }} | Current timelapse: {{ currentLoopTime }} | Max timelapse: {{ maxLoopTime }} | Backup loops: {{ backupLoopCount }} | loops: {{ activeBrowserLoopCount }}</p>
 
         <div [style.background]="'grey'">
           <p>Browser loop log: {{ debugLog ? 'On' : 'Off' }}</p>
