@@ -323,7 +323,7 @@ export class HomePage {
                });
             };
 
-            let delayTest = true;
+            var delayTime = 100;//Math.floor((Math.random() * 601) + 1);
 
             // Activate making web go into nativeAppMode
             return this.browserActivateNativeAppMode().then(() => {
@@ -336,7 +336,7 @@ export class HomePage {
                     throw {message: 'browserLoopSetTimeout overrided (0)'};
                 }
                 // Handle if user has logged out of web app
-                return delayPromise(Math.floor((Math.random() * 601) + 1), null).then(() => {return this.browserLogoutOfNativeApp();});
+                return delayPromise(delayTime, null).then(() => {return this.browserLogoutOfNativeApp();});
             }).then(() => {
                 this.test(start);
                 start = Date.now();
@@ -347,7 +347,7 @@ export class HomePage {
                     throw {message: 'browserLoopSetTimeout overrided (1)'};
                 }
                 // Handle if browser is passing idToken to native (user has logged in web)
-                return delayPromise(Math.floor((Math.random() * 601) + 1), null).then(() => {return this.browserGetFirebaseIdToken();});
+                return delayPromise(delayTime, null).then(() => {return this.browserGetFirebaseIdToken();});
             }).then(() => {
                 this.test(start);
                 start = Date.now();
@@ -358,7 +358,7 @@ export class HomePage {
                     throw {message: 'browserLoopSetTimeout overrided (2)'};
                 }
                 // Handle setting web app navigation (to the feed, to a post, to a survey result, etc)
-                return delayPromise(Math.floor((Math.random() * 601) + 1), null).then(() => {return this.browserSetNav();});
+                return delayPromise(delayTime, null).then(() => {return this.browserSetNav();});
             }).then(() => {
                 this.test(start);
                 start = Date.now();
@@ -369,7 +369,7 @@ export class HomePage {
                     throw {message: 'browserLoopSetTimeout overrided (3)'};
                 }
                 // Handle if web is passing native an href (should open in system instead of native app)
-                return delayPromise(Math.floor((Math.random() * 601) + 1), null).then(() => {return this.browserHandleHref();});
+                return delayPromise(delayTime, null).then(() => {return this.browserHandleHref();});
             }).then(() => {
                 this.test(start);
                 start = Date.now();
@@ -380,7 +380,7 @@ export class HomePage {
                     throw {message: 'browserLoopSetTimeout overrided (4)'};
                 }
                 // Test if communication between native -> web (send) and web -> native (recieve)
-                return delayPromise(Math.floor((Math.random() * 601) + 1), null).then(() => {return this.browserTestCommunication();});
+                return delayPromise(delayTime, null).then(() => {return this.browserTestCommunication();});
             }).catch(error => {
                 // Log unexpected errors
                 this.pushError({key: 'browserLoopFunction', error: error});
