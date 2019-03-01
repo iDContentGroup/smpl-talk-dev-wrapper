@@ -124,6 +124,10 @@ export class HomePage {
                     }
                 
                     this.startBrowser();
+
+                    if (!this.browserLoopIsActive) {
+                        this.startBrowserLoop(200);
+                    }
                 });
             });
         });
@@ -169,35 +173,47 @@ export class HomePage {
             if (this.platform.is('cordova')) {
                 this.browser = this.browser || this.iab.create(this.browserUrl, '_blank', this.options);
 
-                // this.browser.on("loadstart").subscribe(event => {
-                //   this.browser.executeScript({ code: "alert('loadstart');" });
-                // });
+                if (!this.browser) {
+                    this.pushError({key: 'startBrowser', error: {message: "browser didn't initalize"}});
+                }
 
-                // this.browser.on("loadstop").subscribe(event => {
-                //   this.browser.executeScript({ code: "alert('loadstop');" });
-                // });
+                try {
+                    // this.browser.on("loadstart").subscribe(event => {
+                    //   this.browser.executeScript({ code: "alert('loadstart');" });
+                    // });
 
-                this.browser.on("loaderror").subscribe(event => {
-                    this.ngZone.run(() => {
-                        this.browser.hide();
-                        this.pushError({key: 'browser loaderror event', error: event});
+                    // this.browser.on("loadstop").subscribe(event => {
+                    //   this.browser.executeScript({ code: "alert('loadstop');" });
+                    // });
+
+                    this.browser.on("loaderror").subscribe(event => {
+                        this.ngZone.run(() => {
+                            this.browser.hide();
+                            this.pushError({key: 'browser loaderror event', error: event});
+                        });
                     });
-                });
 
-                this.browser.on("exit").subscribe(event => {
-                    this.ngZone.run(() => {
-                        this.pushError({key: 'browser exit event', error: event});
-                        this.browser = null;
+                    // Note for ios this event never gets called
+                    // Instead, it silently errors (browser loop will silently error too and never get fulfilled)
+                    this.browser.on("exit").subscribe(event => {
+                        this.ngZone.run(() => {
+                            this.pushError({key: 'browser exit event', error: event});
+                            this.browser = null;
+                        });
                     });
-                });
 
-                this.browser.on("loadstop").subscribe(event => {
-                    this.ngZone.run(() => {
+                    this.browser.on("loadstop").subscribe(event => {
+                        // Start browser loop when a web page has loaded successfully to avoid running into errors before a page has loaded
                         if (!this.browserLoopIsActive) {
                             this.startBrowserLoop(200);
                         }
                     });
-                });
+                }catch(error) {
+                    if (!error || !error.message) {
+                        this.pushError({key: 'startBrowser', error: error || {message: 'unknown browser on subscriptions error'}});
+                    }
+                    this.pushError({key: 'startBrowser', error: error});
+                };
             }
         }
     }
@@ -221,6 +237,8 @@ export class HomePage {
         this.browserLoopFunction(delay);
     }
 
+    // Note that if there's an error for inappbrowser, it errors silently and its methods that return promises will never get fulfilled or rejected
+    // This leads to the loop never finishing and there's no way to detect it
     browserLoopFunction(delay?: number) {
         this.ngZone.run(() => {
             this.browserLoopIsActive = true;
@@ -296,6 +314,7 @@ export class HomePage {
     }
 
     browserActivateNativeAppMode() {
+        console.log('browserActivateNativeAppMode');
         if (!this.browser || this.nativeAppModeActivated) {
             this.storeDebugLog('browserActivateNativeAppMode', 'Exit early', 0);
 
@@ -323,6 +342,11 @@ export class HomePage {
     browserLogoutOfNativeApp() {
         if (!this.browser || !this.nativeAppModeActivated) {
             this.storeDebugLog('browserLogoutOfNativeApp', 'Exit early', 0);
+            return Promise.resolve(null);
+        }
+
+        if (!this.browser.executeScript) {
+            this.storeDebugLog('browserLogoutOfNativeApp', 'No exeScript', 0);
             return Promise.resolve(null);
         }
 
@@ -428,7 +452,8 @@ export class HomePage {
         }
 
         return this.browser.executeScript({
-            code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicWebNavFunc && window.my.activateAppMode.publicWebNavFunc(" + JSON.stringify(this.webNav) + ");"
+            // code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicWebNavFunc && window.my.activateAppMode.publicWebNavFunc(" + JSON.stringify(this.webNav) + ");"
+            code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicWebNavFunc && window.my.activateAppMode.publicWebNavFunc();"
         }).then(values => {
             if (values && values.length && values[0]) {
                 this.storeDebugLog('browserSetNav', 'Can Web Nav: YES', 2);

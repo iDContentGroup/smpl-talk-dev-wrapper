@@ -90,7 +90,7 @@
         <div [style.background]="'grey'">
           <p class="keep-white-space json">Device: {{ device ? JSON.stringify(device, null, 4) : "None" }}</p>
 
-          <p>Notifications: {{ !notifications || !notifications.length ? 'None' : Notifications.length}}</p>
+          <p class="json">Notifications: {{ !notifications || !notifications.length ? 'None' : Notifications.length}}</p>
           <p *ngFor="let notification of notifications" class="json">{{JSON.stringify(notification, null, 4)}}</p>
         </div>
 
@@ -100,7 +100,7 @@
 
 
         <div [style.background]="'grey'">
-          <p class="keep-white-space">fbUpdates: {{ !fbUpdates.length ? 'None' : fbUpdates.length}}</p>
+          <p class="keep-white-space json">fbUpdates: {{ !fbUpdates.length ? 'None' : fbUpdates.length}}</p>
           <p class="keep-white-space json" *ngFor="let fbUpdate of fbUpdates">{{JSON.stringify(fbUpdate, null, 4)}}</p>
         </div>
 
