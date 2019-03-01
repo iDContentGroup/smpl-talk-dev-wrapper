@@ -84,7 +84,7 @@
 
         <p class="keep-white-space">{{ loggingIn ? 'Logging in...' : 'Not logging in'}} | count: {{ loginCount || 0 }}</p>
         <p class="keep-white-space">fbUser: {{ fbUser ? (fbUser.email + ' | ' + fbUser.uid) : 'None' }}</p>
-        <p class="keep-white-space">users: {{ !users.length ? ' None' : users.length}}</p>
+        <p class="keep-white-space">users: {{ (users && users.length) ? users.length : ' None' }}</p>
         <p class="keep-white-space json" *ngFor="let user of users">{{ user.key }} | {{ user.email }}</p>
 
 
@@ -92,7 +92,7 @@
         <div [style.background]="'grey'">
           <p class="keep-white-space json">Device: {{ device ? JSON.stringify(device, null, 4) : "None" }}</p>
 
-          <p class="json">Notifications: {{ !notifications || !notifications.length ? 'None' : Notifications.length}}</p>
+          <p class="json">Notifications: {{ (notifications && notifications.length) ? notifications.length : 'None' }}</p>
           <p *ngFor="let notification of notifications" class="json">{{JSON.stringify(notification, null, 4)}}</p>
         </div>
 
@@ -102,7 +102,7 @@
 
 
         <div [style.background]="'grey'">
-          <p class="keep-white-space json">fbUpdates: {{ !fbUpdates.length ? 'None' : fbUpdates.length}}</p>
+          <p class="keep-white-space json">fbUpdates: {{ (fbUpdates && fbUpdates.length) ? fbUpdates.length : 'None' }}</p>
           <p class="keep-white-space json" *ngFor="let fbUpdate of fbUpdates">{{JSON.stringify(fbUpdate, null, 4)}}</p>
         </div>
 
