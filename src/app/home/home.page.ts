@@ -571,6 +571,23 @@ export class HomePage {
         });
     }
 
+    generateWebNav(webNavType?: string) {
+        if (!webNavType || (webNavType !== 'post' && webNavType !== 'surveyResult')) {
+            this.webNav = {};
+        } else if (webNavType === 'post') {
+            this.webNav = {
+                groupKey: 'groupKey',
+                postKey: 'postKey'
+            };
+        } else if (webNavType === 'surveyResult') {
+            this.webNav = {
+                groupKey: 'groupKey',
+                surveyKey: 'surveyKey',
+                surveyResultKey: 'surveyResultKey'
+            };
+        }
+    }
+
     setupPush() {
         this.storeDebugLog('setupPush', 'Executed', 2);
 
@@ -642,29 +659,29 @@ export class HomePage {
                         }
 
                         this.storeDebugLog('setupPush', 'background', 1);
-                    }
 
-                    if (this.webNav) {
-                        // Update the browserUrl for the error page
-                        // TODO: handle subdomains
-                        if (this.webNav.navType === 'post') {
-                            this.storeDebugLog('setupPush', 'webNav post ' + this.webNav.groupKey + ' ' + this.webNav.postKey, 2);
+                        if (this.webNav) {
+                            // Update the browserUrl for the error page
+                            // TODO: handle subdomains
+                            if (this.webNav.navType === 'post') {
+                                this.storeDebugLog('setupPush', 'webNav post ' + this.webNav.groupKey + ' ' + this.webNav.postKey, 2);
 
-                            if (this.webNav.postKey && this.webNav.groupKey) {
-                                this.browserUrl = 'https://smpltalk.com/#/content/post/' + this.webNav.groupKey + '/' + this.webNav.postKey;
+                                if (this.webNav.postKey && this.webNav.groupKey) {
+                                    this.browserUrl = 'https://smpltalk.com/#/content/post/' + this.webNav.groupKey + '/' + this.webNav.postKey;
+                                } else {
+                                    this.browserUrl = 'https://smpltalk.com/';
+                                }
+                            } else if (this.webNav.navType === 'surveyResult') {
+                                this.storeDebugLog('setupPush', 'webNav surveyResult ' + this.webNav.groupKey + ' ' + this.webNav.surveyKey + ' ' + this.webNav.surveyResultKey, 2);
+                                
+                                if (this.webNav.surveyResultKey && this.webNav.surveyKey && this.webNav.groupKey) {
+                                    this.browserUrl = 'https://smpltalk.com/#/result/survey/' + this.webNav.groupKey + '/' + this.webNav.surveyKey + '/' + this.webNav.surveyResultKey;
+                                } else {
+                                    this.browserUrl = 'https://smpltalk.com/';
+                                }
                             } else {
                                 this.browserUrl = 'https://smpltalk.com/';
                             }
-                        } else if (this.webNav.navType === 'surveyResult') {
-                            this.storeDebugLog('setupPush', 'webNav surveyResult ' + this.webNav.groupKey + ' ' + this.webNav.surveyKey + ' ' + this.webNav.surveyResultKey, 2);
-                            
-                            if (this.webNav.surveyResultKey && this.webNav.surveyKey && this.webNav.groupKey) {
-                                this.browserUrl = 'https://smpltalk.com/#/result/survey/' + this.webNav.groupKey + '/' + this.webNav.surveyKey + '/' + this.webNav.surveyResultKey;
-                            } else {
-                                this.browserUrl = 'https://smpltalk.com/';
-                            }
-                        } else {
-                            this.browserUrl = 'https://smpltalk.com/';
                         }
                     }
 

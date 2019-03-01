@@ -99,6 +99,11 @@
         <p class="keep-white-space json">webNav: {{ webNav ? JSON.stringify(webNav, null, 4) : "None" }}</p>
         <p class="keep-white-space json">webNavSnapshot: {{ webNavSnapshot ? JSON.stringify(webNavSnapshot, null, 4) : "None" }}</p>
 
+        <ion-button (click)="generateWebNav()">Web nav</ion-button>
+        <ion-button (click)="generateWebNav('post')">Post web nav</ion-button>
+        <ion-button (click)="generateWebNav('surveyResult')">Survey result web nav</ion-button>
+
+
 
 
         <div [style.background]="'grey'">
