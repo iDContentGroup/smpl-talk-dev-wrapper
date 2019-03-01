@@ -83,10 +83,6 @@ export class HomePage {
 
     clearDebug() {
         this.errors = [];
-        this.webNav = null;
-        this.webNavSnapshot = null;
-        this.browserLoopDelay = 200;
-
         this.debugLog = null;
         this.debugLogNames = null;
     }
