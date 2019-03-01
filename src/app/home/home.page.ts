@@ -644,11 +644,23 @@ export class HomePage {
                     // Update the browserUrl for the error page
                     // TODO: handle subdomains
                     if (this.webNav.navType === 'post') {
+                        this.storeDebugLog('setupPush', 'webNav post ' + this.webNav.groupKey + ' ' + this.webNav.postKey, 2);
+
                         if (this.webNav.postKey && this.webNav.groupKey) {
                             this.browserUrl = 'https://smpltalk.com/#/content/post/' + this.webNav.groupkey + '/' + this.webNav.postKey;
                         } else {
                             this.browserUrl = 'https://smpltalk.com/';
                         }
+                    } else if (this.webNav.navType === 'surveyResult') {
+                        this.storeDebugLog('setupPush', 'webNav surveyResult ' + this.webNav.groupKey + ' ' + this.webNav.surveyKey + ' ' + this.webNav.surveyResultKey, 2);
+                        
+                        if (this.webNav.surveyResultKey && this.webNav.surveyKey && this.webNav.groupKey) {
+                            this.browserUrl = 'https://smpltalk.com/#/result/survey/' + this.webNav.groupkey + '/' + this.webNav.surveyKey + '/' + this.webNav.surveyResultKey;
+                        } else {
+                            this.browserUrl = 'https://smpltalk.com/';
+                        }
+                    } else {
+                        this.browserUrl = 'https://smpltalk.com/';
                     }
 
                     this.storeDebugLog('setupPush', 'background', 1);
@@ -770,65 +782,77 @@ export class HomePage {
     // End Helper functions
 
     pushError(error) {
-        if (error === -1200 || (error && error.code === -1200) || (error && error.error && error.error.code === -1200)) {
-            this.errorTitle = 'Error -1200';
+        try {
+            if (error === -1200 || (error && error.code === -1200) || (error && error.error && error.error.code === -1200)) {
+                this.errorTitle = 'Error -1200';
+            }
+
+            console.error(error);
+
+            this.errors.push(error);
+        }catch(error) {
+            console.error(error);
+
+            this.errors.push({message: 'pushError errored trying to log error'});
+
+            this.errors.push(error);
         }
-
-        console.error(error);
-
-        this.errors.push(error);
     }
 
     storeDebugLog(key, message, importance) {
-        if (!this.doDebug) {
-            // skip anything logs if we are not in debug mode
-            return;
-        }
-
-        if (!key) {
-            this.pushError({key: 'storeDebugLog', error: {message: "Unexpected missing key"}});
-            return;
-        }
-
-        var now = Date.now();
-
-        if (!this.debugLog) {
-            this.debugLog = {};
-
-            // Set all expected keys
-            var expectedBrowserLoopNames = [
-                'browserActivateNativeAppMode',
-                'browserLogoutOfNativeApp',
-                'browserGetFirebaseIdToken',
-                'browserSetNav',
-                'browserHandleHref',
-                'browserTestCommunication',
-
-                'setupPush'
-            ];
-
-            this.debugLogNames = this.debugLogNames || [];
-
-            for (var i = 0; i < expectedBrowserLoopNames.length; i++) {
-                var expectedBrowserLoopName = expectedBrowserLoopNames[i];
-
-                this.debugLog[expectedBrowserLoopName] = null;
-                this.debugLogNames.push(expectedBrowserLoopName);
+        try {
+            if (!this.doDebug) {
+                // skip anything logs if we are not in debug mode
+                return;
             }
-        }
 
-        if (!this.debugLog[key] && this.debugLogNames.indexOf(key) === -1) {
-            this.debugLogNames = this.debugLogNames || [];
-            this.debugLogNames.push(key);
-        }
-
-        this.debugLog[key] = this.debugLog[key] || {};
-
-        for (var i = 0; i < importance + 1; i++) {
-            this.debugLog[key][i] = {
-                message: message,
-                timestamp: now
+            if (!key) {
+                this.pushError({key: 'storeDebugLog', error: {message: "Unexpected missing key"}});
+                return;
             }
+
+            var now = Date.now();
+
+            if (!this.debugLog) {
+                this.debugLog = {};
+
+                // Set all expected keys
+                var expectedBrowserLoopNames = [
+                    'browserActivateNativeAppMode',
+                    'browserLogoutOfNativeApp',
+                    'browserGetFirebaseIdToken',
+                    'browserSetNav',
+                    'browserHandleHref',
+                    'browserTestCommunication',
+
+                    'setupPush'
+                ];
+
+                this.debugLogNames = this.debugLogNames || [];
+
+                for (var i = 0; i < expectedBrowserLoopNames.length; i++) {
+                    var expectedBrowserLoopName = expectedBrowserLoopNames[i];
+
+                    this.debugLog[expectedBrowserLoopName] = null;
+                    this.debugLogNames.push(expectedBrowserLoopName);
+                }
+            }
+
+            if (!this.debugLog[key] && this.debugLogNames.indexOf(key) === -1) {
+                this.debugLogNames = this.debugLogNames || [];
+                this.debugLogNames.push(key);
+            }
+
+            this.debugLog[key] = this.debugLog[key] || {};
+
+            for (var i = 0; i < importance + 1; i++) {
+                this.debugLog[key][i] = {
+                    message: message,
+                    timestamp: now
+                }
+            }
+        }catch(error) {
+            this.pushError({key: 'storeDebugLog', error: error});
         }
     }
 }
