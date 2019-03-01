@@ -137,7 +137,7 @@ export class HomePage {
         this.doDebug = !this.doDebug;
     }
 
-    startBrowser() {
+    startBrowser(hidden?: boolean) {
         if (!this.browser) {
             this.browserUrl = 'https://smpltalkdev.com/#/';
 
@@ -149,7 +149,10 @@ export class HomePage {
             optionAry.push("keyboardDisplayRequiresUserAction=no");// (iOS) Should take care of ios not allowing focus on inputs
             optionAry.push("hidespinner=yes");// (iOS) Hide the loader (it shows up at the beginning when starting the app)
             optionAry.push("usewkwebview=yes");// (iOS) Should attempt to use wkwebview (the better of the two)
-            // optionAry.push("hidden=yes");
+
+            if (hidden) {
+                optionAry.push("hidden=yes");
+            }
 
             if (this.doDebug) {
                 optionAry.push("toolbar=yes");// Should be testing only
@@ -193,12 +196,12 @@ export class HomePage {
                         });
                     });
 
-                    // Note for ios this event never gets called
+                    // Note for iOS, this event sometimes never gets called
                     // Instead, it silently errors (browser loop will silently error too and never get fulfilled)
                     this.browser.on("exit").subscribe(event => {
                         this.ngZone.run(() => {
                             this.pushError({key: 'browser exit event', error: event});
-                            this.browser = null;
+                            this.closeBrowser();
                         });
                     });
 
@@ -219,6 +222,10 @@ export class HomePage {
     }
 
     closeBrowser() {
+        if (this.browser) {
+            this.browser.close();
+        }
+        
         this.browser = null;
         // TODO: unsubscribe events
         // Clean up stuff
@@ -234,7 +241,7 @@ export class HomePage {
             this.browserLoopIsActive = false;
         }
 
-        this.browserLoopFunction(delay);
+        return this.browserLoopFunction(delay);
     }
 
     // Note that if there's an error for inappbrowser, it errors silently and its methods that return promises will never get fulfilled or rejected
