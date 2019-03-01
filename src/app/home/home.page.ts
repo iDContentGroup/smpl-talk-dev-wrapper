@@ -622,74 +622,58 @@ export class HomePage {
                     this.notifications.push(notification);
                 }
 
-                // foreground
-                // TODO: handle foreground notification
-                if (notification.additionalData.foreground) {
-                    this.storeDebugLog('setupPush', 'foreground', 1);
-                } else {
-                    if (notification && notification.additionalData) {
-                        this.storeDebugLog('setupPush', 'webNav ' + notification.additionalData.navType, 2);
-
-                        // if (notification.additionalData.navType === 'post') {
-                        //     var navType = notification.additionalData.navType;
-                        //     var postKey = notification.additionalData.postKey;
-                        //     var groupKey = notification.additionalData.groupKey;
-                        //     var networkKey = notification.additionalData.networkKey;
+                try {
+                    // foreground
+                    // TODO: handle foreground notification
+                    if (notification.additionalData.foreground) {
+                        this.storeDebugLog('setupPush', 'foreground', 1);
+                    } else {
+                        if (notification && notification.additionalData) {
+                            this.storeDebugLog('setupPush', 'webNav ' + notification.additionalData.navType, 2);
 
                             this.webNav = notification.additionalData;
 
                             if (this.doDebug) {
                                 this.webNavSnapshot = this.webNav;
                             }
-                        // } else if (notification.additionalData.navType === 'surveyResult') {
-                        //     var navType = notification.additionalData.navType;
-                        //     var surveyResultKey = notification.additionalData.surveyResultKey;
-                        //     var surveyKey = notification.additionalData.surveyKey;
-                        //     var groupKey = notification.additionalData.groupKey;
-                        //     var networkKey = notification.additionalData.networkKey;
+                        } else {
+                            this.storeDebugLog('setupPush', 'webNav None', 2);
+                            this.webNav = null;
+                        }
 
-                        //     this.webNav = {navType: navType, surveyResultKey: surveyResultKey, surveyKey: surveyKey, groupKey: groupKey, networkKey: networkKey};
-                        // } else {
-                        //     this.webNav = null;
-                        // }
-                    } else {
-                        this.storeDebugLog('setupPush', 'webNav None', 2);
-                        this.webNav = null;
-                    }
+                        // Update the browserUrl for the error page
+                        // TODO: handle subdomains
+                        if (this.webNav.navType === 'post') {
+                            this.storeDebugLog('setupPush', 'webNav post ' + this.webNav.groupKey + ' ' + this.webNav.postKey, 2);
 
-                    // Update the browserUrl for the error page
-                    // TODO: handle subdomains
-                    if (this.webNav.navType === 'post') {
-                        this.storeDebugLog('setupPush', 'webNav post ' + this.webNav.groupKey + ' ' + this.webNav.postKey, 2);
-
-                        if (this.webNav.postKey && this.webNav.groupKey) {
-                            this.browserUrl = 'https://smpltalk.com/#/content/post/' + this.webNav.groupkey + '/' + this.webNav.postKey;
+                            if (this.webNav.postKey && this.webNav.groupKey) {
+                                this.browserUrl = 'https://smpltalk.com/#/content/post/' + this.webNav.groupKey + '/' + this.webNav.postKey;
+                            } else {
+                                this.browserUrl = 'https://smpltalk.com/';
+                            }
+                        } else if (this.webNav.navType === 'surveyResult') {
+                            this.storeDebugLog('setupPush', 'webNav surveyResult ' + this.webNav.groupKey + ' ' + this.webNav.surveyKey + ' ' + this.webNav.surveyResultKey, 2);
+                            
+                            if (this.webNav.surveyResultKey && this.webNav.surveyKey && this.webNav.groupKey) {
+                                this.browserUrl = 'https://smpltalk.com/#/result/survey/' + this.webNav.groupKey + '/' + this.webNav.surveyKey + '/' + this.webNav.surveyResultKey;
+                            } else {
+                                this.browserUrl = 'https://smpltalk.com/';
+                            }
                         } else {
                             this.browserUrl = 'https://smpltalk.com/';
                         }
-                    } else if (this.webNav.navType === 'surveyResult') {
-                        this.storeDebugLog('setupPush', 'webNav surveyResult ' + this.webNav.groupKey + ' ' + this.webNav.surveyKey + ' ' + this.webNav.surveyResultKey, 2);
-                        
-                        if (this.webNav.surveyResultKey && this.webNav.surveyKey && this.webNav.groupKey) {
-                            this.browserUrl = 'https://smpltalk.com/#/result/survey/' + this.webNav.groupkey + '/' + this.webNav.surveyKey + '/' + this.webNav.surveyResultKey;
-                        } else {
-                            this.browserUrl = 'https://smpltalk.com/';
-                        }
-                    } else {
-                        this.browserUrl = 'https://smpltalk.com/';
+
+                        this.storeDebugLog('setupPush', 'background', 1);
+
+                        this.doDebug && this.browser && this.browser.executeScript({
+                            code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'notification', value: notification}) + ");"
+                        });
                     }
-
-                    this.storeDebugLog('setupPush', 'background', 1);
-
-                    this.doDebug && this.browser && this.browser.executeScript({
-                        code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'notification', value: notification}) + ");"
-                    });
+                }catch(error) {
+                    this.storeDebugLog('setupPush', 'Error', 2);
+                    this.pushError({key: 'setupPush', error: {message: "Unexpected error on notification"}});
+                    this.pushError({key: 'setupPush', error: error});
                 }
-
-                //collapse_key  string  (optional)
-                //coldstart  boolean  (optional)
-                //from  string  (optional)
-                //notId
             });
         });
 
