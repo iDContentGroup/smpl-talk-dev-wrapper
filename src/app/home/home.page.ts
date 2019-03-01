@@ -290,33 +290,33 @@ export class HomePage {
 
             // Activate making web go into nativeAppMode
             return this.browserActivateNativeAppMode().then(() => {
-                if (browserLoopSetTimeout !== this.browserLoopSetTimeout) {
-                    throw {message: 'browserLoopSetTimeout overrided (0)'};
-                }
+                // if (browserLoopSetTimeout !== this.browserLoopSetTimeout) {
+                //     throw {message: 'browserLoopSetTimeout overrided (0)'};
+                // }
                 // Handle if user has logged out of web app
                 return this.browserLogoutOfNativeApp();
             }).then(() => {
-                if (browserLoopSetTimeout !== this.browserLoopSetTimeout) {
-                    throw {message: 'browserLoopSetTimeout overrided (1)'};
-                }
+                // if (browserLoopSetTimeout !== this.browserLoopSetTimeout) {
+                //     throw {message: 'browserLoopSetTimeout overrided (1)'};
+                // }
                 // Handle if browser is passing idToken to native (user has logged in web)
                 return this.browserGetFirebaseIdToken();
             }).then(() => {
-                if (browserLoopSetTimeout !== this.browserLoopSetTimeout) {
-                    throw {message: 'browserLoopSetTimeout overrided (2)'};
-                }
+                // if (browserLoopSetTimeout !== this.browserLoopSetTimeout) {
+                //     throw {message: 'browserLoopSetTimeout overrided (2)'};
+                // }
                 // Handle setting web app navigation (to the feed, to a post, to a survey result, etc)
                 return this.browserSetNav();
             }).then(() => {
-                if (browserLoopSetTimeout !== this.browserLoopSetTimeout) {
-                    throw {message: 'browserLoopSetTimeout overrided (3)'};
-                }
+                // if (browserLoopSetTimeout !== this.browserLoopSetTimeout) {
+                //     throw {message: 'browserLoopSetTimeout overrided (3)'};
+                // }
                 // Handle if web is passing native an href (should open in system instead of native app)
                 return this.browserHandleHref();
             }).then(() => {
-                if (browserLoopSetTimeout !== this.browserLoopSetTimeout) {
-                    throw {message: 'browserLoopSetTimeout overrided (4)'};
-                }
+                // if (browserLoopSetTimeout !== this.browserLoopSetTimeout) {
+                //     throw {message: 'browserLoopSetTimeout overrided (4)'};
+                // }
                 // Test if communication between native -> web (send) and web -> native (recieve)
                 return this.browserTestCommunication();
             }).catch(error => {
