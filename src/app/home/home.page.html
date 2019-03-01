@@ -42,7 +42,7 @@
           <ion-button *ngIf="!browser" (click)="startBrowser(true)">Hidden browser</ion-button>
           <ion-button *ngIf="browser" (click)="showBrowser()">Show browser</ion-button>
           <ion-button *ngIf="browser" (click)="closeBrowser()">Close browser</ion-button>
-          <ion-button (click)="toggleDebug()">Toggle Debug | status: {{doDebug ? 'On' : 'Off'}}</ion-button>
+          <ion-button (click)="toggleDebug()">Toggle Debug | status: {{ doDebug ? 'On' : 'Off' }}</ion-button>
         </div>
 
 
@@ -53,9 +53,7 @@
         
         <p class="keep-white-space">Native App Mode: {{nativeAppModeActivated ? 'Activated' : 'Not activated'}}</p>
 
-        <p class="keep-white-space">browserLoopActive: {{ browserLoopIsActive ? 'Yes' : 'No' }} | {{ browserLoopCount || 0 }} | Timestamp: {{ browserLoopTimestamp || "None" }}</p>
-
-
+        <p class="keep-white-space">browserLoopActive: {{ browserLoopIsActive ? 'Yes' : 'No' }} | {{ browserLoopCount || 0 }} | Timestamp: {{ browserLoopTimestamp || "None" }} | Current timelapse: {{ currentLoopTime }} | Max timelapse: {{ maxLoopTime }} | Backup loops: {{ backupLoopCount }}</p>
 
         <div [style.background]="'grey'">
           <p>Browser loop log: {{ debugLog ? 'On' : 'Off' }}</p>

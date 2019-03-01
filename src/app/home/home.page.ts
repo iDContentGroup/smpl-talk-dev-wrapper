@@ -69,6 +69,11 @@ export class HomePage {
     debugLog: any;
     debugLogNames: string[];
 
+    currentLoopTime: number;
+    maxLoopTime: number;
+    backupLoopCount: number;
+    backupBrowserLoopSetTimeout: any;
+
     constructor(public platform: Platform, private iab: InAppBrowser, private ref: ChangeDetectorRef, 
         private http: HttpClient, private ngZone: NgZone, public push: Push) {
         this.JSON = JSON;
@@ -85,9 +90,17 @@ export class HomePage {
         this.errors = [];
         this.debugLog = null;
         this.debugLogNames = null;
+
+        this.currentLoopTime = 0;
+        this.maxLoopTime = 0;
+        this.backupLoopCount = 0;
     }
 
     ngOnInit() {
+        this.currentLoopTime = 0;
+        this.maxLoopTime = 0;
+        this.backupLoopCount = 0;
+
         this.showDropdown = false;
         this.errorTitle = 'Unexpected error';
         this.errorDescription = "Please check your internet connection";
@@ -252,8 +265,21 @@ export class HomePage {
     // This leads to the loop never finishing and there's no way to detect it
     browserLoopFunction(delay?: number) {
         this.ngZone.run(() => {
+            let start = Date.now();
+
             let browserLoopSetTimeout = this.browserLoopSetTimeout;
             this.browserLoopIsActive = true;
+
+            // Because of how inappbrowser errors silently, we don't have a good way to handle if this browserLoop ever stops unexpectedly
+            // The work around is to reset the loop if enough time has past
+            clearTimeout(this.backupBrowserLoopSetTimeout);
+            this.backupBrowserLoopSetTimeout = setTimeout(() => {
+                // Loop again if there's delay (set delay to 0 to make the loop work once, use something like 1 to not do this)
+                if (delay && browserLoopSetTimeout === this.browserLoopSetTimeout) {
+                    this.startBrowserLoop(delay);
+                    this.backupLoopCount += 1;
+                }
+            }, 600);
 
             if (this.doDebug) {
                 this.browserLoopCount = (this.browserLoopCount || 0) + 1;
@@ -262,24 +288,44 @@ export class HomePage {
 
             // Activate making web go into nativeAppMode
             return this.browserActivateNativeAppMode().then(() => {
+                if (browserLoopSetTimeout !== this.browserLoopSetTimeout) {
+                    throw {message: 'browserLoopSetTimeout overrided (0)'};
+                }
                 // Handle if user has logged out of web app
                 return this.browserLogoutOfNativeApp();
             }).then(() => {
+                if (browserLoopSetTimeout !== this.browserLoopSetTimeout) {
+                    throw {message: 'browserLoopSetTimeout overrided (1)'};
+                }
                 // Handle if browser is passing idToken to native (user has logged in web)
                 return this.browserGetFirebaseIdToken();
             }).then(() => {
+                if (browserLoopSetTimeout !== this.browserLoopSetTimeout) {
+                    throw {message: 'browserLoopSetTimeout overrided (2)'};
+                }
                 // Handle setting web app navigation (to the feed, to a post, to a survey result, etc)
                 return this.browserSetNav();
             }).then(() => {
+                if (browserLoopSetTimeout !== this.browserLoopSetTimeout) {
+                    throw {message: 'browserLoopSetTimeout overrided (3)'};
+                }
                 // Handle if web is passing native an href (should open in system instead of native app)
                 return this.browserHandleHref();
             }).then(() => {
+                if (browserLoopSetTimeout !== this.browserLoopSetTimeout) {
+                    throw {message: 'browserLoopSetTimeout overrided (4)'};
+                }
                 // Test if communication between native -> web (send) and web -> native (recieve)
                 return this.browserTestCommunication();
             }).catch(error => {
                 // Log unexpected errors
                 this.pushError({key: 'browserLoopFunction', error: error});
             }).then(() => {
+                this.currentLoopTime = Date.now() - start;
+                if (this.currentLoopTime > this.maxLoopTime) {
+                    this.maxLoopTime = this.currentLoopTime;
+                }
+
                 // Loop again if there's delay (set delay to 0 to make the loop work once, use something like 1 to not do this)
                 if (delay && browserLoopSetTimeout === this.browserLoopSetTimeout) {
                     this.browserLoopSetTimeout = setTimeout(() => {
@@ -313,7 +359,7 @@ export class HomePage {
             code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test_send', value: this.getDateString() + ' send'}) + ");"
         }).then(values => {
             if (values && values.length && values[0]) {
-                this.storeDebugLog('browserTestCommunication', 'SENT AND RECIEVED', 2);
+                this.storeDebugLog('browserTestCommunication', 'SENT + RECIEVED', 2);
 
                 return this.browser.executeScript({
                     code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test_recieved', value: this.getDateString() + ' recieved' }) + ");"
@@ -638,11 +684,14 @@ export class HomePage {
         const pushObject = this.push.init(options);
 
         pushObject.on('notification').subscribe((notification: any) => {
-            this.ngZone.run(() => {
+            this.ngZone.run(() => {     
+
                 if (this.doDebug) {
                     this.notifications = this.notifications || [];
                     this.notifications.push(notification);
                 }
+
+                let webNav = null;//notification.additionalData;
 
                 try {
                     // foreground
@@ -652,30 +701,30 @@ export class HomePage {
                     } else {
                         this.storeDebugLog('setupPush', 'webNav ' + notification.additionalData.navType, 2);
 
-                        this.webNav = notification.additionalData;
+                        webNav = notification.additionalData;
 
                         if (this.doDebug) {
-                            this.webNavSnapshot = this.webNav;
+                            this.webNavSnapshot = webNav;
                         }
 
                         this.storeDebugLog('setupPush', 'background', 1);
 
-                        if (this.webNav) {
+                        if (webNav) {
                             // Update the browserUrl for the error page
                             // TODO: handle subdomains
-                            if (this.webNav.navType === 'post') {
-                                this.storeDebugLog('setupPush', 'webNav post ' + this.webNav.groupKey + ' ' + this.webNav.postKey, 2);
+                            if (webNav.navType === 'post') {
+                                this.storeDebugLog('setupPush', 'webNav post ' + webNav.groupKey + ' ' + webNav.postKey, 2);
 
-                                if (this.webNav.postKey && this.webNav.groupKey) {
-                                    this.browserUrl = 'https://smpltalk.com/#/content/post/' + this.webNav.groupKey + '/' + this.webNav.postKey;
+                                if (webNav.postKey && webNav.groupKey) {
+                                    this.browserUrl = 'https://smpltalk.com/#/content/post/' + webNav.groupKey + '/' + webNav.postKey;
                                 } else {
                                     this.browserUrl = 'https://smpltalk.com/';
                                 }
-                            } else if (this.webNav.navType === 'surveyResult') {
-                                this.storeDebugLog('setupPush', 'webNav surveyResult ' + this.webNav.groupKey + ' ' + this.webNav.surveyKey + ' ' + this.webNav.surveyResultKey, 2);
+                            } else if (webNav.navType === 'surveyResult') {
+                                this.storeDebugLog('setupPush', 'webNav surveyResult ' + webNav.groupKey + ' ' + webNav.surveyKey + ' ' + webNav.surveyResultKey, 2);
                                 
-                                if (this.webNav.surveyResultKey && this.webNav.surveyKey && this.webNav.groupKey) {
-                                    this.browserUrl = 'https://smpltalk.com/#/result/survey/' + this.webNav.groupKey + '/' + this.webNav.surveyKey + '/' + this.webNav.surveyResultKey;
+                                if (webNav.surveyResultKey && webNav.surveyKey && webNav.groupKey) {
+                                    this.browserUrl = 'https://smpltalk.com/#/result/survey/' + webNav.groupKey + '/' + webNav.surveyKey + '/' + webNav.surveyResultKey;
                                 } else {
                                     this.browserUrl = 'https://smpltalk.com/';
                                 }
@@ -685,8 +734,18 @@ export class HomePage {
                         }
                     }
 
-                    this.doDebug && this.browser && this.browser.executeScript({
-                        code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'notification', value: notification}) + ");"
+                    var promises = [];
+
+                    if (this.doDebug && this.browser) {
+                        promises.push(this.browser.executeScript({
+                            code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'notification', value: notification}) + ");"
+                        }));
+                    }
+                    
+                    Promise.all(promises).then(() => {
+                        if (!notification.additionalData.foreground) {
+                            this.webNav = webNav;
+                        }
                     });
                 }catch(error) {
                     this.storeDebugLog('setupPush', 'Error', 2);
