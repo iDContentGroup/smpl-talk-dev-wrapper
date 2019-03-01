@@ -253,10 +253,7 @@ export class HomePage {
     }
 
     startBrowserLoop(delay?: number) {
-        if (this.browserLoopIsActive) {
-            clearTimeout(this.browserLoopSetTimeout);
-            this.browserLoopIsActive = false;
-        }
+        this.clearBrowserLoop();
 
         return this.browserLoopFunction(delay);
     }
@@ -265,6 +262,8 @@ export class HomePage {
     // This leads to the loop never finishing and there's no way to detect it
     browserLoopFunction(delay?: number) {
         this.ngZone.run(() => {
+            clearTimeout(this.browserLoopSetTimeout);
+
             let start = Date.now();
 
             let browserLoopSetTimeout = this.browserLoopSetTimeout;
@@ -273,13 +272,16 @@ export class HomePage {
             // Because of how inappbrowser errors silently, we don't have a good way to handle if this browserLoop ever stops unexpectedly
             // The work around is to reset the loop if enough time has past
             clearTimeout(this.backupBrowserLoopSetTimeout);
-            this.backupBrowserLoopSetTimeout = setTimeout(() => {
-                // Loop again if there's delay (set delay to 0 to make the loop work once, use something like 1 to not do this)
-                if (delay && browserLoopSetTimeout === this.browserLoopSetTimeout) {
-                    this.startBrowserLoop(delay);
-                    this.backupLoopCount += 1;
-                }
-            }, 600);
+            if (delay) {
+                this.backupBrowserLoopSetTimeout = setTimeout(() => {
+                    // Loop again if there's delay (set delay to 0 to make the loop work once, use something like 1 to not do this)
+                    if (browserLoopSetTimeout === this.browserLoopSetTimeout) {
+                        this.startBrowserLoop(delay);
+                        this.backupLoopCount += 1;
+                    }
+                }, 1000);
+            }
+            
 
             if (this.doDebug) {
                 this.browserLoopCount = (this.browserLoopCount || 0) + 1;
@@ -333,8 +335,6 @@ export class HomePage {
                             this.browserLoopFunction(delay);
                         });
                     }, delay);
-                } else {
-                    this.clearBrowserLoop();
                 }
             });
         });
@@ -343,6 +343,7 @@ export class HomePage {
     clearBrowserLoop() {
         if (this.browserLoopIsActive) {
             clearTimeout(this.browserLoopSetTimeout);
+            clearTimeout(this.backupBrowserLoopSetTimeout);
             this.browserLoopIsActive = false;
         }
     }
