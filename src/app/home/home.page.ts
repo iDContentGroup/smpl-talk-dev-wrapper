@@ -474,8 +474,7 @@ export class HomePage {
         this.storeDebugLog('browserSetNav', 'Executed', 1);
 
         return this.browser.executeScript({
-            // code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicWebNavFunc && window.my.activateAppMode.publicWebNavFunc(" + JSON.stringify(this.webNav) + ");"
-            code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicWebNavFunc && window.my.activateAppMode.publicWebNavFunc();"
+            code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicWebNavFunc && window.my.activateAppMode.publicWebNavFunc(" + JSON.stringify(this.webNav) + ");"
         }).then(values => {
             if (values && values.length && values[0]) {
                 this.storeDebugLog('browserSetNav', 'Can Web Nav: YES', 2);
@@ -638,19 +637,18 @@ export class HomePage {
                     if (notification.additionalData.foreground) {
                         this.storeDebugLog('setupPush', 'foreground', 1);
                     } else {
-                        if (notification && notification.additionalData) {
-                            this.storeDebugLog('setupPush', 'webNav ' + notification.additionalData.navType, 2);
+                        this.storeDebugLog('setupPush', 'webNav ' + notification.additionalData.navType, 2);
 
-                            this.webNav = notification.additionalData;
+                        this.webNav = notification.additionalData;
 
-                            if (this.doDebug) {
-                                this.webNavSnapshot = this.webNav;
-                            }
-                        } else {
-                            this.storeDebugLog('setupPush', 'webNav None', 2);
-                            this.webNav = null;
+                        if (this.doDebug) {
+                            this.webNavSnapshot = this.webNav;
                         }
 
+                        this.storeDebugLog('setupPush', 'background', 1);
+                    }
+
+                    if (this.webNav) {
                         // Update the browserUrl for the error page
                         // TODO: handle subdomains
                         if (this.webNav.navType === 'post') {
@@ -672,13 +670,11 @@ export class HomePage {
                         } else {
                             this.browserUrl = 'https://smpltalk.com/';
                         }
-
-                        this.storeDebugLog('setupPush', 'background', 1);
-
-                        this.doDebug && this.browser && this.browser.executeScript({
-                            code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'notification', value: notification}) + ");"
-                        });
                     }
+
+                    this.doDebug && this.browser && this.browser.executeScript({
+                        code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'notification', value: notification}) + ");"
+                    });
                 }catch(error) {
                     this.storeDebugLog('setupPush', 'Error', 2);
                     this.pushError({key: 'setupPush', error: {message: "Unexpected error on notification"}});
