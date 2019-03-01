@@ -293,6 +293,8 @@ export class HomePage {
             return Promise.resolve(null);
         }
 
+        this.storeDebugLog('browserTestCommunication', 'Executed', 1);
+
         return this.browser.executeScript({
             code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test_send', value: this.getDateString() + ' send'}) + ");"
         }).then(values => {
@@ -303,7 +305,7 @@ export class HomePage {
                     code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'test_recieved', value: this.getDateString() + ' recieved' }) + ");"
                 });
             } else {
-                this.storeDebugLog('browserTestCommunication', 'SENT ONLY', 1);
+                this.storeDebugLog('browserTestCommunication', 'SENT ONLY', 2);
             }
 
             return values;
@@ -314,12 +316,13 @@ export class HomePage {
     }
 
     browserActivateNativeAppMode() {
-        console.log('browserActivateNativeAppMode');
         if (!this.browser || this.nativeAppModeActivated) {
             this.storeDebugLog('browserActivateNativeAppMode', 'Exit early', 0);
 
             return Promise.resolve(null);
         }
+
+        this.storeDebugLog('browserActivateNativeAppMode', 'Executed', 1);
 
         return this.browser.executeScript({
             code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicActivateAppModeFunc && window.my.activateAppMode.publicActivateAppModeFunc();"
@@ -329,7 +332,7 @@ export class HomePage {
                 this.storeDebugLog('browserActivateNativeAppMode', 'Report: GOOD', 2);
             } else {
                 // this.pushError({key: 'browserActivateNativeAppMode', error: {message: 'no truthy response from browser'}});
-                this.storeDebugLog('browserActivateNativeAppMode', 'Report: BAD', 1);
+                this.storeDebugLog('browserActivateNativeAppMode', 'Report: BAD', 2);
             }
 
             return values;
@@ -345,10 +348,7 @@ export class HomePage {
             return Promise.resolve(null);
         }
 
-        if (!this.browser.executeScript) {
-            this.storeDebugLog('browserLogoutOfNativeApp', 'No exeScript', 0);
-            return Promise.resolve(null);
-        }
+        this.storeDebugLog('browserLogoutOfNativeApp', 'Executed', 1);
 
         return this.browser.executeScript({
             code: "localStorage.getItem('logoutOfNativeApp')"
@@ -385,6 +385,8 @@ export class HomePage {
             this.storeDebugLog('browserGetFirebaseIdToken', 'Exit early', 0);
             return Promise.resolve(null);
         }
+
+        this.storeDebugLog('browserGetFirebaseIdToken', 'Executed', 1);
 
         function b64DecodeUnicode(str) {
             // Going backwards: from bytestream, to percent-encoding, to original string.
@@ -451,6 +453,8 @@ export class HomePage {
             return Promise.resolve(null);
         }
 
+        this.storeDebugLog('browserSetNav', 'Executed', 1);
+
         return this.browser.executeScript({
             // code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicWebNavFunc && window.my.activateAppMode.publicWebNavFunc(" + JSON.stringify(this.webNav) + ");"
             code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicWebNavFunc && window.my.activateAppMode.publicWebNavFunc();"
@@ -458,7 +462,7 @@ export class HomePage {
             if (values && values.length && values[0]) {
                 this.storeDebugLog('browserSetNav', 'Can Web Nav: YES', 2);
             } else {
-                this.storeDebugLog('browserSetNav', 'Can Web Nav: NO', 1);
+                this.storeDebugLog('browserSetNav', 'Can Web Nav: NO', 2);
                 // TODO: throw error?
             }
         }).catch(error => {
@@ -474,6 +478,8 @@ export class HomePage {
             this.storeDebugLog('browserHandleHref', 'Exit early', 0);
             return Promise.resolve(null);
         }
+
+        this.storeDebugLog('browserHandleHref', 'Executed', 1);
 
         return this.browser.executeScript({
             code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicHandleHref && window.my.activateAppMode.publicHandleHref();"
@@ -553,6 +559,8 @@ export class HomePage {
     }
 
     setupPush() {
+        this.storeDebugLog('setupPush', 'Executed', 2);
+
         // source: https://www.youtube.com/watch?v=sUjQ3G17T80
 
         // to check if we have permission
