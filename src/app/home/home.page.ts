@@ -36,6 +36,7 @@ export class HomePage {
     browserLoopIsActive: boolean;
 
     browserLoopTimestamp: string;//for debug
+    browserLoopDelay: number;
 
     loggingIn: boolean;
     loginCount: number;//for debug
@@ -86,6 +87,7 @@ export class HomePage {
         this.errorDescription = "Please check your internet connection";
 
         this.doDebug = true;
+        this.browserLoopDelay = 200;
 
         this.errors = [];
         this.fbUpdates = [];
@@ -124,10 +126,6 @@ export class HomePage {
                     }
                 
                     this.startBrowser();
-
-                    if (!this.browserLoopIsActive) {
-                        this.startBrowserLoop(200);
-                    }
                 });
             });
         });
@@ -208,7 +206,7 @@ export class HomePage {
                     this.browser.on("loadstop").subscribe(event => {
                         // Start browser loop when a web page has loaded successfully to avoid running into errors before a page has loaded
                         if (!this.browserLoopIsActive) {
-                            this.startBrowserLoop(200);
+                            this.startBrowserLoop(this.browserLoopDelay);
                         }
                     });
                 }catch(error) {
@@ -225,7 +223,7 @@ export class HomePage {
         if (this.browser) {
             this.browser.close();
         }
-        
+
         this.browser = null;
         // TODO: unsubscribe events
         // Clean up stuff
