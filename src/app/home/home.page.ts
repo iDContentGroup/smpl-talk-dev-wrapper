@@ -81,6 +81,16 @@ export class HomePage {
         this.showDropdown = !this.showDropdown;
     }
 
+    clearDebug() {
+        this.errors = [];
+        this.webNav = null;
+        this.webNavSnapshot = null;
+        this.browserLoopDelay = 200;
+
+        this.debugLog = null;
+        this.debugLogNames = null;
+    }
+
     ngOnInit() {
         this.showDropdown = false;
         this.errorTitle = 'Unexpected error';
@@ -337,10 +347,10 @@ export class HomePage {
         }).then(values => {
             if (values && values.length && values[0]) {
                 this.nativeAppModeActivated = true;
-                this.storeDebugLog('browserActivateNativeAppMode', 'Report: GOOD', 2);
+                this.storeDebugLog('browserActivateNativeAppMode', 'GOOD', 2);
             } else {
                 // this.pushError({key: 'browserActivateNativeAppMode', error: {message: 'no truthy response from browser'}});
-                this.storeDebugLog('browserActivateNativeAppMode', 'Report: BAD', 2);
+                this.storeDebugLog('browserActivateNativeAppMode', 'BAD', 2);
             }
 
             return values;

@@ -108,9 +108,10 @@
 
 
         <div class="buttons-container">
-          <ion-button ion-button (click)="startBrowserLoop(0)">Browser Loop Once</ion-button>
-          <ion-button ion-button (click)="startBrowserLoop(browserLoopDelay)">Browser Loop Default: {{ browserLoopDelay }}ms</ion-button>
-          <ion-button ion-button (click)="startBrowserLoop(1000)">Browser Loop 1000ms</ion-button>
+          <ion-button (click)="startBrowserLoop(0)">Browser Loop Once</ion-button>
+          <ion-button (click)="startBrowserLoop(browserLoopDelay)">Browser Loop Default: {{ browserLoopDelay }}ms</ion-button>
+          <ion-button (click)="startBrowserLoop(1000)">Browser Loop 1000ms</ion-button>
+          <ion-button (click)="clearDebug()">Clear debug</ion-button>
         </div>
       </ng-container>
 
