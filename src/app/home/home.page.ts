@@ -280,6 +280,8 @@ export class HomePage {
                             this.browserLoopFunction(delay);
                         });
                     }, delay);
+                } else {
+                    this.clearBrowserLoop();
                 }
             });
         });
