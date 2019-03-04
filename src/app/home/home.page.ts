@@ -76,6 +76,7 @@ export class HomePage {
 
     browserLoopFunctionID: number;
     activeBrowserLoopCount: number;
+    maxBrowserLoopCount: number;
 
     firebase_id_token: string;
 
@@ -102,6 +103,7 @@ export class HomePage {
 
         this.browserLoopFunctionID = 0;
         this.activeBrowserLoopCount = 0;
+        this.maxBrowserLoopCount = 0;
     }
 
     ngOnInit() {
@@ -111,6 +113,7 @@ export class HomePage {
 
         this.browserLoopFunctionID = 0;
         this.activeBrowserLoopCount = 0;
+        this.maxBrowserLoopCount = 0;
 
         this.showDropdown = false;
         this.errorTitle = 'Unexpected error';
@@ -285,12 +288,13 @@ export class HomePage {
                     this.startBrowserLoop(delay);
                     this.backupLoopCount += 1;
                 }
-            }, 600);
+            }, 1300);
         }
     }
 
-    // Note that if there's an error for inappbrowser, it errors silently and its methods that return promises will never get fulfilled or rejected
+    // Note that if there's an error for inappbrowser, it can likely error silently and its methods that return promises will never get fulfilled or rejected
     // This leads to the loop never finishing and there's no way to detect it
+    // Current workaround is to have a timer that starts another browser loop if a loop takes too long to cycle
     browserLoopFunction(delay?: number) {
         this.ngZone.run(() => {
             let loopID = this.getBrowserLoopFunctionID();
@@ -300,6 +304,7 @@ export class HomePage {
             this.browserLoopIsActive = true;
 
             this.activeBrowserLoopCount += 1;
+            this.handleMaxBrowserLoopCount();
 
             // // Because of how inappbrowser errors silently, we don't have a good way to handle if this browserLoop ever stops unexpectedly
             // // The work around is to reset the loop if enough time has past
@@ -325,7 +330,8 @@ export class HomePage {
                });
             };
 
-            var delayTime = 100;//Math.floor((Math.random() * 601) + 1);
+            // var delayTime = 100;//Math.floor((Math.random() * 601) + 1);
+            var delayTime = 300 + Math.floor((Math.random() * 601) + 1);
 
             // Activate making web go into nativeAppMode
             return this.browserActivateNativeAppMode().then(() => {
@@ -393,10 +399,9 @@ export class HomePage {
                 this.pushError({key: 'browserLoopFunction', error: error});
             }).then(() => {
                 this.activeBrowserLoopCount -= 1;
+                this.handleMaxBrowserLoopCount();
 
                 this.test(start);
-
-                clearTimeout(this.backupBrowserLoopSetTimeout);
 
                 // Loop again if there's delay (set delay to 0 to make the loop work once, use something like 1 to not do this)
                 if (delay && loopID === this.browserLoopFunctionID) {
@@ -414,6 +419,12 @@ export class HomePage {
         this.currentLoopTime = Date.now() - start;
         if (this.currentLoopTime > this.maxLoopTime) {
             this.maxLoopTime = this.currentLoopTime;
+        }
+    }
+
+    handleMaxBrowserLoopCount() {
+        if (this.activeBrowserLoopCount > this.maxBrowserLoopCount) {
+            this.maxBrowserLoopCount = this.activeBrowserLoopCount;
         }
     }
 
@@ -546,9 +557,11 @@ export class HomePage {
             if (this.firebase_id_token) {
                 if (this.loggingIn) {
                     this.storeDebugLog('browserGetFirebaseIdToken', 'IdToken: YES (already loggingIn)', 2);
+                    // Exit early and wait until the next browser loop to handle the incoming firebaseIdToken
 
-                    // First log current user out and on the next browser loop, use the stored firebase_id_token (if it doesn't get overrided)
-                    return this.logUserOutOfBrowser();
+                    // // First log current user out and on the next browser loop, use the stored firebase_id_token (if it doesn't get overrided)
+                    // return this.logUserOutOfBrowser();
+                    this.pushError({key: 'browserGetFirebaseIdToken', error: {message: 'Overlapping logging in'}});
                 } else {
                     // Parse the ID token.
                     const payload = JSON.parse(b64DecodeUnicode(this.firebase_id_token.split('.')[1]));
