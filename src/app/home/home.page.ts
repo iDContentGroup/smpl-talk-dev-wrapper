@@ -77,6 +77,8 @@ export class HomePage {
     browserLoopFunctionID: number;
     activeBrowserLoopCount: number;
 
+    firebase_id_token: string;
+
     constructor(public platform: Platform, private iab: InAppBrowser, private ref: ChangeDetectorRef, 
         private http: HttpClient, private ngZone: NgZone, public push: Push) {
         this.JSON = JSON;
@@ -263,7 +265,7 @@ export class HomePage {
 
     startBrowserLoop(delay?: number) {
         this.clearBrowserLoop();
-
+        this.browserLoopIsActive = true;
         return this.browserLoopFunction(delay);
     }
 
@@ -327,58 +329,63 @@ export class HomePage {
 
             // Activate making web go into nativeAppMode
             return this.browserActivateNativeAppMode().then(() => {
-                this.test(start);
-                start = Date.now();
-
-                this.setBackupBrowserLoop(loopID, delay);
-
                 if (loopID !== this.browserLoopFunctionID) {
                     throw {message: 'browserLoopSetTimeout overrided (0)'};
                 }
+
+                this.test(start);
+                start = Date.now();
+
+                this.setBackupBrowserLoop(loopID, delay);
+
                 // Handle if user has logged out of web app
                 return delayPromise(delayTime, null).then(() => {return this.browserLogoutOfNativeApp();});
             }).then(() => {
-                this.test(start);
-                start = Date.now();
-
-                this.setBackupBrowserLoop(loopID, delay);
-
                 if (loopID !== this.browserLoopFunctionID) {
                     throw {message: 'browserLoopSetTimeout overrided (1)'};
                 }
+
+                this.test(start);
+                start = Date.now();
+
+                this.setBackupBrowserLoop(loopID, delay);
+                
                 // Handle if browser is passing idToken to native (user has logged in web)
                 return delayPromise(delayTime, null).then(() => {return this.browserGetFirebaseIdToken();});
             }).then(() => {
-                this.test(start);
-                start = Date.now();
-
-                this.setBackupBrowserLoop(loopID, delay);
-
                 if (loopID !== this.browserLoopFunctionID) {
                     throw {message: 'browserLoopSetTimeout overrided (2)'};
                 }
+
+                this.test(start);
+                start = Date.now();
+
+                this.setBackupBrowserLoop(loopID, delay);
+                
                 // Handle setting web app navigation (to the feed, to a post, to a survey result, etc)
                 return delayPromise(delayTime, null).then(() => {return this.browserSetNav();});
             }).then(() => {
-                this.test(start);
-                start = Date.now();
-
-                this.setBackupBrowserLoop(loopID, delay);
-
                 if (loopID !== this.browserLoopFunctionID) {
                     throw {message: 'browserLoopSetTimeout overrided (3)'};
                 }
-                // Handle if web is passing native an href (should open in system instead of native app)
-                return delayPromise(delayTime, null).then(() => {return this.browserHandleHref();});
-            }).then(() => {
+
                 this.test(start);
                 start = Date.now();
 
                 this.setBackupBrowserLoop(loopID, delay);
 
+                // Handle if web is passing native an href (should open in system instead of native app)
+                return delayPromise(delayTime, null).then(() => {return this.browserHandleHref();});
+            }).then(() => {
                 if (loopID !== this.browserLoopFunctionID) {
                     throw {message: 'browserLoopSetTimeout overrided (4)'};
                 }
+
+                this.test(start);
+                start = Date.now();
+
+                this.setBackupBrowserLoop(loopID, delay);
+                
                 // Test if communication between native -> web (send) and web -> native (recieve)
                 return delayPromise(delayTime, null).then(() => {return this.browserTestCommunication();});
             }).catch(error => {
@@ -634,7 +641,7 @@ export class HomePage {
 
     logUserOutOfBrowser() {
         if (!this.browser) {
-
+            this.storeDebugLog('logUserOutOfBrowser', 'Exit early', 0);
             return Promise.resolve(null);
         }
 
@@ -642,7 +649,7 @@ export class HomePage {
 
         return this.browser.executeScript({
             code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicShouldLogoutFunc && window.my.activateAppMode.publicShouldLogoutFunc();"
-        }).then(value => {
+        }).then(values => {
             if (values && values.length && values[0]) {
                 this.storeDebugLog('logUserOutOfBrowser', 'Can log out: YES', 2);
             } else {
@@ -661,7 +668,7 @@ export class HomePage {
     }
 
     exchangeIDTokenForCustToken(iDToken: any) {
-        if (!idToken) {
+        if (!iDToken) {
             console.error("Unexpected missing iDToken");
             return Promise.resolve(null);
         }
