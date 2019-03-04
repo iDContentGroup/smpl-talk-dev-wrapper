@@ -462,7 +462,6 @@ export class HomePage {
                 this.nativeAppModeActivated = true;
                 this.storeDebugLog('browserActivateNativeAppMode', 'GOOD', 2);
             } else {
-                // this.pushError({key: 'browserActivateNativeAppMode', error: {message: 'no truthy response from browser'}});
                 this.storeDebugLog('browserActivateNativeAppMode', 'BAD', 2);
             }
 
@@ -481,22 +480,24 @@ export class HomePage {
 
         this.storeDebugLog('browserLogoutOfNativeApp', 'Executed', 1);
 
+        // window.my && window.my.activateAppMode && window.my.activateAppMode.publicShouldLogoutOfNativeApp && window.my.activateAppMode.publicShouldLogoutOfNativeApp();
+
         return this.browser.executeScript({
-            code: "localStorage.getItem('logoutOfNativeApp')"
+            // code: "localStorage.getItem('logoutOfNativeApp')"
+            code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicShouldLogoutOfNativeApp && window.my.activateAppMode.publicShouldLogoutOfNativeApp();"
         }).then(values => {
             if (values && values.length && values[0]) {
                 this.storeDebugLog('browserLogoutOfNativeApp', 'Should log out: YES', 2);
 
-                return this.browser.executeScript({ code: "localStorage.setItem('logoutOfNativeApp', '');" }).then(() => {
-                    this.users = [];
+                // return this.browser.executeScript({ code: "localStorage.setItem('logoutOfNativeApp', '');" }).then(() => {
+                this.users = [];
 
-                    return this.setDeviceUserPairing();
-                }).then(() => {
+                return this.setDeviceUserPairing().then(() => {
                     return this.firebaseSignOut();
                 }).then(() => {
                     if (this.doDebug) {
                         return this.browser.executeScript({
-                            code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'nativeAuthOut', value: this.getDateString() + ' native signed out at' }) + ");"
+                            code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'browserLogoutOfNativeApp', value: this.getDateString() + ' native signed out at' }) + ");"
                         });
                     }
                 });
@@ -526,33 +527,37 @@ export class HomePage {
             }).join(''));
         }
 
-        return this.browser.executeScript({
-            code: "localStorage.getItem('firebase_id_token_output')"
-        }).then(values => {
-            var firebase_id_token = values && values.length && values[0];
+        // publicPopFirebaseIdTokenOutput
+        // window.my && window.my.activateAppMode && window.my.activateAppMode.publicPopFirebaseIdTokenOutput && window.my.activateAppMode.publicPopFirebaseIdTokenOutput();
 
-            if (firebase_id_token) {
+        return this.browser.executeScript({
+            code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicPopFirebaseIdTokenOutput && window.my.activateAppMode.publicPopFirebaseIdTokenOutput();"
+            // code: "localStorage.getItem('firebase_id_token_output')"
+        }).then(values => {
+            this.firebase_id_token = values && values.length && values[0] || this.firebase_id_token;
+
+            if (this.firebase_id_token) {
                 if (this.loggingIn) {
                     this.storeDebugLog('browserGetFirebaseIdToken', 'IdToken: YES (already loggingIn)', 2);
 
-                    // First log current user out and on the next browser loop, the user should be signed in since we don't clear firebase_id_token_output from localStorage
+                    // First log current user out and on the next browser loop, use the stored firebase_id_token (if it doesn't get overrided)
                     return this.logUserOutOfBrowser();
                 } else {
                     // Parse the ID token.
-                    const payload = JSON.parse(b64DecodeUnicode(firebase_id_token.split('.')[1]));
+                    const payload = JSON.parse(b64DecodeUnicode(this.firebase_id_token.split('.')[1]));
 
                     var promises = [];
 
                     if (this.fbUser && this.fbUser.email && this.fbUser.email === payload.email) {
                         // The current user is the same user that just logged in, so no need to reauth
                         this.storeDebugLog('browserGetFirebaseIdToken', 'IdToken: YES (same user, skip auth)', 2);
-
                     } else {
                         this.storeDebugLog('browserGetFirebaseIdToken', 'IdToken: YES (start auth)', 2);
 
                         this.loggingIn = true;
 
-                        promises.push(this.exchangeIDTokenForCustToken(firebase_id_token).then(custToken => {
+                        promises.push(this.exchangeIDTokenForCustToken(this.firebase_id_token).then(custToken => {
+                            this.firebase_id_token = null;
                             return this.signInWithCustomToken(custToken).then(() => {
                                 this.loggingIn = false;
                             });
@@ -560,13 +565,13 @@ export class HomePage {
                     }
 
                     return Promise.all(promises).then(() => {
-                        return this.browser.executeScript({ code: "localStorage.setItem('firebase_id_token_output', '');" }).then(() => {
+                        // return this.browser.executeScript({ code: "localStorage.setItem('firebase_id_token_output', '');" }).then(() => {
                             if (this.doDebug) {
                                 return this.browser.executeScript({
                                     code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'nativeAuthIn', value: this.getDateString() + ' native signed in at'}) + ");"
                                 });
                             }
-                        });
+                        // });
                     });
                 }
             } else {
@@ -629,15 +634,25 @@ export class HomePage {
 
     logUserOutOfBrowser() {
         if (!this.browser) {
+
             return Promise.resolve(null);
         }
 
+        this.storeDebugLog('logUserOutOfBrowser', 'Executed', 1);
+
         return this.browser.executeScript({
-            code: "localStorage.setItem('shouldLogout', 'moo');"
-        }).then(() => {
+            code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicShouldLogoutFunc && window.my.activateAppMode.publicShouldLogoutFunc();"
+        }).then(value => {
+            if (values && values.length && values[0]) {
+                this.storeDebugLog('logUserOutOfBrowser', 'Can log out: YES', 2);
+            } else {
+                this.storeDebugLog('logUserOutOfBrowser', 'Can log out: NO', 2);
+                // TODO: throw error?
+            }
+
             if (this.doDebug) {
                 return this.browser.executeScript({
-                    code: 'window.my && window.my.activateAppMode && window.my.activateAppMode.publicShouldLogoutFunc && window.my.activateAppMode.publicShouldLogoutFunc();'
+                    code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'logUserOutOfBrowser', value: this.getDateString() + ' native said log out'}) + ");"
                 });
             }
         }).catch(error => {
@@ -646,6 +661,11 @@ export class HomePage {
     }
 
     exchangeIDTokenForCustToken(iDToken: any) {
+        if (!idToken) {
+            console.error("Unexpected missing iDToken");
+            return Promise.resolve(null);
+        }
+
         var url = "https://us-central1-ourg-2c585.cloudfunctions.net/g41-app/exchangeIDTokenForCustToken";
         var headers = new HttpHeaders();
 
