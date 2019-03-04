@@ -288,7 +288,7 @@ export class HomePage {
                     this.startBrowserLoop(delay);
                     this.backupLoopCount += 1;
                 }
-            }, 1300);
+            }, 1000);
         }
     }
 
@@ -303,21 +303,10 @@ export class HomePage {
 
             this.browserLoopIsActive = true;
 
-            this.activeBrowserLoopCount += 1;
-            this.handleMaxBrowserLoopCount();
-
-            // // Because of how inappbrowser errors silently, we don't have a good way to handle if this browserLoop ever stops unexpectedly
-            // // The work around is to reset the loop if enough time has past
-            // if (delay) {
-            //     clearTimeout(this.backupBrowserLoopSetTimeout);
-            //     this.backupBrowserLoopSetTimeout = setTimeout(() => {
-            //         // Loop again if there's delay (set delay to 0 to make the loop work once, use something like 1 to not do this)
-            //         if (loopID === this.browserLoopFunctionID) {
-            //             this.startBrowserLoop(delay);
-            //             this.backupLoopCount += 1;
-            //         }
-            //     }, 600);
-            // }
+            if (this.doDebug) {
+                this.activeBrowserLoopCount += 1;
+                this.handleMaxBrowserLoopCount();
+            }
 
             if (this.doDebug) {
                 this.browserLoopCount = (this.browserLoopCount || 0) + 1;
@@ -330,8 +319,8 @@ export class HomePage {
                });
             };
 
-            // var delayTime = 100;//Math.floor((Math.random() * 601) + 1);
-            var delayTime = 300 + Math.floor((Math.random() * 601) + 1);
+            var delayTime = 100;//Math.floor((Math.random() * 601) + 1);
+            // var delayTime = 300 + Math.floor((Math.random() * 601) + 1);
 
             // Activate making web go into nativeAppMode
             return this.browserActivateNativeAppMode().then(() => {
@@ -545,22 +534,14 @@ export class HomePage {
             }).join(''));
         }
 
-        // publicPopFirebaseIdTokenOutput
-        // window.my && window.my.activateAppMode && window.my.activateAppMode.publicPopFirebaseIdTokenOutput && window.my.activateAppMode.publicPopFirebaseIdTokenOutput();
-
         return this.browser.executeScript({
             code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicPopFirebaseIdTokenOutput && window.my.activateAppMode.publicPopFirebaseIdTokenOutput();"
-            // code: "localStorage.getItem('firebase_id_token_output')"
         }).then(values => {
             this.firebase_id_token = values && values.length && values[0] || this.firebase_id_token;
 
             if (this.firebase_id_token) {
                 if (this.loggingIn) {
                     this.storeDebugLog('browserGetFirebaseIdToken', 'IdToken: YES (already loggingIn)', 2);
-                    // Exit early and wait until the next browser loop to handle the incoming firebaseIdToken
-
-                    // // First log current user out and on the next browser loop, use the stored firebase_id_token (if it doesn't get overrided)
-                    // return this.logUserOutOfBrowser();
                     this.pushError({key: 'browserGetFirebaseIdToken', error: {message: 'Overlapping logging in'}});
                 } else {
                     // Parse the ID token.
@@ -585,13 +566,11 @@ export class HomePage {
                     }
 
                     return Promise.all(promises).then(() => {
-                        // return this.browser.executeScript({ code: "localStorage.setItem('firebase_id_token_output', '');" }).then(() => {
-                            if (this.doDebug) {
-                                return this.browser.executeScript({
-                                    code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'nativeAuthIn', value: this.getDateString() + ' native signed in at'}) + ");"
-                                });
-                            }
-                        // });
+                        if (this.doDebug) {
+                            return this.browser.executeScript({
+                                code: "window.my && window.my.activateAppMode && window.my.activateAppMode.publicDebugFunc && window.my.activateAppMode.publicDebugFunc(" + JSON.stringify({key: 'nativeAuthIn', value: this.getDateString() + ' native signed in at'}) + ");"
+                            });
+                        }
                     });
                 }
             } else {
