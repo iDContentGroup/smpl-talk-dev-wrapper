@@ -36,14 +36,14 @@
             <application android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher_round" />
         </edit-config>
 
-        <resource-file src="ic_launcher/res/mipmap-ldpi/ic_launcher.png" target="app/src/main/res/mipmap-ldpi/ic_launcher.png" />
+        <!-- <resource-file src="ic_launcher/res/mipmap-ldpi/ic_launcher.png" target="app/src/main/res/mipmap-ldpi/ic_launcher.png" /> -->
         <resource-file src="ic_launcher/res/mipmap-mdpi/ic_launcher.png" target="app/src/main/res/mipmap-mdpi/ic_launcher.png" />
         <resource-file src="ic_launcher/res/mipmap-hdpi/ic_launcher.png" target="app/src/main/res/mipmap-hdpi/ic_launcher.png" />
         <resource-file src="ic_launcher/res/mipmap-xhdpi/ic_launcher.png" target="app/src/main/res/mipmap-xhdpi/ic_launcher.png" />
         <resource-file src="ic_launcher/res/mipmap-xxhdpi/ic_launcher.png" target="app/src/main/res/mipmap-xxhdpi/ic_launcher.png" />
         <resource-file src="ic_launcher/res/mipmap-xxxhdpi/ic_launcher.png" target="app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" />
 
-        <resource-file src="ic_launcher_round/res/mipmap-ldpi/ic_launcher.png" target="app/src/main/res/mipmap-ldpi/ic_launcher_round.png" />
+        <!-- <resource-file src="ic_launcher_round/res/mipmap-ldpi/ic_launcher.png" target="app/src/main/res/mipmap-ldpi/ic_launcher_round.png" /> -->
         <resource-file src="ic_launcher_round/res/mipmap-mdpi/ic_launcher.png" target="app/src/main/res/mipmap-mdpi/ic_launcher_round.png" />
         <resource-file src="ic_launcher_round/res/mipmap-hdpi/ic_launcher.png" target="app/src/main/res/mipmap-hdpi/ic_launcher_round.png" />
         <resource-file src="ic_launcher_round/res/mipmap-xhdpi/ic_launcher.png" target="app/src/main/res/mipmap-xhdpi/ic_launcher_round.png" />
