@@ -22,12 +22,14 @@
     <platform name="android">
         <resource-file src="google-services.json" target="google-services.json" />
         <resource-file src="google-services.json" target="app/google-services.json" />
-        <resource-file src="ic_android_generated.png" target="app/src/main/res/drawable/ic_android_generated.png" />
+        <!-- <resource-file src="ic_android_generated.png" target="app/src/main/res/drawable/ic_android_generated.png" /> -->
+        <resource-file src="notification_icon.png" target="app/src/main/res/drawable/notification_icon.png" />
+        
         <allow-intent href="market:*" />
 
-        <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application">
+<!--         <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application">
             <application android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher_round" />
-        </edit-config>
+        </edit-config> -->
 
         <icon density="ldpi" src="resources/android/icon/drawable-ldpi-icon.png" />
         <icon density="mdpi" src="resources/android/icon/drawable-mdpi-icon.png" />

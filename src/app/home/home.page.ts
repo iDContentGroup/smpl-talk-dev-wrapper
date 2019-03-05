@@ -746,7 +746,7 @@ export class HomePage {
         const options: any = {
             android: {
                 //senderID: XXXX
-                icon: 'ic_android_generated',
+                icon: 'notification_icon',
                 iconColor: '#1DAED9',
                 vibrate: 'true',
                 // clearBadge: 'true',
