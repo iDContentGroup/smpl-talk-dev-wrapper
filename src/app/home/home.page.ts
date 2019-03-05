@@ -65,6 +65,7 @@ export class HomePage {
     errorDescription: string;
 
     browserUrl: string;
+    rootUrl: string;
 
     debugLog: any;
     debugLogNames: string[];
@@ -121,7 +122,6 @@ export class HomePage {
         this.errorTitle = 'Unexpected error';
         this.errorDescription = "Please check your internet connection";
 
-        this.doDebug = true;
         this.browserLoopDelay = 200;
 
         this.errors = [];
@@ -129,6 +129,9 @@ export class HomePage {
         this.users = [];
         this.loginCount = 0;
 
+
+
+        this.doDebug = false;//true;
         this.networkColor = '#15aed9';
         this.rootUrl = 'https://smpltalkdev.com/#/';
         this.browserUrl = this.rootUrl;
