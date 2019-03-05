@@ -132,7 +132,7 @@ export class HomePage {
 
 
         this.doDebug = false;//true;
-        this.networkColor = 'red';
+        this.networkColor = '#D91515';
         this.rootUrl = 'https://smpltalkdev.com/#/';
         this.browserUrl = this.rootUrl;
 
