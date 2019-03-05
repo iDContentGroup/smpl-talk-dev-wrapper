@@ -36,12 +36,12 @@
         <icon density="xxhdpi" src="resources/android/icon/drawable-xxhdpi-icon.png" />
         <icon density="xxxhdpi" src="resources/android/icon/drawable-xxxhdpi-icon.png" />
 
-        <icon density="ldpi" src="resources/android/icon/drawable-ldpi-icon_round.png" target="app/src/main/res/mipmap-ldpi/ic_launcher_round.png" />
+<!--         <icon density="ldpi" src="resources/android/icon/drawable-ldpi-icon_round.png" target="app/src/main/res/mipmap-ldpi/ic_launcher_round.png" />
         <icon density="mdpi" src="resources/android/icon/drawable-mdpi-icon_round.png" target="app/src/main/res/mipmap-mdpi/ic_launcher_round.png" />
         <icon density="hdpi" src="resources/android/icon/drawable-hdpi-icon_round.png" target="app/src/main/res/mipmap-hdpi/ic_launcher_round.png" />
         <icon density="xhdpi" src="resources/android/icon/drawable-xhdpi-icon_round.png" target="app/src/main/res/mipmap-xhdpi/ic_launcher_round.png" />
         <icon density="xxhdpi" src="resources/android/icon/drawable-xxhdpi-icon_round.png" target="app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png" />
-        <icon density="xxxhdpi" src="resources/android/icon/drawable-xxxhdpi-icon_round.png" target="app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png" />
+        <icon density="xxxhdpi" src="resources/android/icon/drawable-xxxhdpi-icon_round.png" target="app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png" /> -->
 
         <splash density="land-ldpi" src="resources/android/splash/drawable-land-ldpi-screen.png" />
         <splash density="land-mdpi" src="resources/android/splash/drawable-land-mdpi-screen.png" />
