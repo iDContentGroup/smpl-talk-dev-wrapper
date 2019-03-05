@@ -22,8 +22,9 @@
     <platform name="android">
         <resource-file src="google-services.json" target="google-services.json" />
         <resource-file src="google-services.json" target="app/google-services.json" />
-        <resource-file src="ic_android_generated.png" target="res/drawable/ic_android_generated.png" />
+        <resource-file src="ic_android_generated.png" target="app/src/main/res/drawable/ic_android_generated.png" />
         <allow-intent href="market:*" />
+
         <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application">
             <application android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher_round" />
         </edit-config>
@@ -34,7 +35,6 @@
         <icon density="xhdpi" src="resources/android/icon/drawable-xhdpi-icon.png" />
         <icon density="xxhdpi" src="resources/android/icon/drawable-xxhdpi-icon.png" />
         <icon density="xxxhdpi" src="resources/android/icon/drawable-xxxhdpi-icon.png" />
-        <icon density="xxxhdpi" src="resources/android/icon/drawable-xxxhdpi-icon-circle.png" target="app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png" />
 
         <icon density="ldpi" src="resources/android/icon/drawable-ldpi-icon_round.png" target="app/src/main/res/mipmap-ldpi/ic_launcher_round.png" />
         <icon density="mdpi" src="resources/android/icon/drawable-mdpi-icon_round.png" target="app/src/main/res/mipmap-mdpi/ic_launcher_round.png" />
