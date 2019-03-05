@@ -80,6 +80,8 @@ export class HomePage {
 
     firebase_id_token: string;
 
+    networkColor: string;
+
     constructor(public platform: Platform, private iab: InAppBrowser, private ref: ChangeDetectorRef, 
         private http: HttpClient, private ngZone: NgZone, public push: Push) {
         this.JSON = JSON;
@@ -127,6 +129,10 @@ export class HomePage {
         this.users = [];
         this.loginCount = 0;
 
+        this.networkColor = '#15aed9';
+        this.rootUrl = 'https://smpltalkdev.com/#/';
+        this.browserUrl = this.rootUrl;
+
         this.platform.ready().then(() => {
             // if (this.platform.is('cordova')) {
                 this.setupPush();
@@ -170,8 +176,6 @@ export class HomePage {
 
     startBrowser(hidden?: boolean) {
         if (!this.browser) {
-            this.browserUrl = 'https://smpltalkdev.com/#/';
-
             this.options = '';
 
             var optionAry = [];
@@ -205,7 +209,7 @@ export class HomePage {
             }
 
             if (this.platform.is('cordova')) {
-                this.browser = this.browser || this.iab.create(this.browserUrl, '_blank', this.options);
+                this.browser = this.browser || this.iab.create(this.browserUrl || this.rootUrl, '_blank', this.options);
 
                 if (!this.browser) {
                     this.pushError({key: 'startBrowser', error: {message: "browser didn't initalize"}});
@@ -747,7 +751,7 @@ export class HomePage {
             android: {
                 //senderID: XXXX
                 icon: 'notification_icon',
-                iconColor: '#1DAED9',
+                iconColor: this.networkColor,
                 vibrate: 'true',
                 // clearBadge: 'true',
                 //clearNotifications: 'true',
@@ -806,20 +810,20 @@ export class HomePage {
                                 this.storeDebugLog('setupPush', 'webNav post ' + webNav.groupKey + ' ' + webNav.postKey, 2);
 
                                 if (webNav.postKey && webNav.groupKey) {
-                                    this.browserUrl = 'https://smpltalk.com/#/content/post/' + webNav.groupKey + '/' + webNav.postKey;
+                                    this.browserUrl = this.rootUrl + 'content/post/' + webNav.groupKey + '/' + webNav.postKey;
                                 } else {
-                                    this.browserUrl = 'https://smpltalk.com/';
+                                    this.browserUrl = this.rootUrl;
                                 }
                             } else if (webNav.navType === 'surveyResult') {
                                 this.storeDebugLog('setupPush', 'webNav surveyResult ' + webNav.groupKey + ' ' + webNav.surveyKey + ' ' + webNav.surveyResultKey, 2);
                                 
                                 if (webNav.surveyResultKey && webNav.surveyKey && webNav.groupKey) {
-                                    this.browserUrl = 'https://smpltalk.com/#/result/survey/' + webNav.groupKey + '/' + webNav.surveyKey + '/' + webNav.surveyResultKey;
+                                    this.browserUrl = this.rootUrl + 'result/survey/' + webNav.groupKey + '/' + webNav.surveyKey + '/' + webNav.surveyResultKey;
                                 } else {
-                                    this.browserUrl = 'https://smpltalk.com/';
+                                    this.browserUrl = this.rootUrl;
                                 }
                             } else {
-                                this.browserUrl = 'https://smpltalk.com/';
+                                this.browserUrl = this.rootUrl;
                             }
                         }
                     }
