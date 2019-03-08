@@ -83,6 +83,8 @@ export class HomePage {
 
     networkColor: string;
 
+    showTroubleshoot: boolean;
+
     constructor(public platform: Platform, private iab: InAppBrowser, private ref: ChangeDetectorRef, 
         private http: HttpClient, private ngZone: NgZone, public push: Push) {
         this.JSON = JSON;
@@ -110,6 +112,10 @@ export class HomePage {
     }
 
     ngOnInit() {
+        setTimeout(() => {
+            this.showTroubleshoot = true;
+        }, 2000);
+
         this.currentLoopTime = 0;
         this.maxLoopTime = 0;
         this.backupLoopCount = 0;
@@ -603,6 +609,7 @@ export class HomePage {
             if (values && values.length && values[0]) {
                 this.storeDebugLog('browserSetNav', 'Can Web Nav: YES', 2);
             } else {
+                // In the events that the web app isn't set up in time to allow publicWebNavFunc, it is likely that the native app will just start with the expected url 
                 this.storeDebugLog('browserSetNav', 'Can Web Nav: NO', 2);
                 // TODO: throw error?
             }
@@ -628,7 +635,13 @@ export class HomePage {
             var href = values && values.length && values[0];
             if (href) {
                 this.storeDebugLog('browserHandleHref', href, 2);
-                this.iab.create(href, '_system', "location=yes");
+
+                // Backdoor for entering debug mode through href
+                if (href === 'force-debug-mode' || href === 'http://force-debug-mode/' || href === 'http://force-debug-mode' || href === 'https://force-debug-mode/' || href === 'https://force-debug-mode') {
+                    this.forceDebugMode();
+                } else {
+                    this.iab.create(href, '_system', "location=yes");
+                }
             } else {
                 this.storeDebugLog('browserHandleHref', 'No href', 1);
             }
@@ -793,6 +806,7 @@ export class HomePage {
                 try {
                     // foreground
                     // TODO: handle foreground notification
+                    // TODO: handle forcing debug mode from notification
                     if (notification.additionalData.foreground) {
                         this.storeDebugLog('setupPush', 'foreground', 1);
                     } else {
@@ -1038,5 +1052,10 @@ export class HomePage {
         } else {
             console.error("Unexpected change event", event);
         }
+    }
+
+    forceDebugMode() {
+        this.doDebug = true;
+        this.browser && this.browser.hide();
     }
 }

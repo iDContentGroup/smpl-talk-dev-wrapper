@@ -1,4 +1,4 @@
-<div class="container" *ngIf="doDebug || errors && errors.length">
+<div class="container" *ngIf="showTroubleshoot && (doDebug || errors && errors.length)">
   <svg class="svg-icon block-icon">
     <use xlink:href="#block"></use>
   </svg>
