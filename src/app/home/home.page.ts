@@ -1030,4 +1030,13 @@ export class HomePage {
             this.pushError({key: 'storeDebugLog', error: error});
         }
     }
+
+    updateBrowserUrl(event) {
+        console.log(event);
+        if (event && event.detail) {
+            this.browserUrl = event.detail.value || "";
+        } else {
+            console.error("Unexpected change event", event);
+        }
+    }
 }

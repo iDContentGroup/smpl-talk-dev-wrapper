@@ -45,7 +45,12 @@
           <ion-button (click)="toggleDebug()">Toggle Debug | status: {{ doDebug ? 'On' : 'Off' }}</ion-button>
         </div>
 
+        <p>{{ browserUrl || "No browserUrl" }}</p>
 
+        <ion-item>
+          <ion-label position="floating">Browser url</ion-label>
+          <ion-input [value]="browserUrl" (ionChange)="updateBrowserUrl($event)"></ion-input>
+        </ion-item>
 
         <p class="keep-white-space">Browser options: {{ options }}</p>
 
