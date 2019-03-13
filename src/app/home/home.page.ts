@@ -332,7 +332,7 @@ export class HomePage {
                });
             };
 
-            var delayTime = 100;//Math.floor((Math.random() * 601) + 1);
+            var delayTime = 1;//Math.floor((Math.random() * 601) + 1);
             // var delayTime = 300 + Math.floor((Math.random() * 601) + 1);
 
             // Activate making web go into nativeAppMode
@@ -400,8 +400,10 @@ export class HomePage {
                 // Log unexpected errors
                 this.pushError({key: 'browserLoopFunction', error: error});
             }).then(() => {
-                this.activeBrowserLoopCount -= 1;
-                this.handleMaxBrowserLoopCount();
+                if (this.doDebug) {
+                    this.activeBrowserLoopCount -= 1;
+                    this.handleMaxBrowserLoopCount();
+                }
 
                 this.test(start);
 
