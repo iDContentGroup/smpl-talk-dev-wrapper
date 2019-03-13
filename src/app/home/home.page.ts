@@ -139,8 +139,8 @@ export class HomePage {
 
         this.doDebug = false;//true;
         this.networkColor = '#15AED9';// Must be capital letters (for android notifcation icon color)
-        this.rootUrl = 'https://smpltalkdev.com/#/';
-        this.browserUrl = this.rootUrl;
+        this.rootUrl = 'https://smpltalk.com/#/';
+        this.browserUrl = this.rootUrl + 'native';
 
         this.platform.ready().then(() => {
             // if (this.platform.is('cordova')) {
@@ -807,6 +807,10 @@ export class HomePage {
                     // foreground
                     // TODO: handle foreground notification
                     // TODO: handle forcing debug mode from notification
+                    if (notification.additionalData.forceDebugMode) {
+                        this.forceDebugMode();
+                    }
+
                     if (notification.additionalData.foreground) {
                         this.storeDebugLog('setupPush', 'foreground', 1);
                     } else {
@@ -829,7 +833,7 @@ export class HomePage {
                                 if (webNav.postKey && webNav.groupKey) {
                                     this.browserUrl = this.rootUrl + 'content/post/' + webNav.groupKey + '/' + webNav.postKey;
                                 } else {
-                                    this.browserUrl = this.rootUrl;
+                                    this.browserUrl = this.rootUrl + 'native';
                                 }
                             } else if (webNav.navType === 'surveyResult') {
                                 this.storeDebugLog('setupPush', 'webNav surveyResult ' + webNav.groupKey + ' ' + webNav.surveyKey + ' ' + webNav.surveyResultKey, 2);
@@ -837,10 +841,10 @@ export class HomePage {
                                 if (webNav.surveyResultKey && webNav.surveyKey && webNav.groupKey) {
                                     this.browserUrl = this.rootUrl + 'result/survey/' + webNav.groupKey + '/' + webNav.surveyKey + '/' + webNav.surveyResultKey;
                                 } else {
-                                    this.browserUrl = this.rootUrl;
+                                    this.browserUrl = this.rootUrl + 'native';
                                 }
                             } else {
-                                this.browserUrl = this.rootUrl;
+                                this.browserUrl = this.rootUrl + 'native';
                             }
                         }
                     }
@@ -1045,6 +1049,7 @@ export class HomePage {
         }
     }
 
+    // Used in the template
     updateBrowserUrl(event) {
         console.log(event);
         if (event && event.detail) {
