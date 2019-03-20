@@ -572,7 +572,9 @@ export class HomePage {
             if (this.firebase_id_token) {
                 if (this.loggingIn) {
                     this.storeDebugLog('browserGetFirebaseIdToken', 'IdToken: YES (already loggingIn)', 2);
-                    this.pushError({key: 'browserGetFirebaseIdToken', error: {message: 'Overlapping logging in'}});
+                    if (this.doDebug) {
+                        this.pushError({key: 'browserGetFirebaseIdToken', error: {message: 'Overlapping logging in'}});
+                    }
                 } else {
                     // Parse the ID token.
                     const payload = JSON.parse(b64DecodeUnicode(this.firebase_id_token.split('.')[1]));
