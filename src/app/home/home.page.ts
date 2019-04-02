@@ -138,8 +138,8 @@ export class HomePage {
 
 
         this.doDebug = false;//true;
-        this.networkColor = '#15AED9';// Must be capital letters (for android notifcation icon color)
-        this.rootUrl = 'https://smpltalk.com/#/';
+        this.networkColor = '#01A1DD';// Must be capital letters (for android notifcation icon color)
+        this.rootUrl = 'https://ah.smpltalk.com/#/';
         this.browserUrl = this.rootUrl + 'native';
 
         this.platform.ready().then(() => {
